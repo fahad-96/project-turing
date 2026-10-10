@@ -30,7 +30,7 @@ Numbering note: number 7 was used on both laptops; the Honor laptop's task 7 (fo
 | 14 | Average order of the divisor function (Dirichlet, hyperbola method) | Honor laptop | rejected | all passed (official jobs t14_r1_check, t14_r2_check, t14_r3_check, 10 Oct) | - |
 | 15 | Character sums modulo a prime (Polya-Vinogradov) and least non-residues | Honor laptop | rejected | all passed (jobs t15_r1..r3_check, 10 Oct) | - |
 | 16 | Square, twice-square and power-of-two Fibonacci and Lucas numbers (Cohn) | Honor laptop | prompt | not run | paste task16_prompt.txt; check outputs (jobs 025a-c) |
-| 17 | Densities governed by 6/pi^2: squarefree numbers, coprime pairs, Euler's function | Honor laptop | prompt | not run | paste task17_prompt.txt; check outputs (jobs 026a-c) |
+| 17 | Densities governed by 6/pi^2: squarefree numbers, coprime pairs, Euler's function | Honor laptop | rejected | all passed (official jobs t17_r1_check, t17_r2_check, t17_r3_check, 10 Oct) | - |
 
 Status values: prompt (prompt written and compiled), outputs (checking outputs), golden (golden
 ready, platform pending), submitted, returned (sent back by a reviewer), rejected (no failure).
@@ -275,17 +275,17 @@ ready, platform pending), submitted, returned (sent back by a reviewer), rejecte
 
 ### Task 17 - Densities governed by 6/pi^2 (squarefree numbers, coprime pairs, Euler's function)
 
-- Status: prompt
-- State: Prompt compiled officially (job 023b_t17_statements, 9 Oct: build exit 0, five sorry warnings, check exit 0, 24 s); handed over 9 Oct 2026, about 23:15 IST (re-merged after an overwrite)
+- Status: rejected
+- State: All three models passed, no genuine failure (10 Oct 2026, 15:03 IST). No golden written. Prompt compiled officially 9 Oct (job 023b_t17_statements: build exit 0, five sorry warnings, check exit 0, 24 s)
 - Laptop: Honor laptop
 - Folder: tasks\task 17 (Honor laptop)
 - Topic: |Q(N) - 6N/pi^2| <= 3 sqrt N (Q = squarefree count); |C(N) - 6N^2/pi^2| <= 6N(log N + 1) (C = coprime pairs in [1,N]^2); |sum phi(n) - 3N^2/pi^2| <= 4N(log N + 1); |sum phi(n)/n - 6N/pi^2| <= log N + 2; Q(N)/N -> 6/pi^2. 5 theorems, no definitions; Squarefree, Nat.Coprime, Nat.totient, Real.pi
 - Files: task17_prompt.txt (2,990 chars, sha256 79338f15aede6125...), TuringTask\Basic.lean (4b1f25f64e5c1a4f...), StatementAndAxiomsCheck.lean, statements_worker_log.txt. Generator checks: 4,103,404 (theorems 1-4 for every N <= 10^6 by exact sieves: actual error at most 23, 7, 18, 20 percent of the stated bounds; the coprime-pair identity 2 sum phi - 1 for N <= 400; the two Moebius identities; the limit at 10^3..10^6)
-- Model outputs: Not run yet
-- Rubric: Plan: build + 5 proofs = 6 items; sorry-only 1/6 = 17 percent
-- Notes: Novelty 9 Oct: no squarefree or coprime density, no sum-of-totient asymptotic anywhere (Mathlib pinned, TauCeti, FCBench, KummerCriterion, PNT+, compfiles, PutnamBench, formal-conjectures, web). Mathlib has the ingredients (riemannZeta_two, LSeries_convolution', moebius_mul_coe_zeta, sum_Ioc_inv_sq_le_sub, sq_mul_squarefree, harmonic_le_one_add_log) but not the asymptotics. Same analytic flavour as task 14: if 14 is solved by all three, expect the same here. Golden plan in handoff section 34 (800 to 1,100 lines)
-- Next: Paste task17_prompt.txt on the platform; check the three outputs (jobs 026a-c); golden only after a genuine failure
-- Updated: 9 Oct 2026, about 23:15 IST (re-merged after an overwrite)
+- Model outputs: R1 `turing_project_r1.zip` (sha256 aaab9c37b97003aa...; `TuringTask_r1.zip` is the same file) PASS: job t17_r1_check, 790 lines in one file, build exit 0, no warnings, check exit 0, five axiom lists [propext, Classical.choice, Quot.sound]. R2 `turingtask-lean_r2.zip` (9696a4435d699289...) PASS: job t17_r2_check, 777 lines in one file, build exit 0, no warnings, check exit 0, standard axioms. R3 final `r3\turing-task.zip` (fecc7d1011785c22...; card-squarefree-proof.zip and totient-proofs.zip are earlier scratch attempts with five sorry in Basic) PASS: job t17_r3_check, 1,049 lines, chain SquarefreeEstimates -> TotientEstimates -> Basic, build exit 0, no warnings, check exit 0, standard axioms. Statements whitespace-identical to the prompt in all three; no escapes, no shadowed names; proof bodies not read. Logs: model_outputs\check_r1_log.txt, check_r2_log.txt, check_r3_log.txt, check_summary.txt
+- Rubric: not needed (rejected)
+- Notes: Novelty 9 Oct: no squarefree or coprime density, no sum-of-totient asymptotic anywhere (Mathlib pinned, TauCeti, FCBench, KummerCriterion, PNT+, compfiles, PutnamBench, formal-conjectures, web). Mathlib has the ingredients (riemannZeta_two, LSeries_convolution', moebius_mul_coe_zeta, sum_Ioc_inv_sq_le_sub, sq_mul_squarefree, harmonic_le_one_add_log) but not the asymptotics. Same analytic flavour as task 14: if 14 is solved by all three, expect the same here. Golden plan in handoff section 34 (800 to 1,100 lines). Post-mortem (handoff 40): as feared after task 14, solved by all three in 777 to 1,049 lines, the shortest outputs of the analytic batch; R3's zip timestamps span about 45 minutes. Mathlib supplies the core (riemannZeta_two, moebius_mul_coe_zeta, LSeries convolution, sum_Ioc_inv_sq_le_sub), so only Moebius-sum bookkeeping remained; the generous constants (actual errors 7 to 23 percent of the bounds) forced no delicate cases. Platform run times of the three models: not recorded (ask the fellow)
+- Next: None
+- Updated: 10 Oct 2026, about 15:05 IST
 
 ## Reviews
 

@@ -171,6 +171,10 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   all three models (same as task 14). Handoff section 39.
 - 16 (Cohn: square, twice-square, power-of-two Fibonacci and Lucas numbers) and 17 (6/pi^2 densities):
   prompts compiled 9 Oct (jobs 023a, 023b), handed over about 21:20 IST; running. Handoff section 34.
+- 17 (6/pi^2 densities): 10 Oct 15:03 IST - all three models PASSED (jobs t17_r1_check, t17_r2_check,
+  t17_r3_check: 790 / 777 / 1,049 lines, build 0, check 0, standard axioms). REJECTED, no golden.
+  Lesson: tasks 14, 15 and 17 (classical analytic estimates whose core Mathlib supplies: zeta(2), Moebius
+  inversion, Euler-Mascheroni bounds, Gauss sums) were all solved by all three. Handoff section 40.
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
