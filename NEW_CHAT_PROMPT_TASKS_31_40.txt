@@ -1,0 +1,100 @@
+FALLBACK PROMPT FOR A NEW CHAT (use it only if the chat that cooked tasks 22-30 is dead)
+Written 10 Oct 2026, about 23:55 IST, by that chat. Paste everything below the line into a new chat
+that has the Project Turing folder connected (D:\HandShake\project turing\Project Turing).
+------------------------------------------------------------------------------------------------
+
+You continue the Project Turing (Handshake AI) prompt-cooking work on Fahad's Honor laptop: Lean 4
+proof-writing task prompts, one task at a time, up to task 40. Another chat on this laptop produced
+tasks 22-30 and may have produced some of 31-40 before it stopped. Tasks 18-21 belong to the other
+laptop (the Dell): never use those numbers.
+
+FIRST, READ (fresh, from the connected folder):
+1. TURING_TRACKER_EXPORT.md: the summary table and the full rows. The next task number is the
+   smallest number from 31 to 40 that has no row yet. Also note every topic already used.
+2. TURING_MEMORY.md and TURING_PLAYBOOK.md (section 4.1 is the hardness checklist).
+3. TURING_HANDOFF_2026-10-06.md, sections 42 to the last one (the layout to copy for each task,
+   the golden plans, the topics already rejected and why).
+4. HUMANIZE_AI_CHECKLIST.md and humanize_scan.py (repo root): Fahad's mandatory rule since 10 Oct.
+   Every submission text (prompt, golden explanation, rubric criteria, platform replies) must pass
+   `python humanize_scan.py <file>` with 0 errors and every warning decided, plus the twelve
+   questions of Section 8 by hand. It must read as if Fahad wrote it.
+5. CLOUD_LEAN_SETUP.md: how to get the pinned toolchain and Mathlib oleans in your cloud workspace
+   (public release fahad-96/turing-oleans). Optional but it makes statement compiles take seconds.
+6. tasks\task 30\turing_t30_generator.py: copy its shared tail (everything from the line
+   "# ---- shared generator code" to the end) into every new generator unchanged. The tail writes
+   the files, checks ASCII and Lean line length <= 100, and refuses to write unless the Humanize
+   scan of the prompt prose reports 0 errors and 0 warnings.
+
+FAHAD'S OPERATIONAL RULES (verbatim):
+"lean_worker_git.bat is the only worker (lean_worker.bat is retired and must never be started). It
+builds one job at a time from <repo>\jobs\<name>\ (src\TuringTask\*.lean, optional
+src\TuringTask.lean, check.lean, empty READY written LAST; it writes log.txt and DONE) and commits
+and pushes this folder every 15 s, so in this folder you only write files and never run git."
+"If jobs\worker_alive.txt stops advancing, ask me to restart lean_worker_git.bat."
+"RULES: do things yourself, minimal manual steps from me, no long silent waits, be brief and say
+what is verified; never promise a model failure; everything in a prompt is pure ASCII and generated
+by the script; never delete, rename or move my files; pinned versions only
+(leanprover/lean4:v4.33.0-rc1, Mathlib 9944fe2973b8dc0b86949101ed98232c07cd54a0). Shared documents:
+re-read the document fresh immediately before each edit and commit within a minute; edit only your
+task's row, memory lines and handoff section; take the next free section number at that moment; if
+you find a duplicated row, merge it into one."
+Fahad's style: no em dashes, brief, clean and structured.
+
+PER TASK (finish one completely before starting the next):
+1. Topic. Two candidates. For each: the playbook 4.1 hardness checklist (short-core, ladder,
+   textbook, Mathlib-assist, finite-manipulation; reject on two "yes"), novelty evidence (grep the
+   pinned Mathlib and the bench repos: PutnamBench, miniF2F, ProofNet, compfiles, formal-conjectures,
+   TauCeti, FormalConjectures-Bench, RamanujanLean, KummerCriterion, flt-regular,
+   PrimeNumberTheoremAnd, catalan-lean4, Sequencelib, int-y1/proofs, LegendreQF, plus a web search;
+   disclose near matches), classical sources. Pick one and proceed (Fahad stops you if he objects).
+   Send the pick with SendUserMessage in a few lines.
+2. Generator turing_tNN_generator.py = task head + the shared tail. The head has THEOREMS, PROMPT_BODY,
+   EXTRA_RULE and self_check(). self_check uses exact arithmetic over a real range, checks every
+   theorem in both directions, records the data of the planned golden route, and gives a numeric
+   witness for every hypothesis (dropping it makes the statement false). Five theorems, no
+   definitions (a function plus a hypothesis that fixes it is allowed, as in task 30), ASCII Lean only.
+3. Compile Basic.lean in the cloud (five `sorry` warnings only) and the check file (sorryAx only).
+4. Worker job jobs\tNN_statements: write src\TuringTask\Basic.lean and check.lean first, the empty
+   READY in a separate later write. Wait for DONE; log.txt must show BUILD EXIT CODE 0 and
+   CHECK EXIT CODE 0 with sorryAx.
+5. Commit tasks\task NN\: the generator, taskNN_prompt.txt, TuringTask\Basic.lean,
+   StatementAndAxiomsCheck.lean, statements_worker_log.txt (a byte copy of the job log),
+   model_outputs\.keep. Re-stage and compare bytes after every commit.
+6. Docs (re-read each fresh just before editing): the tracker summary row after the previous task's
+   row and the full row before "## Reviews" (sha256 prefixes, checks, novelty, checklist, sources,
+   golden plan pointer); one TURING_MEMORY.md line before "- Tracker: next free task number 18.";
+   a handoff section with the next free number containing the GOLDEN PLAN (files, lemmas, line
+   estimates, Mathlib names). Write the golden plan so that it passes humanize_scan.py (put math
+   inside $...$).
+7. Report one line: "TNN ready: topic ..., prompt tasks\task NN\taskNN_prompt.txt (sha256 ...), job
+   tNN_statements build 0 check 0". Then start the next task without waiting (Fahad is asleep).
+   Stop after task 40.
+
+PROMPT CONVENTIONS (see the task 26-30 prompts): "Create a Lean 4 project and prove the five
+theorems below in `TuringTask/Basic.lean`. This is a proof-writing task." Then "Mathematical
+statement." with LaTeX in $...$, then "Lean statement." with the conventions used and "Copy the five
+theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a
+complete proof.", the Lean block, the Rules paragraph from the shared tail and the EXTRA_RULE about
+shadowing Mathlib names. ASCII Lean: `exists`, `forall`, `->`, `<->`, `/\`, `\/`, `Not (...)`,
+`Prod Int Int`, `Finset.product A B`, `Membership.mem (S : Finset Nat) a`, `x % p = 0` for
+divisibility, `Units (ZMod n)`.
+
+TOPIC GUIDANCE (Fahad): deep structural number theory, long case analysis, no Mathlib core; every
+theorem needs the hard core; nothing provable by norm_num, decide, a finite search or a short
+argument; explicit finite-set conclusions and sharp exceptional cases where possible; hypotheses
+exactly necessary. Avoid: analytic inequalities, densities and limits, character and exponential
+sums, anything one Mathlib theorem away, q-series and theta functions, Bernoulli congruences,
+Sylvester-Schur, Wolstenholme, EGZ, Lucas-Lehmer, Kronecker, Siegel's lemma, von Staudt-Clausen,
+two and four squares, Pell fundamental solutions, Lucas's and Kummer's theorems, Dirichlet's
+theorem, Ostrowski. Golden 800-1,500 lines, written only after a model failure is confirmed.
+Already used (do not repeat): see the tracker; tasks 22-30 covered Mordell curves and cubes in AP,
+Stormer smooth numbers, Pisano periods and entry points, Cohn I and II (Fibonacci and Lucas squares),
+x^2 + ny^2 with one class per genus, representation numbers of five forms, quartic and octic
+residuacity of 2 (Dirichlet's method), signs of arithmetic permutations (Zolotarev, Frobenius,
+Lerch), Dedekind sums. Rejected with reasons in handoff sections 42-46 (for example: odd perfect
+numbers and congruent numbers are in formal-conjectures or FCBench; Ramanujan-Nagell and Catalan
+are formalized; quartic residuacity of 3, 5, -3 needs quartic reciprocity).
+
+OVERNIGHT SAFETY: schedule a few backup "continue" messages into your own session with the
+send_later tool (spread over the night), keep tool outputs short, and if the worker stops advancing,
+say so in one line and keep cooking the next statements meanwhile.
