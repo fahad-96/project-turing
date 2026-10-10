@@ -1,0 +1,7 @@
+import TuringTask
+
+#print axioms TuringTask.sum_card_divisors_sub_le
+#print axioms TuringTask.sum_card_divisors_div_sub_le
+#print axioms TuringTask.tendsto_sum_card_divisors
+#print axioms TuringTask.tendsto_sum_card_divisors_sub_log
+#print axioms TuringTask.tendsto_sum_sum_card_divisors
