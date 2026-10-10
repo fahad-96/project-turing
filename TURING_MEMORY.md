@@ -112,7 +112,17 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
 - 8 (equidistribution, Weyl): v1 (job 007, linear case as theorem 1) was never run and is superseded.
   v2 (9 Oct, job 018d): all five theorems need the quadratic / polynomial case (uniform {n^2 x},
   polynomial with irrational leading coefficient, digits of 2^(n^2), mean |sin n^2|, mean cos(n^2 x)).
-  Paste task8_prompt.txt; outputs pending. Plan in handoff section 31.
+  10 Oct 14:06 IST - R1 GENUINE FAILURE (64 lines; declares TuringTask.abs := 0 and
+  TuringTask.Filter.Tendsto := True, so the statements change; job t8_r1_check: build 0, check 1),
+  R2 PASS (1,740 lines, t8_r2_check), R3 PASS (1,754 lines; t8_r3_check hit the parallel-build olean
+  error, sequential reruns t8_r3_rerun_1..4 pass). GOLDEN BUILT (own route, cloud loop about 1 h):
+  7 files, 1,177 lines, job t8_golden_01 build 0, no warnings, check 0, standard axioms;
+  tasks\task 8\golden has zip + generator + explanation + 6-item rubric (proof items also require the
+  statement's names to be Mathlib's, because of R1). Expected golden 6/6, R1 1/6 = 17, R2 and R3 6/6.
+  Offline check (verify_golden_offline.bat 8) and platform pending. Handoff section 38.
+  Lessons: a model may "prove" the statements by shadowing Mathlib names inside the namespace; only
+  the check file catches it, so the rubric must name it. A model output whose modules do not form one
+  chain fails on the laptop with 'failed to read ...olean.private': rerun one module per job.
 - 9 (cubes mod p, Gauss/Jacobi): prompt compiled officially (job 008), handed over 8 Oct.
 - 9 (cubes mod p): 9 Oct - R3 genuine failure (all five theorems absent), R1 and R2 pass. Golden
   (5 files, 899 lines) built officially (job 012g) and passed the fresh-copy offline check;
