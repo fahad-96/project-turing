@@ -1,0 +1,46 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. In each item the variables are integers, rational numbers or natural numbers, as stated.
+
+1. If $x, y, z \in \mathbb{Z}$ and $x^3 + y^3 = 2 z^3$, then $x = y$ or $x + y = 0$.
+2. If $x, y \in \mathbb{Q}$ and $y^2 = x^3 + 1$, then $(x, y)$ is one of $(-1, 0)$, $(0, 1)$, $(0, -1)$, $(2, 3)$, $(2, -3)$.
+3. If $x, y \in \mathbb{Q}$ and $y^2 = x^3 - 27$, then $x = 3$ and $y = 0$.
+4. If $x, y \in \mathbb{Z}$ and $x^3 - 2 y^3 = 1$ or $x^3 - 2 y^3 = -1$, then $(x, y)$ is one of $(1, 0)$, $(-1, -1)$, $(-1, 0)$, $(1, 1)$.
+5. If $n, m \in \mathbb{N}$ and $n (n + 1) = 2 m^3$ (the triangular number $n (n + 1) / 2$ is a cube), then $n = 0$ or $n = 1$.
+
+Lean statement. `Membership.mem S a` is the membership statement $a \in S$ for a finite set `S`. The file `TuringTask/Basic.lean` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem cube_add_cube_eq_two_mul_cube (x y z : Int) (h : x ^ 3 + y ^ 3 = 2 * z ^ 3) :
+    x = y \/ x + y = 0 := by
+  sorry
+
+theorem rat_sq_eq_cube_add_one (x y : Rat) (h : y ^ 2 = x ^ 3 + 1) :
+    Membership.mem ({(-1, 0), (0, 1), (0, -1), (2, 3), (2, -3)} : Finset (Prod Rat Rat))
+      (x, y) := by
+  sorry
+
+theorem rat_sq_eq_cube_sub_27 (x y : Rat) (h : y ^ 2 = x ^ 3 - 27) :
+    x = 3 /\ y = 0 := by
+  sorry
+
+theorem cube_sub_two_mul_cube (x y : Int)
+    (h : x ^ 3 - 2 * y ^ 3 = 1 \/ x ^ 3 - 2 * y ^ 3 = -1) :
+    Membership.mem ({(1, 0), (-1, -1), (-1, 0), (1, 1)} : Finset (Prod Int Int))
+      (x, y) := by
+  sorry
+
+theorem mul_succ_eq_two_mul_cube (n m : Nat) (h : n * (n + 1) = 2 * m ^ 3) :
+    n = 0 \/ n = 1 := by
+  sorry
+
+end TuringTask
+```
+
+Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.
+
+Nothing may be declared inside the namespace `TuringTask` that shadows a Mathlib name: every name used in the five statements must keep its Mathlib meaning.
