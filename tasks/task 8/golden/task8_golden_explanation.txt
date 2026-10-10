@@ -1,0 +1,88 @@
+### Overview
+
+The zip is a complete Lake project. `lakefile.toml` and `lake-manifest.json` use the pinned Mathlib checkout at `/opt/mathlib4` (commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`), and `lean-toolchain` is `leanprover/lean4:v4.33.0-rc1`. The proof is split into seven files under `TuringTask/` that import each other in a chain: `Phase`, `PolySum`, `Circle`, `Counting`, `LeadDigit`, `Main`, `Basic`; every file starts with `import Mathlib`. The required file `TuringTask/Basic.lean` is the file of the prompt: `import Mathlib`, the namespace and the five statements are unchanged, and each `sorry` is replaced by a one-line call of the matching theorem in `Main.lean`.
+
+Notation: $e(t) = \exp(2\pi i t)$ (Lean: `ephase t`), $\{t\}$ is `Int.fract t`, and for a real sequence $u$ the proportion of $n < N$ with $a \le \{u_n\} < b$ is $P_N(u; a, b)$ (Lean: `freqR u a b N`). On the circle $\mathbb{T} = $ `AddCircle 1` the measure $\mu$ is Mathlib's normalised Haar measure `haarAddCircle` (total mass $1$). A sequence $u$ satisfies the exponential-sum condition (Lean: `PhaseNull u`) if $\frac1N \sum_{n<N} e(k u_n) \to 0$ for every integer $k \ne 0$.
+
+The route:
+- (A) Differencing: if $|z_n| \le 1$ and the correlation averages $\frac1N \sum_{n<N} z_{n+r} \overline{z_n}$ tend to $0$ for every shift $r \ge 1$, then $\frac1N \sum_{n<N} z_n \to 0$ (van der Corput's inequality with an explicit choice of the window length).
+- (B) Polynomial phases: if $P \in \mathbb{R}[X]$ has degree $m + 1 \ge 1$ and an irrational leading coefficient, then $\frac1N \sum_{n<N} e(P(n)) \to 0$. Degree $1$ is a geometric sum; for higher degree (A) is applied to $z_n = e(P(n))$, because $z_{n+r}\overline{z_n} = e(Q_r(n))$ with $Q_r(X) = P(X + r) - P(X)$ of degree $m$ and leading coefficient $(m+1)\, r\, \mathrm{lc}(P)$.
+- (C) Continuous test functions: under the exponential-sum condition, $\frac1N \sum_{n<N} F(u_n) \to \int_{\mathbb{T}} F\, d\mu$ for every continuous $F : \mathbb{T} \to \mathbb{C}$ (uniform approximation by finite Fourier sums).
+- (D) Intervals: a continuous minorant of the indicator of $[a, b)$ gives $\liminf P_N(u; a, b) \ge b - a$; the same bound for $[0, a)$ and $[b, 1)$ gives the upper bound; a grid of $M$ points gives uniformity in $(a, b)$.
+- (E) The five statements: $u_n = n^2 x$ (theorem 1), $u_n = P(n)$ (theorem 2), $u_n = n^2 \log_{10} 2$ with the leading digit read off from $\{\log_{10} 2^{n^2}\}$ (theorem 3), $F(t) = |\sin 2\pi t|$ with $u_n = n^2/(2\pi)$ (theorem 4), and the real part of (B) for $P = \frac{x}{2\pi} X^2$ (theorem 5).
+
+### 1. Phase.lean: phases and the differencing inequality
+
+- `ephase`, `norm_ephase` ($|e(t)| = 1$), `ephase_mul_conj` ($e(s)\overline{e(t)} = e(s - t)$), `ephase_add`, `ephase_nat_mul` ($e(nt) = e(t)^n$), `ephase_re` ($\mathrm{Re}\, e(t) = \cos 2\pi t$).
+- `norm_sum_shift_sub_le`: for $|f_n| \le 1$, $\left|\sum_{n<N} f_{n+k} - \sum_{n<N} f_n\right| \le 2k$; both sums are compared with $\sum_{n<N+k} f_n$ (`Finset.sum_range_add`).
+- `norm_window_sub_le`: with $S = \sum_{n<N} z_n$ and $w_n = \sum_{h<H} z_{n+h}$, $\left|H S - \sum_{n<N} w_n\right| \le 2H^2$ (exchange the sums and apply the shift bound to each $h < H$).
+- `corr2 z N h k` $= \sum_{n<N} z_{n+h}\overline{z_{n+k}}$, with `corr2_swap` (swapping $h, k$ conjugates), `norm_corr2_le_of_le` (for $k \le h$: $|\mathrm{corr2}\ h\ k| \le |\mathrm{corr2}\ (h-k)\ 0| + 2k$, the shift bound for $f_m = z_{m+h-k}\overline{z_m}$) and `norm_corr2_self_le` ($|\mathrm{corr2}\ h\ h| \le N$).
+- `sum_norm_sq_window`: $\sum_{n<N} |w_n|^2 = \sum_{h<H}\sum_{k<H} \mathrm{corr2}\ h\ k$, from $|w|^2 = w\overline{w}$ (`Complex.mul_conj'`, `Finset.sum_mul_sum`).
+- `norm_sum_le_of_corr`: if $|C_r| \le c$ for $1 \le r < H$, where $C_r = \sum_{n<N} z_{n+r}\overline{z_n}$, then with $W = \sum_{n<N} |w_n|$: $W^2 \le N\,(HN + H^2(c + 2H))$ by Cauchy-Schwarz (`sq_sum_le_card_mul_sum_sq`) and the previous items (each diagonal term is at most $N$, each term at most $c + 2H$), and $H|S| \le W + 2H^2$.
+- `tendsto_avg_zero_of_corr`: given $\varepsilon > 0$ choose $H > 16/\varepsilon^2$. Eventually $|C_r| \le N/H$ for all $1 \le r < H$ at once (`Filter.eventually_all_finset`), and take $N > 2H^2 + 4H/\varepsilon$. Then $W^2 \le 3HN^2 < (\varepsilon H N/2)^2$ and $2H^2 < \varepsilon H N/2$, so $|S| < \varepsilon N$.
+
+### 2. PolySum.lean: Weyl's theorem for polynomial phases
+
+- `shift_sub_natDegree_coeff`: for $\deg P = m + 1$ and $r \in \mathbb{R}$, the polynomial $P(X + r) - P(X)$ (Lean: `taylor r P - P`) has degree at most $m$ (`degree_sub_lt`, since `taylor` keeps degree and leading coefficient: `degree_taylor`, `leadingCoeff_taylor`), and its coefficient of $X^m$ is $(m + 1)\, r\, \mathrm{lc}(P)$: by `taylor_coeff` that coefficient is the value at $r$ of the $m$-th Hasse derivative of $P$, a polynomial of degree $1$ (`natDegree_hasseDeriv`) with coefficients $a_m$ and $(m+1) a_{m+1}$ (`hasseDeriv_coeff`, evaluated by `eval_eq_sum_range'`).
+- `ephase_ne_one_of_irrational`: $e(a) = 1$ forces $a \in \mathbb{Z}$ (`Complex.exp_eq_one_iff`).
+- `tendsto_avg_ephase_linear`: $\sum_{n<N} e(an + b) = e(b)\,\frac{q^N - 1}{q - 1}$ with $q = e(a) \ne 1$ (`geom_sum_eq`), so the sum is bounded by $2/|q - 1|$ and its average tends to $0$.
+- `tendsto_avg_ephase_poly`: induction on $m$ for all $P$ with $\deg P = m + 1$ and irrational leading coefficient. For $m = 0$, $P = a_1 X + a_0$ (`eq_X_add_C_of_natDegree_le_one`). For the step, fix $r \ge 1$: $Q_r = P(X + r) - P(X)$ has degree exactly $m + 1$ and leading coefficient $(m+2)\, r\, \mathrm{lc}(P)$, irrational (`Irrational.natCast_mul`); `taylor_eval` gives $Q_r(n) = P(n + r) - P(n)$, so $e(P(n+r))\overline{e(P(n))} = e(Q_r(n))$, the induction hypothesis gives the correlation limits, and `tendsto_avg_zero_of_corr` concludes.
+
+### 3. Circle.lean: averages of continuous functions on the circle
+
+- `fourier_coe_eq_ephase`: Mathlib's monomial `fourier k` at the point $t$ is $e(kt)$ (`fourier_coe_apply`).
+- `integral_fourier_haar`: $\int \mathrm{fourier}_k\, d\mu = 1$ for $k = 0$ and $0$ otherwise; for $k \ne 0$ the translation by $1/(2k)$ changes the sign (`fourier_add_half_inv_index`, `integral_eq_zero_of_add_right_eq_neg`).
+- `integrable_haar`: continuous functions on the compact circle are integrable (`HasCompactSupport.of_compactSpace`).
+- `tendsto_avg_fourier`: under the exponential-sum condition the averages of $\mathrm{fourier}_k(u_n)$ tend to $1$ for $k = 0$ and to $0$ otherwise.
+- `norm_mean_le_sup`: $\left|\frac1N\sum_{n<N} F(u_n)\right| \le \|F\|_\infty$.
+- `tendsto_avg_circle`: given $\varepsilon > 0$, `span_fourier_closure_eq_top` and `Metric.mem_closure_iff` give $G = \sum_k c_k\, \mathrm{fourier}_k$ (finitely supported $c$, `Finsupp.mem_span_range_iff_exists_finsupp`) with $\|F - G\|_\infty < \varepsilon/3$. The averages of $G(u_n)$ tend to $c_0 = \int G\, d\mu$ (`tendsto_finsetSum`, `integral_finsetSum`); moreover $\left|\int F - \int G\right| \le \|F - G\|_\infty$ (`norm_integral_le_of_norm_le_const`, $\mu$ is a probability measure) and the averages of $F$ and $G$ differ by at most $\|F - G\|_\infty$. Three terms of size $\varepsilon/3$.
+
+### 4. Counting.lean: frequencies of fractional parts
+
+- `PhaseNull`, `ind` (indicator of $a \le x < b$), `freqR`, `card_div_eq_freqR` (the prompt's `card / N` is `freqR`, `Finset.natCast_card_filter`), `ind_nonneg`, `freqR_nonneg`.
+- `tendsto_avg_circle_real`: the real-valued version of section 3 (real parts, `integral_complex_ofReal`).
+- `bump c r d`: the continuous function $z \mapsto \max(0, \min(1, (r - \mathrm{dist}(z, c))/d))$ on $\mathbb{T}$, with `bump_nonneg`, `bump_le_one`, `dist_lt_of_bump_pos` (positive only at distance $< r$) and `bump_eq_one` (equal to $1$ at distance $\le r - d$).
+- `fract_mem_of_dist_lt`: the distance on $\mathbb{T}$ is $|s - c - \mathrm{round}(s - c)|$ (`AddCircle.norm_eq`); if it is $< r$ and $[c - r, c + r] \subseteq [0, 1]$, then $\{s\} = s - \mathrm{round}(s - c) \in (c - r, c + r)$ (`Int.fract_eq_iff`).
+- `bump_le_ind`: with $c = (a+b)/2$ and $r = (b - a)/2$ the bump is at most the indicator of $a \le \{s\} < b$.
+- `integral_bump_ge`: $\int \mathrm{bump}\, d\mu \ge \mu(\text{closed ball of radius } r - d) = 2(r - d)$ (`integral_mono`, `integral_indicator_const`, $\mu$ = volume for period $1$, `volume_closedBall`).
+- `freqR_lower`: eventually $P_N(u; a, b) > b - a - \eta$ (bump with $d = \eta/4$; trivial when $b - a < \eta$).
+- `ind_split`, `freqR_split`: $P_N(u; 0, a) + P_N(u; a, b) + P_N(u; b, 1) = 1$ since $0 \le \{t\} < 1$.
+- `tendsto_freqR`: the lower bounds for the three intervals and the identity give $|P_N(u; a, b) - (b - a)| < \varepsilon$ eventually.
+- `freqR_mono`, `freqR_sub`: $t \mapsto P_N(u; 0, t)$ is monotone and $P_N(u; a, b) = P_N(u; 0, b) - P_N(u; 0, a)$.
+- `freqR_uniform`: take $M > 4/\varepsilon$; eventually $|P_N(u; 0, j/M) - j/M| < \varepsilon/4$ for all $j \le M$. For $t \in [0, 1]$, $j = \lfloor tM \rfloor$ and $j' = \min(j + 1, M)$ satisfy $j/M \le t \le j'/M$ and both lie within $1/M$ of $t$, so monotonicity gives $|P_N(u; 0, t) - t| < \varepsilon/2$ for all $t$ at once, hence $|P_N(u; a, b) - (b - a)| < \varepsilon$ for all $0 \le a \le b \le 1$.
+
+### 5. LeadDigit.lean: leading digits
+
+- `logb_ten_two_irrational`: if $\log_{10} 2 = p/q$ with $q \ge 1$, then $p \log 10 = q \log 2$, so $10^p = 2^q$ in $\mathbb{N}$; $p = 0$ is impossible because $2^q > 1$, and $p \ge 1$ would give $5 \mid 2^q$.
+- `logb_cast_mul_pow`: $\log_{10}(d \cdot 10^k) = \log_{10} d + k$.
+- `div_pow_log_eq_iff`: for $m \ge 1$ and $d \ge 1$, with $k$ = `Nat.log 10 m`: $10^k \le m < 10^{k+1}$ (`Nat.pow_log_le_self`, `Nat.lt_pow_succ_log_self`), so $\lfloor \log_{10} m \rfloor = k$ and $\{\log_{10} m\} = \log_{10} m - k$; and $m / 10^k = d$ (natural division) iff $d \cdot 10^k \le m < (d+1) 10^k$ iff $\log_{10} d \le \{\log_{10} m\} < \log_{10}(d + 1)$ (`Real.logb_le_logb`, `Real.logb_lt_logb_iff`).
+
+### 6. Main.lean: the five theorems
+
+- `phaseNull_eval`: for $k \ne 0$ the polynomial $kP$ has the same degree and the irrational leading coefficient $k\,\mathrm{lc}(P)$ (`natDegree_C_mul`, `Irrational.intCast_mul`), so section 2 gives the exponential-sum condition for $u_n = P(n)$; `phaseNull_sq_mul` is the case $P = x X^2$.
+- `integral_abs_sin_two_pi`: $\int_0^1 |\sin 2\pi t|\, dt = \frac{1}{2\pi}\left(\int_0^\pi \sin + \int_\pi^{2\pi} |\sin|\right) = \frac{4}{2\pi} = \frac{2}{\pi}$ (`intervalIntegral.integral_comp_mul_left`, `integral_sin`, the shift by $\pi$ with `Real.sin_add_pi`).
+- `sinAbsOnCircle` $= |\mathrm{Im}\, \mathrm{fourier}_1|$, whose value at $t$ is $|\sin 2\pi t|$ (`sinAbsOnCircle_coe`); `integral_abs_sin_circle`: its integral is $2/\pi$ (`AddCircle.intervalIntegral_preimage`).
+- `uniform_freq_sq_mul` (theorem 1): `freqR_uniform` for $u_n = n^2 x$.
+- `tendsto_freq_eval` (theorem 2): `tendsto_freqR` for $u_n = P(n)$.
+- `tendsto_freq_lead_digit` (theorem 3): $u_n = n^2 \log_{10} 2 = \log_{10} 2^{n^2}$ (`Real.logb_pow`); by `div_pow_log_eq_iff` the filter of the prompt equals the set of $n$ with $\log_{10} d \le \{u_n\} < \log_{10}(d+1)$, an interval inside $[0, 1]$ because $1 \le d \le 9$; the limit $\log_{10}(d+1) - \log_{10} d = \log_{10}((d+1)/d)$ (`Real.logb_div`).
+- `tendsto_avg_abs_sin_sq` (theorem 4): $u_n = n^2/(2\pi)$; the coefficient $1/(2\pi)$ is irrational (`irrational_pi`, `Irrational.inv`); `tendsto_avg_circle_real` with `sinAbsOnCircle`, whose value at $u_n$ is $|\sin(n^2)|$ and whose integral is $2/\pi$.
+- `tendsto_avg_cos_sq_mul` (theorem 5): $x/(2\pi)$ is irrational because $x/\pi$ is (`Irrational.div_natCast`); section 2 for $P = \frac{x}{2\pi} X^2$ and the real part (`ephase_re`): $\mathrm{Re}\, e(n^2 x/(2\pi)) = \cos(n^2 x)$.
+
+### 7. Basic.lean
+
+The file of the prompt; each theorem is proved by one call: `uniform_freq_sq_mul`, `tendsto_freq_eval`, `tendsto_freq_lead_digit`, `tendsto_avg_abs_sin_sq`, `tendsto_avg_cos_sq_mul`.
+
+### Verification
+
+- I extracted the final zip into a fresh folder and checked it offline, without editing anything, in the setting of the review environment: Mathlib at `/opt/mathlib4` (the pinned checkout, commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`, with its dependencies linked into `.lake/packages` as `lean-offline-init` does), Lean `4.33.0-rc1`, network access blocked.
+- `lake build` ends with "Build completed successfully", exit code 0, with no errors and no warnings. Every file uses the full `import Mathlib`.
+- `lake env lean StatementAndAxiomsCheck.lean` (included in the zip) re-states the five theorems of the prompt, so it fails if any statement was changed, and it reports exactly the axioms `propext`, `Classical.choice` and `Quot.sound` for each of the five theorems; exit code 0.
+- The project contains no `sorry`, `admit`, `native_decide`, new axiom, `set_option` or instance declaration.
+
+### Sources and related work
+
+The theorems are classical: H. Weyl, Ueber die Gleichverteilung von Zahlen mod. Eins, Mathematische Annalen 77 (1916), 313-352 (equidistribution criterion, polynomial sequences with an irrational non-constant coefficient); J. G. van der Corput, Diophantische Ungleichungen I. Zur Gleichverteilung modulo Eins, Acta Mathematica 56 (1931), 373-456 (the difference theorem); L. Kuipers and H. Niederreiter, Uniform Distribution of Sequences, Wiley, 1974, Chapter 1 (Weyl criterion, van der Corput's inequality and difference theorem, polynomials). The leading-digit frequencies $\log_{10}((d+1)/d)$ are Benford's law (F. Benford, The law of anomalous numbers, Proceedings of the American Philosophical Society 78, 1938); for $2^{n^2}$ they follow from the equidistribution of $n^2 \log_{10} 2$. The proofs here follow the textbook route; the arrangement (explicit window choice in the differencing step, approximation by finite Fourier sums, a distance bump on the circle and complementary intervals for the interval counts) and the Lean code are my own.
+
+Related Lean code: Mathlib at the pinned commit has the density of the trigonometric polynomials (`span_fourier_closure_eq_top`), the Haar measure on `AddCircle`, the density of $\{n x\}$ for irrational $x$ (`denseRange_zsmul_coe_iff`) and `irrational_pi`, but no equidistribution theorem. `google-deepmind/formal-conjectures` defines `IsEquidistributed` and `IsEquidistributedModuloOne` and states open problems about $(3/2)^n$ without proofs; I found no Lean or Isabelle formalization of Weyl's theorem in Mathlib, TauCetiProject/TauCeti, compfiles, PutnamBench, miniF2F or by web search (checked 9 Oct 2026). One of the model responses to this task follows the same textbook route (van der Corput differencing with Hasse derivatives of the difference polynomial and Mathlib's `span_fourier_closure_eq_top`), as its README states; the golden answer was written from the statements and the Mathlib sources without reading that proof, and an automated scan found no shared declaration names and no shared lines apart from the prompt's statements.
+
+The golden answer is one valid route, not the only one. Any complete proof of the five statements is acceptable.
