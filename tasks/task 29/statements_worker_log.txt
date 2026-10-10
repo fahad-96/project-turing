@@ -1,0 +1,18 @@
+Job t29_statements started Sat 10/10/2026 23:33:25.14 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (37s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:9:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:14:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:21:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:27:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (23s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.sign_mulLeft_eq_jacobiSym' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sign_mulLeft_of_even' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sign_mulLeft_units_eq_neg_one_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sign_ofBijective_pow' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sign_transpose' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
