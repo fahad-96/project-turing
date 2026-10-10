@@ -230,6 +230,10 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   fixed points and iterates of D_n(x, 1)): prompt compiled 11 Oct (job t32_statements: build 0, five sorry
   warnings, check 0 with sorryAx only), handed over about 4.40 IST by the overnight run. Golden plan in handoff
   section 48. Mathlib has only the definition and the a = 1 identities.
+- 33 (arithmetic of F_q[X]: quadratic reciprocity of Dedekind, Kuehne and Artin with the supplements for X - c and
+  for constants, Gauss's count n N_n = sum mu(d) q^(n/d), Carlitz's product of all monic polynomials of degree d):
+  prompt compiled 11 Oct (job t33_statements: build 0, five sorry warnings, check 0 with sorryAx only), handed
+  over about 4.55 IST by the overnight run. Golden plan in handoff section 49.
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
