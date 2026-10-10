@@ -1,0 +1,21 @@
+Job t28_statements started Sat 10/10/2026 23:14:31.74 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (794s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:9:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:13:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:19:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:24:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (26s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.exists_pow_four_eq_two_iff' depends on axioms: [propext, sorryAx, Quot.sound]
+'TuringTask.exists_pow_eight_eq_neg_four_iff' depends on axioms: [propext, sorryAx, Quot.sound]
+'TuringTask.exists_pow_four_eq_two_iff_sq_eq_add_two_mul_sq' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'TuringTask.exists_pow_four_eq_iff_jacobiSym' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.exists_sq_eq_one_add_sqrt_two_iff' depends on axioms: [propext, sorryAx, Quot.sound]
+CHECK EXIT CODE 0 

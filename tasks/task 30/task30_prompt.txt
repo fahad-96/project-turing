@@ -1,0 +1,65 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. For a real number $x$ let $((x)) = x - \lfloor x \rfloor - \frac{1}{2}$ if $x$ is not an integer and $((x)) = 0$ if $x$ is an integer. For natural numbers $h$ and $k \ge 1$, the Dedekind sum is $s(h, k) = \sum_{r=1}^{k-1} \left(\left(\frac{r}{k}\right)\right) \left(\left(\frac{h r}{k}\right)\right)$, and $s(h, 0) = 0$. Write $\sigma(n)$ for the sum of the divisors of $n$ and $\left(\frac{h}{k}\right)$ for the Jacobi symbol, which Mathlib calls `jacobiSym h k`. All variables are natural numbers.
+
+1. For all $h, k, n$, $\sum_{d \mid n} \sum_{b=0}^{d-1} s\left(\frac{n}{d} h + b k, d k\right) = \sigma(n)\, s(h, k)$.
+2. For all $h, k$, the number $2 \gcd(3, k)\, k\, s(h, k)$ is an integer.
+3. If $k$ is odd and $\gcd(h, k) = 1$, then $12 k\, s(h, k) - k - 1 + 2 \left(\frac{h}{k}\right)$ is $8$ times an integer.
+4. If $k \ge 1$ and $\gcd(h, k) = 1$, then $s(h, k) = 0$ if and only if $k$ divides $h^2 + 1$.
+5. If $k$ is prime and $a, b$ are coprime to $k$, then $s(a, k) = s(b, k)$ if and only if $a \equiv b \pmod k$ or $a b \equiv 1 \pmod k$.
+
+Lean statement. Each theorem takes the Dedekind sum as a function `s : Nat -> Nat -> Rat` together with the hypothesis `hs`, which fixes its value at every pair of arguments. In `hs` the sum over `Finset.range y` runs over $0 \le r < y$. For $r \ge 1$ the first factor `(r : Rat) / y - 1 / 2` equals $((r/y))$ and the second factor equals $((x r/y))$. The term with $r = 0$ vanishes because its second factor is $0$. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem sum_divisors_sum_dedekind_eq_sigma_mul (s : Nat -> Nat -> Rat)
+    (hs : forall x y : Nat, s x y = Finset.sum (Finset.range y) (fun r =>
+      ((r : Rat) / y - 1 / 2) *
+        (if x * r % y = 0 then 0 else ((x * r % y : Nat) : Rat) / y - 1 / 2)))
+    (h k n : Nat) :
+    Finset.sum (Nat.divisors n) (fun d =>
+        Finset.sum (Finset.range d) (fun b => s (n / d * h + b * k) (d * k))) =
+      (ArithmeticFunction.sigma 1 n : Rat) * s h k := by
+  sorry
+
+theorem exists_int_eq_two_mul_gcd_mul_dedekind (s : Nat -> Nat -> Rat)
+    (hs : forall x y : Nat, s x y = Finset.sum (Finset.range y) (fun r =>
+      ((r : Rat) / y - 1 / 2) *
+        (if x * r % y = 0 then 0 else ((x * r % y : Nat) : Rat) / y - 1 / 2)))
+    (h k : Nat) :
+    exists m : Int, ((2 * Nat.gcd 3 k * k : Nat) : Rat) * s h k = m := by
+  sorry
+
+theorem dedekind_modEq_eight (s : Nat -> Nat -> Rat)
+    (hs : forall x y : Nat, s x y = Finset.sum (Finset.range y) (fun r =>
+      ((r : Rat) / y - 1 / 2) *
+        (if x * r % y = 0 then 0 else ((x * r % y : Nat) : Rat) / y - 1 / 2)))
+    (h k : Nat) (hk : k % 2 = 1) (hhk : Nat.Coprime h k) :
+    exists m : Int, (12 * k : Rat) * s h k = k + 1 - 2 * jacobiSym h k + 8 * m := by
+  sorry
+
+theorem dedekind_eq_zero_iff (s : Nat -> Nat -> Rat)
+    (hs : forall x y : Nat, s x y = Finset.sum (Finset.range y) (fun r =>
+      ((r : Rat) / y - 1 / 2) *
+        (if x * r % y = 0 then 0 else ((x * r % y : Nat) : Rat) / y - 1 / 2)))
+    (h k : Nat) (hk : 0 < k) (hhk : Nat.Coprime h k) :
+    s h k = 0 <-> (h ^ 2 + 1) % k = 0 := by
+  sorry
+
+theorem dedekind_eq_iff (s : Nat -> Nat -> Rat)
+    (hs : forall x y : Nat, s x y = Finset.sum (Finset.range y) (fun r =>
+      ((r : Rat) / y - 1 / 2) *
+        (if x * r % y = 0 then 0 else ((x * r % y : Nat) : Rat) / y - 1 / 2)))
+    (a b k : Nat) (hk : k.Prime) (ha : Nat.Coprime a k) (hb : Nat.Coprime b k) :
+    s a k = s b k <-> (a % k = b % k \/ a * b % k = 1) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. You may add helper definitions and lemmas, in this file or in other project files that it imports, and you may use any proof that the Lean kernel checks. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms or any other way to bypass the kernel. For each of the five theorems, `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Use Lean toolchain `leanprover/lean4:v4.33.0-rc1` and Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Check the project with `lake build`, which must finish without errors.
+
+Do not declare anything inside the namespace `TuringTask` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.

@@ -1,0 +1,51 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. Every permutation $\sigma$ of a finite set has a sign $\operatorname{sgn}(\sigma) \in \{1, -1\}$, equal to $(-1)^t$ when $\sigma$ is a product of $t$ transpositions. For $n \ge 1$ and $a$ coprime to $n$, let $\mu_a$ be the permutation $x \mapsto a x$ of $\mathbb{Z}/n\mathbb{Z}$. Write $\left(\frac{a}{n}\right)$ for the Jacobi symbol, which Mathlib calls `jacobiSym a n`. Apart from the unit $u$ in theorem 3, all variables are natural numbers.
+
+1. If $n$ is odd, then $\operatorname{sgn}(\mu_a) = \left(\frac{a}{n}\right)$.
+2. If $n$ is even, then $\operatorname{sgn}(\mu_a) = 1$ when $n \equiv 2 \pmod 4$, and $\operatorname{sgn}(\mu_a) = (-1)^{(a-1)/2}$ when $4$ divides $n$.
+3. Let $u$ be a unit of $\mathbb{Z}/n\mathbb{Z}$. The permutation $x \mapsto u x$ of the unit group $(\mathbb{Z}/n\mathbb{Z})^\times$ has sign $-1$ if and only if $u$ is not a square in $(\mathbb{Z}/n\mathbb{Z})^\times$ and $n$ is $4$, $p^k$ or $2 p^k$ for an odd prime $p$ and some $k \ge 1$.
+4. If $p$ is prime and $x \mapsto x^k$ is a bijection of $\mathbb{Z}/p\mathbb{Z}$, then its sign is $-1$ when $p \equiv 1 \pmod 4$ and $k \equiv 3 \pmod 4$, and $1$ in all other cases.
+5. The permutation of $\{0, 1, \dots, m n - 1\}$ that sends $i n + j$ to $j m + i$ for $0 \le i < m$ and $0 \le j < n$ has sign $(-1)^{\binom{m}{2} \binom{n}{2}}$.
+
+Lean statement. `Equiv.Perm.sign` takes values in the units of `Int`, and theorems 1, 2, 4 and 5 compare it with an integer through the coercion to `Int`. The permutation $\mu_a$ is `Units.mulLeft (ZMod.unitOfCoprime a ha)`, where `ha` says that $a$ and $n$ are coprime, and the instance `NeZero n` makes `ZMod n` a finite type. In theorem 4 the bijection is `Equiv.ofBijective (fun x : ZMod p => x ^ k) hk`. In theorem 5 the permutation of `Fin (m * n)` comes from `finProdFinEquiv`, which sends the pair $(i, j)$ to $j + n i$. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem sign_mulLeft_eq_jacobiSym (n a : Nat) [NeZero n] (hn : n % 2 = 1) (ha : Nat.Coprime a n) :
+    (Equiv.Perm.sign (Units.mulLeft (ZMod.unitOfCoprime a ha)) : Int) = jacobiSym a n := by
+  sorry
+
+theorem sign_mulLeft_of_even (n a : Nat) [NeZero n] (hn : n % 2 = 0) (ha : Nat.Coprime a n) :
+    (Equiv.Perm.sign (Units.mulLeft (ZMod.unitOfCoprime a ha)) : Int) =
+      if n % 4 = 2 then 1 else if a % 4 = 1 then 1 else -1 := by
+  sorry
+
+theorem sign_mulLeft_units_eq_neg_one_iff (n : Nat) [NeZero n] (u : Units (ZMod n)) :
+    Equiv.Perm.sign (Equiv.mulLeft u) = -1 <->
+      (n = 4 \/
+        exists p k : Nat, p.Prime /\ p % 2 = 1 /\ 0 < k /\ (n = p ^ k \/ n = 2 * p ^ k)) /\
+        Not (IsSquare u) := by
+  sorry
+
+theorem sign_ofBijective_pow (p k : Nat) [NeZero p] (hp : p.Prime)
+    (hk : Function.Bijective (fun x : ZMod p => x ^ k)) :
+    (Equiv.Perm.sign (Equiv.ofBijective (fun x : ZMod p => x ^ k) hk) : Int) =
+      if p % 4 = 1 /\ k % 4 = 3 then -1 else 1 := by
+  sorry
+
+theorem sign_transpose (m n : Nat) :
+    (Equiv.Perm.sign ((finProdFinEquiv.symm.trans (Equiv.prodComm (Fin m) (Fin n))).trans
+        (finProdFinEquiv.trans (finCongr (Nat.mul_comm n m)))) : Int) =
+      (-1) ^ (Nat.choose m 2 * Nat.choose n 2) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. You may add helper definitions and lemmas, in this file or in other project files that it imports, and you may use any proof that the Lean kernel checks. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms or any other way to bypass the kernel. For each of the five theorems, `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Use Lean toolchain `leanprover/lean4:v4.33.0-rc1` and Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Check the project with `lake build`, which must finish without errors.
+
+Do not declare anything inside the namespace `TuringTask` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.
