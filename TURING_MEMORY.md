@@ -189,6 +189,14 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   (arXiv 2604.09808); Catalan's conjecture incl. Euler's x^2 = y^3 + 1 and Ko Chao is formalized (cadamcat/catalan-lean4).
   Prompt conventions added: finite sets as `Membership.mem (S : Finset ...) a` (ASCII for a in S), divisibility as
   `N % p = 0`, and a paragraph after the Rules forbidding declarations in `TuringTask` that shadow Mathlib names.
+- 24 (Pisano period pi and entry point z of the Fibonacci numbers: pi(n) <= 6n, pi(n) = 6n iff n = 2*5^j (j >= 1),
+  pi(n) = n iff n = 1 or 24*5^j, z(n) = 2n iff n = 6*5^j, z(n) = n iff n = 5^j or 12*5^j) and 25 (Cohn II: F_n + 1
+  square only for n = 0, 4, 6; F_n = x^2 + 1 only 1, 2, 3, 5; F_n = 2x^2 + 1 only 1, 2, 4; L_n = x^2 + 1 only 0,
+  1; L_n + 1 = 2x^2 only 1, 4, 11): prompts compiled 10 Oct (jobs t24_statements, t25_statements: build 0, five
+  sorry warnings, check 0), handed over about 19:55 IST by the chat that cooks tasks 22-29. Golden plans in
+  handoff section 43 (task 25 reuses the task 16 golden). Lucas numbers are written additively (L_n = c as
+  `Nat.fib n + c = 2 * Nat.fib (n + 1)`), no Nat subtraction. Rejected this round: Mordell equations (textbook),
+  triangular F and L (Jacobi coverings incomplete).
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
