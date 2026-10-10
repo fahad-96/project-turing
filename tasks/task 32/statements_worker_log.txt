@@ -1,0 +1,18 @@
+Job t32_statements started Sun 10/11/2026  4:28:14.39 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (24s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:11:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:17:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:27:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:36:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (23s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.dickson_bijective_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.dickson_bijective_zmod_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.card_image_dickson' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.card_fixed_dickson_one' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.iterate_dickson_one_eq_id_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
