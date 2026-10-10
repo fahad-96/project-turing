@@ -63,7 +63,7 @@ DEF_CHECK = ""
 
 PROMPT_BODY = r"""Create a Lean 4 project and prove the five theorems below in `@FILE@`. This is a proof-writing task.
 
-Mathematical statement. All variables are natural numbers, and $p$, $q$ are primes.
+Mathematical statement. All variables are natural numbers, and $p$ and $q$ are primes.
 
 1. $p = x^2 + 5 y^2$ for some $x, y$ if and only if $p = 5$ or $p \equiv 1, 9 \pmod{20}$.
 2. If $p \equiv 3$ or $7 \pmod{20}$ and $q \equiv 3$ or $7 \pmod{20}$, then $p q = x^2 + 5 y^2$ for some $x, y$.
@@ -71,10 +71,10 @@ Mathematical statement. All variables are natural numbers, and $p$, $q$ are prim
 4. $p = x^2 + 13 y^2$ for some $x, y$ if and only if $p = 13$ or $p \equiv 1, 9, 17, 25, 29, 49 \pmod{52}$.
 5. $p = x^2 + 21 y^2$ for some $x, y$ if and only if $p \equiv 1, 25, 37 \pmod{84}$.
 
-Lean statement. `Membership.mem S a` is the membership statement $a \in S$ for a finite set `S`. The file `@FILE@` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+Lean statement. In Lean, a residue condition such as $p \equiv 1, 9 \pmod{20}$ appears as `Membership.mem ({1, 9} : Finset Nat) (p % 20)`, which says that the remainder of $p$ modulo $20$ lies in $\{1, 9\}$. Copy the five theorems below into `@FILE@` exactly as they appear, and replace each `sorry` with a complete proof.
 """
 
-EXTRA_RULE = """Nothing may be declared inside the namespace `@NS@` that shadows a Mathlib name: every name used in the five statements must keep its Mathlib meaning.
+EXTRA_RULE = """Do not declare anything inside the namespace `@NS@` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.
 """
 
 FORM_DATA = {}
@@ -269,8 +269,79 @@ def check_source() -> str:
     return "\n".join(parts) + "\n"
 
 
-RULES = """Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `@NS@`, @KEEP@ unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the @COUNT@ theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `@TOOLCHAIN@`, Mathlib commit `@COMMIT@`. Verify with `lake build`; it must finish with no errors.
+RULES = """Rules. You may add helper definitions and lemmas, in this file or in other project files that it imports, and you may use any proof that the Lean kernel checks. Keep `import Mathlib`, the namespace `@NS@`, @KEEP@ unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms or any other way to bypass the kernel. For each of the @COUNT@ theorems, `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Use Lean toolchain `@TOOLCHAIN@` and Mathlib commit `@COMMIT@`. Check the project with `lake build`, which must finish without errors.
 """
+
+# ---- Humanize_AI check (HUMANIZE_AI_CHECKLIST.md, humanize_scan.py): must pass before writing ----
+HUMANIZE_ALLOW = []   # exact excerpts allowed after a manual review, each with a reason in a comment
+
+
+def humanize_findings(text: str):
+    """Mechanical part of the line check on the prose of `text` (code and $...$ math skipped).
+    Returns (errors, warnings). Errors are hard bans. Warnings need a manual decision."""
+    import re as _re
+    ai_words = ["delve", "tapestry", "landscape", "realm", "robust", "seamless", "cutting-edge",
+                "game-changer", "pivotal", "crucial", "crucially", "unlock", "unleash", "elevate",
+                "empower", "harness", "leverage", "synergy", "holistic", "ecosystem", "journey",
+                "transformative", "paradigm", "spearhead", "bolster", "underscore", "testament",
+                "ever-evolving", "it is worth noting", "plays a key role", "next-generation",
+                "broad-based", "best-in-class", "key insight", "remarkably", "notably",
+                "intricate", "meticulous", "showcase", "plethora", "myriad"]
+    handwave = ["clearly", "obviously", "trivially", "it is easy to see", "it is clear that",
+                "straightforward", "of course", "needless to say"]
+    filler = ["note that", "moreover,", "furthermore,", "additionally,", "in conclusion,",
+              "importantly,", "interestingly,", "in summary,", "let us", "it should be noted"]
+    exceptions = {"even", "open", "seven", "eleven", "often", "ten", "then", "when", "own",
+                  "between", "need", "seed", "indeed", "hundred"}
+    passive = _re.compile(r"\b(is|are|was|were|be|been|being)\s+(?:\w+ly\s+)?(\w+ed|\w+en|"
+                          r"built|made|done|shown|set|put|kept|known|seen|proved|found|left|held|"
+                          r"met|sent|told|run|cut|read|split)\b", _re.IGNORECASE)
+    errors, warnings = [], []
+    fence = False
+    for n, line in enumerate(text.split("\n"), 1):
+        if line.strip().startswith("```"):
+            fence = not fence
+            continue
+        if fence or not line.strip():
+            continue
+        line = _re.sub(r"`[^`]*`", " CODE ", line)
+        line = _re.sub(r"\$[^$]*\$", " MATH ", line)
+        low = line.lower()
+        hits_e, hits_w = [], []
+        for ch, name in (("\u2014", "em dash"), ("\u2013", "en dash"), (";", "semicolon"),
+                         ("|", "vertical bar"), ("\u2192", "arrow"), ("\u2022", "in-line dot"),
+                         ("\u00b7", "in-line dot")):
+            if ch in line:
+                hits_e.append(name)
+        if _re.search(r"(?<![-<])(-{1,2}>|=>)", line):
+            hits_e.append("arrow")
+        if _re.search(r"[A-Za-z]\s+-\s+[A-Za-z]", line):
+            hits_e.append("spaced hyphen pause")
+        for pat in (r"\bnot just\b", r"\brather than\b", r"\bisn't just\b",
+                    r",\s+not\s+(?:a|an|the|only|just|merely)\b", r"\bnot only\b"):
+            if _re.search(pat, low):
+                hits_e.append("contrast frame")
+        if "e.g." in low and "etc." in low:
+            hits_e.append("e.g. with etc.")
+        for s in _re.split(r"(?<=[.!?])\s+", line):
+            if _re.sub(r"^\s*(?:[-*]|\d+\.)\s+", "", s).count(":") > 1:
+                hits_e.append("colon chain")
+        for w in ai_words + handwave:
+            if _re.search(r"(?<![\w-])" + _re.escape(w) + r"(?![\w-])", low):
+                hits_e.append("word '%s'" % w)
+        for w in filler:
+            if _re.search(r"(?<![\w-])" + _re.escape(w) + r"(?![\w-])", low):
+                hits_w.append("filler '%s'" % w)
+        for m in passive.finditer(line):
+            if m.group(2).lower() not in exceptions:
+                hits_w.append("passive '%s'" % m.group(0))
+        for m in _re.finditer(r"\b([A-Za-z]{2,})/([A-Za-z]{2,})\b", line):
+            hits_w.append("slash '%s'" % m.group(0))
+        if any(a in line for a in HUMANIZE_ALLOW):
+            continue
+        errors += [(n, h) for h in hits_e]
+        warnings += [(n, h) for h in hits_w]
+    return errors, warnings
 
 
 def prompt_text() -> str:
@@ -295,6 +366,8 @@ def main() -> None:
     }
     for rel, text in files.items():
         assert_ascii(rel, text)
+    h_err, h_warn = humanize_findings(prompt_text())
+    assert not h_err and not h_warn, "Humanize_AI check failed: %r %r" % (h_err, h_warn)
     assert "@" not in prompt_text().replace("@[", ""), "unreplaced placeholder in prompt"
     assert lean_source() in prompt_text()
     assert RULES.replace("@NS@", NAMESPACE).replace("@KEEP@", KEEP).replace(
@@ -311,6 +384,7 @@ def main() -> None:
     for key, val in counts.items():
         print(f"  {key}: {val}")
     print("  search space: unbounded variables (no finite search applies)")
+    print("  Humanize_AI check of the prompt prose: 0 errors, 0 warnings")
     for rel, text in files.items():
         print(f"  wrote {rel}: {len(text)} chars, ASCII ok")
 
