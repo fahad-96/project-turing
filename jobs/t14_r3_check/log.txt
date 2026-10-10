@@ -1,0 +1,14 @@
+Job t14_r3_check started Sat 10/10/2026 13:52:47.29 
+===== lake build 
+✔ [8667/8670] Built TuringTask.Limits (26s)
+✔ [8668/8670] Built TuringTask.Basic (22s)
+✔ [8669/8670] Built TuringTask (22s)
+Build completed successfully (8670 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.sum_card_divisors_sub_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_card_divisors_div_sub_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.tendsto_sum_card_divisors' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.tendsto_sum_card_divisors_sub_log' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.tendsto_sum_sum_card_divisors' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
