@@ -1,0 +1,31 @@
+Task 17 - densities governed by 6/pi^2 (squarefree numbers, coprime pairs, Euler's function) - model outputs
+Checked 10 Oct 2026, 14:58-15:03 IST, OFFICIAL on the laptop worker lean_worker_git.bat (Git queue jobs/,
+D:\lean\TuringTask, pinned toolchain leanprover/lean4:v4.33.0-rc1, Mathlib
+9944fe2973b8dc0b86949101ed98232c07cd54a0, full `import Mathlib`).
+Check file = tasks\task 17\StatementAndAxiomsCheck.lean (job 023b version, sha256 a8e05f7185877caf).
+
+Zips (sha256):
+  R1 turing_project_r1.zip                   aaab9c37b97003aa7320c8392cbf52d363a464ff51a5b8d777aa9501f0f31fbb
+     TuringTask_r1.zip                       the same file (identical sha256)
+  R2 turingtask-lean_r2.zip                  9696a4435d69928952d94cd68d35dde5c7965689f35817ca73e26ec19f7a0a68
+  R3 r3\turing-task.zip (final project)      fecc7d1011785c22f27b0d2afe0e1b068698322e6847bf675c56f0b89418e2f0
+     earlier scratch attempts in r3\ (Basic.lean still has five `sorry`):
+     card-squarefree-proof.zip               a5325c406ebfbc9f
+     totient-proofs.zip                      b60d64ea3ef42fa2
+
+Pre-checks in the cloud (all three final projects): the five theorem statements are
+whitespace-identical to the prompt; no sorry, admit, native_decide, axiom, unsafe, implemented_by,
+extern, opaque, set_option, instance, attribute, macro or elab in any project file; only harmless
+notation (R1 `open scoped LSeries.notation`, R2 `local notation` for the Moebius function); no
+declaration shadows a Mathlib name; every root module is `import TuringTask.Basic`. Proof bodies were
+not read.
+
+Official results (job sources byte-identical to the unpacked zips, each module compiled in the job):
+  R1 (job t17_r1_check; 790 lines, one file TuringTask/Basic.lean): build exit 0, no warnings;
+     check exit 0; five axiom lists [propext, Classical.choice, Quot.sound].  PASS
+  R2 (job t17_r2_check; 777 lines, one file): build exit 0, no warnings; check exit 0; standard
+     axioms.  PASS
+  R3 (job t17_r3_check; 1,049 lines, chain SquarefreeEstimates -> TotientEstimates -> Basic): build
+     exit 0, no warnings; check exit 0; standard axioms.  PASS
+
+Result: no genuine failure. Task rejected (official rule 3); no golden written.

@@ -1,0 +1,13 @@
+Job t17_r1_check started Sat 10/10/2026 14:58:00.74 
+===== lake build 
+✔ [8664/8666] Built TuringTask.Basic (31s)
+✔ [8665/8666] Built TuringTask (21s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.card_squarefree_sub_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_coprime_sub_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_totient_sub_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_totient_div_sub_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.tendsto_card_squarefree_div' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
