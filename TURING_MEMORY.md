@@ -225,6 +225,11 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   handed over about 4.10 IST by the overnight run of the chat that cooks tasks 22-40 (it paused about 00:30 to
   03:45 IST on the usage limit and the 03:45 backup ping restarted it). Golden plan in handoff section 47. Near
   match disclosed: Mathlib's Counterexamples/Cyclotomic105.lean (Phi_105 has the coefficient -2).
+- 32 (Dickson polynomials D_n(x, a) over finite fields and Z/mZ: Noebauer's permutation criterion gcd(n, q^2 - 1)
+  = 1, the Z/mZ criterion of Lausch, Mueller and Noebauer, the value-set count of Chou, Gomez-Calderon and Mullen,
+  fixed points and iterates of D_n(x, 1)): prompt compiled 11 Oct (job t32_statements: build 0, five sorry
+  warnings, check 0 with sorryAx only), handed over about 4.40 IST by the overnight run. Golden plan in handoff
+  section 48. Mathlib has only the definition and the a = 1 identities.
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
