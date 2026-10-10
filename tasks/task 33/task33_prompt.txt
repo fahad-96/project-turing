@@ -1,0 +1,58 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. Let $\mathbb{F}_q$ be a finite field with $q$ elements. For $A, Q \in \mathbb{F}_q[X]$ with $Q \ne 0$, say that $A$ is a square modulo $Q$ if $A \equiv B^2 \pmod Q$ for some $B \in \mathbb{F}_q[X]$. Below $\deg$ is the degree and $\mu$ is the Moebius function.
+
+1. (Quadratic reciprocity.) Let $q$ be odd and let $P \ne Q$ be monic irreducible polynomials in $\mathbb{F}_q[X]$. The statements "$P$ is a square modulo $Q$" and "$Q$ is a square modulo $P$" are equivalent if and only if $q \equiv 1 \pmod 4$ or $\deg P$ is even or $\deg Q$ is even.
+2. Let $Q$ be monic irreducible and $c \in \mathbb{F}_q$. Then $X - c$ is a square modulo $Q$ if and only if $(-1)^{\deg Q} Q(c)$ is a square in $\mathbb{F}_q$.
+3. Let $Q$ be irreducible and $c \in \mathbb{F}_q$. Then the constant polynomial $c$ is a square modulo $Q$ if and only if $c$ is a square in $\mathbb{F}_q$ or $\deg Q$ is even.
+4. (Gauss.) For every $n \ge 0$ the number $N_n$ of monic irreducible polynomials of degree $n$ in $\mathbb{F}_q[X]$ satisfies $n N_n = \sum_{d \mid n} \mu(d)\, q^{n/d}$.
+5. (Carlitz.) For every $d \ge 0$ the product of all $q^d$ monic polynomials of degree $d$ in $\mathbb{F}_q[X]$ equals $\prod_{i=0}^{d-1} \big( X^{q^d} - X^{q^i} \big)$.
+
+Lean statement. A finite field is a type `K` with `[Field K] [Fintype K]`, so $q$ is `Fintype.card K`, and $\mathbb{F}_q[X]$ is `Polynomial K`. The condition "$A$ is a square modulo $Q$" is `exists B : Polynomial K, (B ^ 2 - A) % Q = 0`, where `%` is the remainder of polynomial division, and $Q(c)$ is `Q.eval c`. In theorem 4, $N_n$ is the `Nat.card` of a subtype, $\mu$ is `ArithmeticFunction.moebius` and the sum runs over `Nat.divisors n` (for $n = 0$ both sides are $0$). In theorem 5 the monic polynomials of degree $d$ are $X^d + \sum_{i < d} c_i X^i$ for the functions `c : Fin d -> K`. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem isSquare_mod_iff_isSquare_mod_iff (K : Type*) [Field K] [Fintype K]
+    (hK : Fintype.card K % 2 = 1) (P Q : Polynomial K) (hP : P.Monic) (hQ : Q.Monic)
+    (hP' : Irreducible P) (hQ' : Irreducible Q) (hPQ : Not (P = Q)) :
+    ((exists A : Polynomial K, (A ^ 2 - P) % Q = 0) <->
+        (exists B : Polynomial K, (B ^ 2 - Q) % P = 0)) <->
+      (Fintype.card K % 4 = 1 \/ P.natDegree % 2 = 0 \/ Q.natDegree % 2 = 0) := by
+  sorry
+
+theorem isSquare_X_sub_C_mod_iff (K : Type*) [Field K] [Fintype K] (Q : Polynomial K)
+    (hQ : Q.Monic) (hQ' : Irreducible Q) (c : K) :
+    (exists A : Polynomial K, (A ^ 2 - (Polynomial.X - Polynomial.C c)) % Q = 0) <->
+      IsSquare ((-1) ^ Q.natDegree * Q.eval c) := by
+  sorry
+
+theorem isSquare_C_mod_iff (K : Type*) [Field K] [Fintype K] (Q : Polynomial K)
+    (hQ' : Irreducible Q) (c : K) :
+    (exists A : Polynomial K, (A ^ 2 - Polynomial.C c) % Q = 0) <->
+      (IsSquare c \/ Q.natDegree % 2 = 0) := by
+  sorry
+
+theorem card_monic_irreducible (K : Type*) [Field K] [Fintype K] (n : Nat) :
+    ((n * Nat.card {P : Polynomial K // P.Monic /\ Irreducible P /\ P.natDegree = n} : Nat) :
+        Int) =
+      Finset.sum (Nat.divisors n)
+        (fun d => ArithmeticFunction.moebius d * (Fintype.card K : Int) ^ (n / d)) := by
+  sorry
+
+theorem prod_monic_eq_prod_X_pow_sub_X_pow (K : Type*) [Field K] [Fintype K] (d : Nat) :
+    Finset.prod Finset.univ (fun c : Fin d -> K =>
+        Polynomial.X ^ d +
+          Finset.sum Finset.univ (fun i : Fin d => Polynomial.C (c i) * Polynomial.X ^ (i : Nat))) =
+      Finset.prod (Finset.range d)
+        (fun i => Polynomial.X ^ (Fintype.card K ^ d) - Polynomial.X ^ (Fintype.card K ^ i)) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. You may add helper definitions and lemmas, in this file or in other project files that it imports, and you may use any proof that the Lean kernel checks. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms or any other way to bypass the kernel. For each of the five theorems, `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Use Lean toolchain `leanprover/lean4:v4.33.0-rc1` and Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Check the project with `lake build`, which must finish without errors.
+
+Do not declare anything inside the namespace `TuringTask` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.

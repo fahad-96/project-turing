@@ -1,0 +1,18 @@
+Job t33_statements started Sun 10/11/2026  4:45:08.28 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (24s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:13:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:19:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:25:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:32:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (23s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.isSquare_mod_iff_isSquare_mod_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.isSquare_X_sub_C_mod_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.isSquare_C_mod_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.card_monic_irreducible' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.prod_monic_eq_prod_X_pow_sub_X_pow' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
