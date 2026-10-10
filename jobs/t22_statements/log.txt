@@ -1,0 +1,18 @@
+Job t22_statements started Sat 10/10/2026 17:40:30.18 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (91s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:9:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:14:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:18:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:24:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (35s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.cube_add_cube_eq_two_mul_cube' depends on axioms: [propext, sorryAx]
+'TuringTask.rat_sq_eq_cube_add_one' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.rat_sq_eq_cube_sub_27' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.cube_sub_two_mul_cube' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.mul_succ_eq_two_mul_cube' depends on axioms: [propext, sorryAx]
+CHECK EXIT CODE 0 
