@@ -1,0 +1,123 @@
+Job t8_r3_rerun_4_full started Sat 10/10/2026 14:04:39.93 
+===== lake build 
+⚠ [8664/8671] Replayed TuringTask.Weyl
+info: TuringTask/Weyl.lean:44:71: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+warning: TuringTask/Weyl.lean:44:53: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Weyl.lean:44:67: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Weyl.lean:55:24: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Weyl.lean:118:6: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: TuringTask/Weyl.lean:182:13: This simp argument is unused:
+  Polynomial.taylor_X_pow
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [L, Polynomial.coeff_X_add_C_pow, Nat.choose_succ_self_right]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: TuringTask/Weyl.lean:357:21: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Weyl.lean:420:6: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: TuringTask/Weyl.lean:428:10: `tendsto_finset_sum` has been deprecated: Use `tendsto_finsetSum` instead
+warning: TuringTask/Weyl.lean:430:10: `tendsto_finset_sum` has been deprecated: Use `tendsto_finsetSum` instead
+warning: TuringTask/Weyl.lean:441:14: This simp argument is unused:
+  eq_comm
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hh]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: TuringTask/Weyl.lean:467:10: `tendsto_finset_sum` has been deprecated: Use `tendsto_finsetSum` instead
+warning: TuringTask/Weyl.lean:504:27: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Weyl.lean:494:39: 'norm_num' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+info: TuringTask/Weyl.lean:601:14: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+info: TuringTask/Weyl.lean:636:14: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+warning: TuringTask/Weyl.lean:581:72: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Weyl.lean:616:72: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [8665/8671] Replayed TuringTask.Equidistribution
+warning: TuringTask/Equidistribution.lean:53:74: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: TuringTask/Equidistribution.lean:53:41: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Equidistribution.lean:53:55: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Equidistribution.lean:53:74: 'ring' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: TuringTask/Equidistribution.lean:86:10: This simp argument is unused:
+  fourier_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: TuringTask/Equidistribution.lean:113:27: This simp argument is unused:
+  fourier_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [circleAverage, Nat.ne_of_gt hN]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: TuringTask/Equidistribution.lean:261:28: `MeasureTheory.Measure.finset_sum_apply` has been deprecated: Use `MeasureTheory.Measure.finsetSum_apply` instead
+warning: TuringTask/Equidistribution.lean:279:29: `MeasureTheory.integral_finset_sum_measure` has been deprecated: Use `MeasureTheory.integral_finsetSum_measure` instead
+warning: TuringTask/Equidistribution.lean:310:55: `MeasureTheory.Measure.finset_sum_apply` has been deprecated: Use `MeasureTheory.Measure.finsetSum_apply` instead
+warning: TuringTask/Equidistribution.lean:461:17: `Set.mem_diff` has been deprecated: Use `Set.mem_sdiff` instead
+warning: TuringTask/Equidistribution.lean:528:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+⚠ [8668/8671] Replayed TuringTask.Means
+warning: TuringTask/Means.lean:76:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: TuringTask/Means.lean:143:22: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Means.lean:143:55: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+✔ [8669/8671] Built TuringTask.Basic (22s)
+✔ [8670/8671] Built TuringTask (21s)
+Build completed successfully (8671 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.freq_sq_unif' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.freq_poly' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.freq_lead_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.mean_abs_sin_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.mean_cos_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
