@@ -176,7 +176,7 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   GOLDEN BUILT (own route, Cohn's shift congruences mod L(k) with Int.fib and a power-of-3 index split; cloud
   loop about 40 min): 4 files, 641 lines, job t16_golden_01 build 0, no warnings, check 0, standard axioms;
   tasks\task 16\golden has zip + generator + explanation + 6-item rubric. Expected golden 6/6, R1 2/6 = 33,
-  R2 6/6, R3 1/6 = 17. Offline check and platform pending. Handoff section 41.
+  R2 6/6, R3 1/6 = 17. Offline check PASSED 15:20 IST; platform pending. Handoff section 41.
 - 17 (6/pi^2 densities): 10 Oct 15:03 IST - all three models PASSED (jobs t17_r1_check, t17_r2_check,
   t17_r3_check: 790 / 777 / 1,049 lines, build 0, check 0, standard axioms). REJECTED, no golden.
   Lesson: tasks 14, 15 and 17 (classical analytic estimates whose core Mathlib supplies: zeta(2), Moebius

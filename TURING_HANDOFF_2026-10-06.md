@@ -957,5 +957,5 @@ Files, one import chain, each with `import Mathlib`: Lucas.lean (98 lines), Resi
 - A deletion of `.lake/build` by `rm -rf` with a glob is blocked in the cloud shell; recompiling with `lean -o` overwrites the oleans anyway.
 
 ### What remains for task 16
-1. verify_golden_offline.bat 16 (the fellow), read golden_offline_check_log.txt.
+1. DONE 15:20 IST: verify_golden_offline.bat 16 (fresh folder D:\lean\golden_check_t16_2088, /opt/mathlib4 at 9944fe29..., downloads blocked): build exit 0, no warnings, check exit 0, five axiom lists [propext, Classical.choice, Quot.sound]; log tasks\task 16\golden\golden_offline_check_log.txt.
 2. Platform: upload golden_solution.zip, paste task16_golden_explanation.txt, upload task16_rubric.csv in the model-response section, run, download, upload in the golden section, run, compare (golden 6/6, R1 2/6 = 33 percent, R2 6/6, R3 1/6 = 17 percent), submit.
