@@ -1,0 +1,59 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. Below $m, n, k \ge 0$ are integers and $z$ is a primitive $m$-th root of unity in $\mathbb{C}$. For a prime $p \mid m$, a rotated $p$-gon is a set of residues modulo $m$ of the form $\{s, s + m/p, s + 2m/p, \dots, s + (p - 1)m/p\}$. For every rotated $p$-gon $P$ the sum $\sum_{k \in P} z^k$ vanishes.
+
+1. (Lam and Leung.) Let $m \ge 1$ have the prime factors $p_1, \dots, p_r$. There are $m$-th roots of unity $\zeta_1, \dots, \zeta_n$, repetitions allowed, with $\zeta_1 + \dots + \zeta_n = 0$ if and only if $n = c_1 p_1 + \dots + c_r p_r$ for some integers $c_1, \dots, c_r \ge 0$.
+2. (Redei, de Bruijn, Schoenberg.) For integers $a_0, \dots, a_{m-1}$, the sum $\sum_{k < m} a_k z^k$ vanishes if and only if the function $k \mapsto a_k$ on the residues modulo $m$ is an integer combination of indicator functions of rotated $p$-gons with $p \mid m$.
+3. (de Bruijn.) Suppose that $m$ has at most two distinct prime factors. If $a_0, \dots, a_{m-1} \ge 0$ are integers with $\sum_{k < m} a_k z^k = 0$, then $k \mapsto a_k$ is a combination of indicator functions of rotated $p$-gons with nonnegative integer coefficients.
+4. (Mann.) Let $\zeta_1, \dots, \zeta_k$ be roots of unity and $a_1, \dots, a_k$ integers with $\sum_i a_i \zeta_i = 0$, such that no proper nonempty subsum $\sum_{i \in S} a_i \zeta_i$ vanishes. Then $(\zeta_i / \zeta_j)^N = 1$ for all $i, j$, where $N$ is the product of the primes $p \le k$.
+5. The orders of the $6 \times 6$ integer matrices of finite order are exactly $1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 18, 20, 24, 30$.
+
+Lean statement. A primitive root is `IsPrimitiveRoot z m` with `z : Complex`, and the prime factors of $m$ form `m.primeFactors`. In theorem 1 the roots are `z ^ e i` for a function `e : Fin n -> Nat`. In theorems 2 and 3 the coefficients `b p s` describe a combination of rotated $p$-gons through $a_k = \sum_{p \mid m} \sum_{j < p} b_p\big((k + j m/p) \bmod m\big)$, where the coefficient of a polygon is the sum of the values `b p s` over its elements $s$. In theorem 4 the product of the primes $p \le k$ is `primorial k`, and the condition on subsums says that a vanishing subsum uses no index or every index. In theorem 5, `orderOf A` is the order of `A` in the monoid of integer matrices, which is $0$ when no positive power of `A` is the identity, so the value $0$ appears in the set. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem exists_sum_pow_eq_zero_iff (m n : Nat) (hm : 0 < m) (z : Complex)
+    (hz : IsPrimitiveRoot z m) :
+    (exists e : Fin n -> Nat, Finset.sum Finset.univ (fun i => z ^ e i) = 0) <->
+      exists c : Nat -> Nat, n = Finset.sum m.primeFactors (fun p => c p * p) := by
+  sorry
+
+theorem sum_mul_pow_eq_zero_iff (m : Nat) (z : Complex) (hz : IsPrimitiveRoot z m)
+    (a : Nat -> Int) :
+    Finset.sum (Finset.range m) (fun k => (a k : Complex) * z ^ k) = 0 <->
+      exists b : Nat -> Nat -> Int, forall k, k < m ->
+        a k = Finset.sum m.primeFactors
+          (fun p => Finset.sum (Finset.range p) (fun j => b p ((k + j * (m / p)) % m))) := by
+  sorry
+
+theorem exists_nonneg_of_sum_mul_pow_eq_zero (m : Nat) (hm : m.primeFactors.card <= 2)
+    (z : Complex) (hz : IsPrimitiveRoot z m) (a : Nat -> Nat)
+    (ha : Finset.sum (Finset.range m) (fun k => (a k : Complex) * z ^ k) = 0) :
+    exists b : Nat -> Nat -> Nat, forall k, k < m ->
+      a k = Finset.sum m.primeFactors
+        (fun p => Finset.sum (Finset.range p) (fun j => b p ((k + j * (m / p)) % m))) := by
+  sorry
+
+theorem div_pow_primorial_eq_one (k : Nat) (a : Fin k -> Int) (z : Fin k -> Complex)
+    (hz : forall i, exists n, 0 < n /\ z i ^ n = 1)
+    (hsum : Finset.sum Finset.univ (fun i => (a i : Complex) * z i) = 0)
+    (hmin : forall S : Finset (Fin k),
+      Finset.sum S (fun i => (a i : Complex) * z i) = 0 -> S.card = 0 \/ S.card = k) :
+    forall i j, (z i / z j) ^ primorial k = 1 := by
+  sorry
+
+theorem exists_orderOf_eq_iff (n : Nat) :
+    (exists A : Matrix (Fin 6) (Fin 6) Int, orderOf A = n) <->
+      Membership.mem
+        ({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 18, 20, 24, 30} : Finset Nat) n := by
+  sorry
+
+end TuringTask
+```
+
+Rules. You may add helper definitions and lemmas, in this file or in other project files that it imports, and you may use any proof that the Lean kernel checks. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms or any other way to bypass the kernel. For each of the five theorems, `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Use Lean toolchain `leanprover/lean4:v4.33.0-rc1` and Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Check the project with `lake build`, which must finish without errors.
+
+Do not declare anything inside the namespace `TuringTask` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.

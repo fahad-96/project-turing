@@ -1,0 +1,18 @@
+Job t34_statements started Sun 10/11/2026  5:00:43.48 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (24s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:11:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:19:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:27:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:35:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (23s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.exists_sum_pow_eq_zero_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sum_mul_pow_eq_zero_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.exists_nonneg_of_sum_mul_pow_eq_zero' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.div_pow_primorial_eq_one' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.exists_orderOf_eq_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
