@@ -20,3 +20,27 @@ Lean (version 4.33.0-rc1, x86_64-w64-windows-gnu, commit 62eed1db4d67327ec8120be
 Build completed successfully (8669 jobs).
 BUILD EXIT CODE 0 
 ===== lake env lean StatementAndAxiomsCheck.lean 
+'TuringTask.fib_eq_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.lucas_eq_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.fib_eq_two_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.lucas_eq_two_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.fib_eq_two_pow' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
+===== source files in the fresh copy 
+ Volume in drive D is Data
+ Volume Serial Number is 92E5-A612
+
+ Directory of D:\lean\golden_check_t16_2088\golden_solution\TuringTask
+
+10/10/2026  03:18 PM    <DIR>          .
+10/10/2026  03:18 PM    <DIR>          ..
+10/10/2026  12:00 AM               824 Basic.lean
+10/10/2026  12:00 AM             13871 Equations.lean
+10/10/2026  12:00 AM              4153 Lucas.lean
+10/10/2026  12:00 AM             10483 Residues.lean
+               4 File(s)          29331 bytes
+
+     Total Files Listed:
+               4 File(s)          29331 bytes
+               2 Dir(s)    198331867136 bytes free
+Finished Sat 10/10/2026 15:20:10.92 
