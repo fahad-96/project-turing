@@ -48,6 +48,8 @@ set /a TICK=3
 set /a HB=40
 set /a CWARN=0
 set /a PW=0
+set /a PLFAIL=0
+set /a PSFAIL=0
 :loop
 set "OTHER="
 for /d %%J in ("%JOBS%\*") do (
@@ -195,11 +197,13 @@ if !CWARN! NEQ 0 (
 )
 git pull --rebase --autostash -q > "%GITOUT%" 2>&1
 if errorlevel 1 goto :pullfail
+set /a PLFAIL=0
 set "AHEAD=0"
 for /f %%N in ('git rev-list --count @{u}..HEAD 2^>nul') do set "AHEAD=%%N"
 if "%AHEAD%"=="0" goto :gitend
 git push -q > "%GITOUT%" 2>&1
 if errorlevel 1 goto :pushfail
+set /a PSFAIL=0
 echo [%TIME%] pushed %AHEAD% commit(s) - %GMSG%
 goto :gitend
 
@@ -217,7 +221,15 @@ if defined NETERR (
   echo [%TIME%] git pull failed - offline? will retry
   goto :gitend
 )
-call :writeconflict "git pull --rebase --autostash failed."
+rem anything else (e.g. another git command ran at the same moment): retry,
+rem and only stop syncing when it fails three times in a row
+set /a PLFAIL+=1
+if !PLFAIL! LSS 3 (
+  echo [%TIME%] git pull failed - try !PLFAIL! of 3 - will retry
+  goto :gitend
+)
+set /a PLFAIL=0
+call :writeconflict "git pull --rebase --autostash failed three times in a row."
 goto :gitend
 
 :pushfail
@@ -231,7 +243,13 @@ if not errorlevel 1 (
   echo [%TIME%] git push rejected - GitHub moved on; will pull and retry
   goto :gitend
 )
-call :writeconflict "git push failed."
+set /a PSFAIL+=1
+if !PSFAIL! LSS 3 (
+  echo [%TIME%] git push failed - try !PSFAIL! of 3 - will retry
+  goto :gitend
+)
+set /a PSFAIL=0
+call :writeconflict "git push failed three times in a row."
 goto :gitend
 
 :gitconflictmode

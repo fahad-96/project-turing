@@ -81,7 +81,11 @@ ask the user to double-click `lean_worker_git.bat`.
   keeps building jobs and committing locally WITHOUT pulling or pushing until
   that file is deleted by hand (after resolving: `git pull --rebase`, fix,
   `git rebase --continue`, `git push`). Being offline is not a conflict; it
-  just retries. It refuses to start if another worker window is open, and
+  just retries, and any other git failure is retried three times before the
+  conflict file is written. While the worker is running do NOT run git
+  commands by hand in the laptop folder (two git commands at the same moment
+  can fail): just edit files and let the worker commit, or work in a separate
+  clone and push. It refuses to start if another worker window is open, and
   before every job it checks again: if lean_worker.bat is also open it turns
   yellow, builds nothing (PAUSED) and continues by itself once that window is
   closed. While a build runs it keeps the legacy `_jobs\worker_alive.txt`
