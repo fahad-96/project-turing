@@ -901,5 +901,5 @@ Result: task 14 REJECTED (no genuine failure); no golden, no rubric. Tracker row
 - `taylor_eq_zero r f` and `leadingCoeff_taylor r f` take the polynomial explicitly at this commit.
 
 ### What remains for task 8
-1. verify_golden_offline.bat 8 (the fellow), read golden_offline_check_log.txt (build exit 0, no warnings, check exit 0, standard axioms).
+1. DONE 14:16 IST: verify_golden_offline.bat 8 (fresh folder D:\lean\golden_check_t8_22124, /opt/mathlib4 at 9944fe29..., downloads blocked): build exit 0, no warnings, check exit 0, five axiom lists [propext, Classical.choice, Quot.sound]; log tasks\task 8\golden\golden_offline_check_log.txt.
 2. Platform: upload golden_solution.zip, paste task8_golden_explanation.txt into the Golden Answer box, upload task8_rubric.csv in the model-response section, run, download the CSV, upload it in the golden section, run, compare with our Lean runs (golden 6/6, R1 1/6 = 17 percent, R2 6/6, R3 6/6), submit. Pre-submit audit at the end of TURING_PLAYBOOK.md.
