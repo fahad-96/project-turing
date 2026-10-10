@@ -1,0 +1,18 @@
+Job t30_statements started Sat 10/10/2026 23:37:49.28 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (23s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:15:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:23:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:31:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:39:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (23s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.sum_divisors_sum_dedekind_eq_sigma_mul' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.exists_int_eq_two_mul_gcd_mul_dedekind' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.dedekind_modEq_eight' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.dedekind_eq_zero_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.dedekind_eq_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
