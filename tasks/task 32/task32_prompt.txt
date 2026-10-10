@@ -1,0 +1,66 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. Over a commutative ring, define the Dickson polynomials $D_n(x, a)$ with parameter $a$ by $D_0(x, a) = 2$, $D_1(x, a) = x$ and $D_{n+2}(x, a) = x D_{n+1}(x, a) - a D_n(x, a)$, so for example $D_2(x, a) = x^2 - 2a$ and $D_3(x, a) = x^3 - 3ax$. Below $\mathbb{F}_q$ is a finite field with $q$ elements, $n, k \ge 0$, and $D_n(x, a)$ permutes a ring $R$ when $x \mapsto D_n(x, a)$ is a bijection from $R$ to $R$.
+
+1. Let $a \in \mathbb{F}_q$ with $a \ne 0$. Then $D_n(x, a)$ permutes $\mathbb{F}_q$ if and only if $\gcd(n, q^2 - 1) = 1$.
+2. Let $m \ge 0$ and let $a$ be a unit of $\mathbb{Z}/m\mathbb{Z}$ (for $m = 0$ this ring is $\mathbb{Z}$). Then $D_n(x, a)$ permutes $\mathbb{Z}/m\mathbb{Z}$ if and only if every prime $p$ dividing $m$ satisfies $\gcd(n, p^2 - 1) = 1$, and also $p \nmid n$ whenever $p^2 \mid m$.
+3. Let $a \in \mathbb{F}_q$ with $a \ne 0$. The number of distinct values of $D_n(x, a)$ for $x \in \mathbb{F}_q$ is
+$$\left\lfloor \frac{1}{2} \left( \frac{q - 1}{\gcd(n, q - 1)} + \frac{q + 1}{\gcd(n, q + 1)} + 1 \right) \right\rfloor + \varepsilon,$$
+where $\varepsilon = 1$ if $a$ is not a square in $\mathbb{F}_q$ and $(q^2 - 1)/\gcd(n, q^2 - 1) \equiv 2 \pmod 4$, and $\varepsilon = 0$ otherwise.
+4. If $q$ is odd and $n \ge 1$, the number of $x \in \mathbb{F}_q$ with $D_n(x, 1) = x$ is
+$$\frac{1}{2} \big( \gcd(n - 1, q - 1) + \gcd(n + 1, q - 1) + \gcd(n - 1, q + 1) + \gcd(n + 1, q + 1) \big) - 1 - \delta,$$
+where $\delta = 1$ for odd $n$, $\delta = 0$ for even $n$, and $\gcd(0, b) = b$.
+5. The $k$-fold composition of the map $x \mapsto D_n(x, 1)$ on $\mathbb{F}_q$ is the identity if and only if $n^k \equiv \pm 1 \pmod{q - 1}$ and $n^k \equiv \pm 1 \pmod{q + 1}$, where the two signs need not agree.
+
+Lean statement. $D_n(x, a)$ is `(Polynomial.dickson 1 a n).eval x`, since Mathlib's `Polynomial.dickson 1 a n` satisfies the recursion above. A finite field is a type `K` with `[Field K] [Fintype K]`, so $q$ is `Fintype.card K`, and $\mathbb{Z}/m\mathbb{Z}$ is `ZMod m`. In theorem 3 the number of values is the size of a `Finset.image` and $\lfloor s/2 \rfloor$ is the natural-number division `s / 2`. In theorem 5 the composition is `Nat.iterate` and the congruences use integer remainders. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem dickson_bijective_iff (K : Type*) [Field K] [Fintype K] (a : K) (ha : Not (a = 0))
+    (n : Nat) :
+    Function.Bijective (fun x : K => (Polynomial.dickson 1 a n).eval x) <->
+      Nat.Coprime n (Fintype.card K ^ 2 - 1) := by
+  sorry
+
+theorem dickson_bijective_zmod_iff (m n : Nat) (a : ZMod m) (ha : IsUnit a) :
+    Function.Bijective (fun x : ZMod m => (Polynomial.dickson 1 a n).eval x) <->
+      forall p : Nat, p.Prime -> m % p = 0 ->
+        Nat.Coprime n (p ^ 2 - 1) /\ (m % p ^ 2 = 0 -> Not (n % p = 0)) := by
+  sorry
+
+theorem card_image_dickson (K : Type*) [Field K] [Fintype K] [DecidableEq K] (a : K)
+    (ha : Not (a = 0)) (n : Nat) :
+    (Finset.image (fun x : K => (Polynomial.dickson 1 a n).eval x) Finset.univ).card =
+      ((Fintype.card K - 1) / Nat.gcd n (Fintype.card K - 1) +
+          (Fintype.card K + 1) / Nat.gcd n (Fintype.card K + 1) + 1) / 2 +
+        (if Not (IsSquare a) /\
+            (Fintype.card K ^ 2 - 1) / Nat.gcd n (Fintype.card K ^ 2 - 1) % 4 = 2
+          then 1 else 0) := by
+  sorry
+
+theorem card_fixed_dickson_one (K : Type*) [Field K] [Fintype K] [DecidableEq K]
+    (hK : Fintype.card K % 2 = 1) (n : Nat) (hn : 1 <= n) :
+    (Finset.filter (fun x : K => (Polynomial.dickson 1 (1 : K) n).eval x = x)
+        Finset.univ).card =
+      (Nat.gcd (n - 1) (Fintype.card K - 1) + Nat.gcd (n + 1) (Fintype.card K - 1) +
+          Nat.gcd (n - 1) (Fintype.card K + 1) + Nat.gcd (n + 1) (Fintype.card K + 1)) / 2 -
+        1 - n % 2 := by
+  sorry
+
+theorem iterate_dickson_one_eq_id_iff (K : Type*) [Field K] [Fintype K] (n k : Nat) :
+    Nat.iterate (fun x : K => (Polynomial.dickson 1 (1 : K) n).eval x) k = id <->
+      (((n : Int) ^ k - 1) % ((Fintype.card K : Int) - 1) = 0 \/
+          ((n : Int) ^ k + 1) % ((Fintype.card K : Int) - 1) = 0) /\
+        (((n : Int) ^ k - 1) % ((Fintype.card K : Int) + 1) = 0 \/
+          ((n : Int) ^ k + 1) % ((Fintype.card K : Int) + 1) = 0) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. You may add helper definitions and lemmas, in this file or in other project files that it imports, and you may use any proof that the Lean kernel checks. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms or any other way to bypass the kernel. For each of the five theorems, `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Use Lean toolchain `leanprover/lean4:v4.33.0-rc1` and Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Check the project with `lake build`, which must finish without errors.
+
+Do not declare anything inside the namespace `TuringTask` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.
