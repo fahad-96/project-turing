@@ -1,0 +1,123 @@
+Job t8_r3_check started Sat 10/10/2026 13:47:15.45 
+===== lake build 
+⚠ [8664/8671] Built TuringTask.Weyl (27s)
+info: TuringTask/Weyl.lean:44:71: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+warning: TuringTask/Weyl.lean:44:53: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Weyl.lean:44:67: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Weyl.lean:55:24: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Weyl.lean:118:6: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: TuringTask/Weyl.lean:182:13: This simp argument is unused:
+  Polynomial.taylor_X_pow
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [L, Polynomial.coeff_X_add_C_pow, Nat.choose_succ_self_right]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: TuringTask/Weyl.lean:357:21: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Weyl.lean:420:6: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: TuringTask/Weyl.lean:428:10: `tendsto_finset_sum` has been deprecated: Use `tendsto_finsetSum` instead
+warning: TuringTask/Weyl.lean:430:10: `tendsto_finset_sum` has been deprecated: Use `tendsto_finsetSum` instead
+warning: TuringTask/Weyl.lean:441:14: This simp argument is unused:
+  eq_comm
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hh]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: TuringTask/Weyl.lean:467:10: `tendsto_finset_sum` has been deprecated: Use `tendsto_finsetSum` instead
+warning: TuringTask/Weyl.lean:504:27: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Weyl.lean:494:39: 'norm_num' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+info: TuringTask/Weyl.lean:601:14: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+info: TuringTask/Weyl.lean:636:14: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+warning: TuringTask/Weyl.lean:581:72: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Weyl.lean:616:72: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [8665/8671] Built TuringTask.Equidistribution (26s)
+warning: TuringTask/Equidistribution.lean:53:74: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: TuringTask/Equidistribution.lean:53:41: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Equidistribution.lean:53:55: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: TuringTask/Equidistribution.lean:53:74: 'ring' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: TuringTask/Equidistribution.lean:86:10: This simp argument is unused:
+  fourier_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: TuringTask/Equidistribution.lean:113:27: This simp argument is unused:
+  fourier_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [circleAverage, Nat.ne_of_gt hN]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: TuringTask/Equidistribution.lean:261:28: `MeasureTheory.Measure.finset_sum_apply` has been deprecated: Use `MeasureTheory.Measure.finsetSum_apply` instead
+warning: TuringTask/Equidistribution.lean:279:29: `MeasureTheory.integral_finset_sum_measure` has been deprecated: Use `MeasureTheory.integral_finsetSum_measure` instead
+warning: TuringTask/Equidistribution.lean:310:55: `MeasureTheory.Measure.finset_sum_apply` has been deprecated: Use `MeasureTheory.Measure.finsetSum_apply` instead
+warning: TuringTask/Equidistribution.lean:461:17: `Set.mem_diff` has been deprecated: Use `Set.mem_sdiff` instead
+warning: TuringTask/Equidistribution.lean:528:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+✖ [8666/8671] Building TuringTask.Applications (3.3s)
+trace: .> LEAN_PATH=D:\lean\TuringTask\.lake\packages\Cli\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\batteries\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\Qq\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\aesop\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\proofwidgets\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\importGraph\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\LeanSearchClient\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\plausible\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\mathlib\.lake\build\lib\lean;D:\lean\TuringTask\.lake\build\lib\lean c:\Users\fahad\.elan\toolchains\leanprover--lean4---v4.33.0-rc1\bin\lean.exe D:\lean\TuringTask\TuringTask\Applications.lean -o D:\lean\TuringTask\.lake\build\lib\lean\TuringTask\Applications.olean -i D:\lean\TuringTask\.lake\build\lib\lean\TuringTask\Applications.ilean -c D:\lean\TuringTask\.lake\build\ir\TuringTask\Applications.c --setup D:\lean\TuringTask\.lake\build\ir\TuringTask\Applications.setup.json --json
+error: TuringTask/Applications.lean:1:0: failed to read file 'D:\lean\TuringTask\.lake\packages\mathlib\.lake\build\lib\lean\Mathlib\Analysis\Analytic\Order.olean.private'
+error: Lean exited with code 1
+✖ [8667/8671] Building TuringTask.Digits (3.3s)
+trace: .> LEAN_PATH=D:\lean\TuringTask\.lake\packages\Cli\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\batteries\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\Qq\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\aesop\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\proofwidgets\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\importGraph\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\LeanSearchClient\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\plausible\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\mathlib\.lake\build\lib\lean;D:\lean\TuringTask\.lake\build\lib\lean c:\Users\fahad\.elan\toolchains\leanprover--lean4---v4.33.0-rc1\bin\lean.exe D:\lean\TuringTask\TuringTask\Digits.lean -o D:\lean\TuringTask\.lake\build\lib\lean\TuringTask\Digits.olean -i D:\lean\TuringTask\.lake\build\lib\lean\TuringTask\Digits.ilean -c D:\lean\TuringTask\.lake\build\ir\TuringTask\Digits.c --setup D:\lean\TuringTask\.lake\build\ir\TuringTask\Digits.setup.json --json
+error: TuringTask/Digits.lean:1:0: failed to read file 'D:\lean\TuringTask\.lake\packages\mathlib\.lake\build\lib\lean\Mathlib\CategoryTheory\Bicategory\Functor\StrictlyUnitary.olean.private'
+error: Lean exited with code 1
+✖ [8668/8671] Building TuringTask.Means (3.3s)
+trace: .> LEAN_PATH=D:\lean\TuringTask\.lake\packages\Cli\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\batteries\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\Qq\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\aesop\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\proofwidgets\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\importGraph\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\LeanSearchClient\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\plausible\.lake\build\lib\lean;D:\lean\TuringTask\.lake\packages\mathlib\.lake\build\lib\lean;D:\lean\TuringTask\.lake\build\lib\lean c:\Users\fahad\.elan\toolchains\leanprover--lean4---v4.33.0-rc1\bin\lean.exe D:\lean\TuringTask\TuringTask\Means.lean -o D:\lean\TuringTask\.lake\build\lib\lean\TuringTask\Means.olean -i D:\lean\TuringTask\.lake\build\lib\lean\TuringTask\Means.ilean -c D:\lean\TuringTask\.lake\build\ir\TuringTask\Means.c --setup D:\lean\TuringTask\.lake\build\ir\TuringTask\Means.setup.json --json
+error: TuringTask/Means.lean:1:0: failed to read file 'D:\lean\TuringTask\.lake\packages\mathlib\.lake\build\lib\lean\Mathlib\CategoryTheory\Bicategory\Functor\StrictlyUnitary.olean.private'
+error: Lean exited with code 1
+Some required targets logged failures:
+- TuringTask.Applications
+- TuringTask.Digits
+- TuringTask.Means
+error: build failed
+BUILD EXIT CODE 1 
+===== check file 
+JobCheck.lean:1:0: error: object file 'D:\lean\TuringTask\.lake\build\lib\lean\TuringTask\Digits.olean' of module TuringTask.Digits does not exist
+CHECK EXIT CODE 1 
