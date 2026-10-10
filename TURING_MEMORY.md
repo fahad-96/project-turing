@@ -27,6 +27,11 @@ Pinned: Lean `leanprover/lean4:v4.33.0-rc1`, Mathlib `9944fe2973b8dc0b86949101ed
 - Be brief; say plainly what is verified and what is not. Aim at 5/5 from the reviewer.
 - Never promise a model failure or a reviewer score.
 - The golden is written only after a failure is confirmed and never copies a model output.
+- Every submission text (prompt, golden explanation, rubric criteria, platform replies) must pass the
+  Humanize_AI check before anyone commits or pastes it: `python humanize_scan.py <file>` (0 errors,
+  every warning decided) and the twelve questions of Section 8 of HUMANIZE_AI_CHECKLIST.md (both files in
+  the repo root). Generators assert the scan (shared part of tasks\task 26 and 27). In force from
+  task 26 on (10 Oct 2026). Rewritten Rules paragraph and rubric templates: handoff section 45.
 
 ## Reviewer rules (task 5 feedback, 8 Oct) - apply to every golden and rubric
 1. Golden zip: `lakefile.toml` requires mathlib with `path = "/opt/mathlib4"`; `lake-manifest.json`
