@@ -1,0 +1,51 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. $F_k$ is the $k$-th Fibonacci number ($F_0 = 0$, $F_1 = 1$, $F_{k+2} = F_{k+1} + F_k$; `Nat.fib k` in Mathlib). For an integer $n \ge 1$ let $\pi(n)$, the Pisano period, be the least $k \ge 1$ with $F_k \equiv 0$ and $F_{k+1} \equiv 1 \pmod n$, and let $z(n)$, the entry point, be the least $k \ge 1$ with $n \mid F_k$. In the Lean statements these conditions are written with remainders, and $1 \bmod n$ is written `1 % n` so that $n = 1$ is included. All variables are natural numbers. For every $n \ge 1$:
+
+1. $\pi(n) \le 6 n$.
+2. $\pi(n) = 6 n$ if and only if $n = 2 \cdot 5^j$ for some $j \ge 1$.
+3. $\pi(n) = n$ if and only if $n = 1$ or $n = 24 \cdot 5^j$ for some $j \ge 0$.
+4. $z(n) = 2 n$ if and only if $n = 6 \cdot 5^j$ for some $j \ge 0$.
+5. $z(n) = n$ if and only if $n = 5^j$ or $n = 12 \cdot 5^j$ for some $j \ge 0$.
+
+Lean statement. The file `TuringTask/Basic.lean` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem pisano_le_six_mul (n : Nat) (hn : 0 < n) :
+    exists k : Nat, 0 < k /\ k <= 6 * n /\ Nat.fib k % n = 0 /\ Nat.fib (k + 1) % n = 1 % n := by
+  sorry
+
+theorem pisano_eq_six_mul_iff (n : Nat) (hn : 0 < n) :
+    (Nat.fib (6 * n) % n = 0 /\ Nat.fib (6 * n + 1) % n = 1 % n /\
+      forall k : Nat, 0 < k -> k < 6 * n ->
+        Not (Nat.fib k % n = 0 /\ Nat.fib (k + 1) % n = 1 % n)) <->
+      exists j : Nat, 0 < j /\ n = 2 * 5 ^ j := by
+  sorry
+
+theorem pisano_eq_self_iff (n : Nat) (hn : 0 < n) :
+    (Nat.fib n % n = 0 /\ Nat.fib (n + 1) % n = 1 % n /\
+      forall k : Nat, 0 < k -> k < n ->
+        Not (Nat.fib k % n = 0 /\ Nat.fib (k + 1) % n = 1 % n)) <->
+      (n = 1 \/ exists j : Nat, n = 24 * 5 ^ j) := by
+  sorry
+
+theorem entry_eq_two_mul_iff (n : Nat) (hn : 0 < n) :
+    (Nat.fib (2 * n) % n = 0 /\ forall k : Nat, 0 < k -> k < 2 * n -> 0 < Nat.fib k % n) <->
+      exists j : Nat, n = 6 * 5 ^ j := by
+  sorry
+
+theorem entry_eq_self_iff (n : Nat) (hn : 0 < n) :
+    (Nat.fib n % n = 0 /\ forall k : Nat, 0 < k -> k < n -> 0 < Nat.fib k % n) <->
+      ((exists j : Nat, n = 5 ^ j) \/ exists j : Nat, n = 12 * 5 ^ j) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.
+
+Nothing may be declared inside the namespace `TuringTask` that shadows a Mathlib name: every name used in the five statements must keep its Mathlib meaning.

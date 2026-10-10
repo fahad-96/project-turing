@@ -1,0 +1,18 @@
+Job t24_statements started Sat 10/10/2026 19:16:21.84 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (629s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:9:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:16:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:23:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:28:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (47s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.pisano_le_six_mul' depends on axioms: [sorryAx]
+'TuringTask.pisano_eq_six_mul_iff' depends on axioms: [propext, sorryAx]
+'TuringTask.pisano_eq_self_iff' depends on axioms: [propext, sorryAx]
+'TuringTask.entry_eq_two_mul_iff' depends on axioms: [propext, sorryAx]
+'TuringTask.entry_eq_self_iff' depends on axioms: [propext, sorryAx]
+CHECK EXIT CODE 0 
