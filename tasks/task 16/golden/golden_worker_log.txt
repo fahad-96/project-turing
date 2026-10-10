@@ -1,0 +1,16 @@
+Job t16_golden_01 started Sat 10/10/2026 15:10:11.35 
+===== lake build 
+✔ [8664/8669] Built TuringTask.Lucas (24s)
+✔ [8665/8669] Built TuringTask.Residues (25s)
+✔ [8666/8669] Built TuringTask.Equations (32s)
+✔ [8667/8669] Built TuringTask.Basic (22s)
+✔ [8668/8669] Built TuringTask (21s)
+Build completed successfully (8669 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.fib_eq_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.lucas_eq_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.fib_eq_two_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.lucas_eq_two_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.fib_eq_two_pow' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
