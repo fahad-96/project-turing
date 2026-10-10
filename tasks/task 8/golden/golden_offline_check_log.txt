@@ -23,3 +23,30 @@ Lean (version 4.33.0-rc1, x86_64-w64-windows-gnu, commit 62eed1db4d67327ec8120be
 Build completed successfully (8672 jobs).
 BUILD EXIT CODE 0 
 ===== lake env lean StatementAndAxiomsCheck.lean 
+'TuringTask.freq_sq_unif' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.freq_poly' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.freq_lead_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.mean_abs_sin_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.mean_cos_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
+===== source files in the fresh copy 
+ Volume in drive D is Data
+ Volume Serial Number is 92E5-A612
+
+ Directory of D:\lean\golden_check_t8_22124\golden_solution\TuringTask
+
+10/10/2026  02:13 PM    <DIR>          .
+10/10/2026  02:13 PM    <DIR>          ..
+10/10/2026  12:00 AM              1739 Basic.lean
+10/10/2026  12:00 AM              6180 Circle.lean
+10/10/2026  12:00 AM             13801 Counting.lean
+10/10/2026  12:00 AM              4295 LeadDigit.lean
+10/10/2026  12:00 AM              7388 Main.lean
+10/10/2026  12:00 AM             11955 Phase.lean
+10/10/2026  12:00 AM              5241 PolySum.lean
+               7 File(s)          50599 bytes
+
+     Total Files Listed:
+               7 File(s)          50599 bytes
+               2 Dir(s)    198431203328 bytes free
+Finished Sat 10/10/2026 14:16:00.80 
