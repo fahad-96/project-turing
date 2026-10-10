@@ -1,0 +1,18 @@
+Job t26_statements started Sat 10/10/2026 20:58:52.83 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (678s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:10:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:16:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:21:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:26:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (22s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.prime_eq_sq_add_five_mul_sq_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.mul_eq_sq_add_five_mul_sq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.prime_eq_sq_add_six_mul_sq_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.prime_eq_sq_add_thirteen_mul_sq_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.prime_eq_sq_add_twenty_one_mul_sq_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
