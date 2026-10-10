@@ -1,0 +1,18 @@
+Job t16_r3_check started Sat 10/10/2026 14:56:23.52 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (24s)
+warning: TuringTask/Basic.lean:100:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:104:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:108:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:112:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:117:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (21s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.fib_eq_sq' depends on axioms: [propext, sorryAx]
+'TuringTask.lucas_eq_sq' depends on axioms: [propext, sorryAx]
+'TuringTask.fib_eq_two_mul_sq' depends on axioms: [propext, sorryAx]
+'TuringTask.lucas_eq_two_mul_sq' depends on axioms: [propext, sorryAx]
+'TuringTask.fib_eq_two_pow' depends on axioms: [propext, sorryAx]
+CHECK EXIT CODE 0 

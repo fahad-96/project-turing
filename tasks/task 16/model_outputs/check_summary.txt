@@ -1,0 +1,22 @@
+Task 16 (square, twice-square and power-of-two Fibonacci and Lucas numbers, Cohn 1964) - model outputs checked officially on the Honor laptop worker (lean_worker_git.bat, repo queue jobs/), 10 Oct 2026, 14:52-14:57 IST
+Check file: tasks/task 16/StatementAndAxiomsCheck.lean (job 023a_t16_statements version)
+
+R1  turing_task_r1.zip  sha256 109dda6e51ffea777353531c5a28eefa5c15eab39a531675d2b114f309b91ffe
+    one file TuringTask/Basic.lean (472 lines); four `sorry` (lines 332, 347, 359, 378)
+    job t16_r1_check: build exit 0 with four "declaration uses sorry" warnings (fib_eq_sq, lucas_eq_sq,
+    fib_eq_two_mul_sq, lucas_eq_two_mul_sq); check exit 0; those four axiom lists contain sorryAx;
+    fib_eq_two_pow has [propext, Classical.choice, Quot.sound]. GENUINE FAILURE (four theorems unproved)
+
+R2  turingtask-lean_r2.zip  sha256 3cf82e1fb97f076b7685f0ec24e660bf600c00157ad6fd9c1d114bca54cdedc4
+    Lemmas (1,165 lines) -> Basic (272 lines); no sorry/admit/native_decide/axiom/set_option/instance
+    job t16_r2_check: build exit 0, no warnings; check exit 0; five axiom lists [propext, Classical.choice, Quot.sound]. PASS
+
+R3  r3/turing-task-reduction.zip (the only TuringTask project among the r3 zips)  sha256 757211fe78dbe5d9079b6425176dbd6fe978874b217af4c529967327cecf8eec
+    other r3 zips (research notes, not TuringTask projects): agent-attempt f9fc09c66fa2b1aa, fib-quartic-research 072e6f9395e0a6d9,
+    fib-square-research ae4182790f862d37
+    TuringTask/Basic.lean (121 lines): all five theorems end in `sorry`; README: "this archive is not a solution"
+    job t16_r3_check: build exit 0 with five "declaration uses sorry" warnings; check exit 0; all five axiom lists
+    contain sorryAx. GENUINE FAILURE
+
+Result: two genuine failures (R1, R3). Expected 6-item rubric: R1 2/6 = 33 percent (build + fib_eq_two_pow),
+R2 6/6, R3 1/6 = 17 percent. Proof bodies of R2 were not read (README and declaration headers only).

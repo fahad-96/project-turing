@@ -1,0 +1,14 @@
+Job t16_r2_check started Sat 10/10/2026 14:54:18.83 
+===== lake build 
+✔ [8664/8667] Built TuringTask.Lemmas (30s)
+✔ [8665/8667] Built TuringTask.Basic (25s)
+✔ [8666/8667] Built TuringTask (21s)
+Build completed successfully (8667 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.fib_eq_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.lucas_eq_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.fib_eq_two_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.lucas_eq_two_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.fib_eq_two_pow' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
