@@ -181,6 +181,14 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   t17_r3_check: 790 / 777 / 1,049 lines, build 0, check 0, standard axioms). REJECTED, no golden.
   Lesson: tasks 14, 15 and 17 (classical analytic estimates whose core Mathlib supplies: zeta(2), Moebius
   inversion, Euler-Mascheroni bounds, Gauss sums) were all solved by all three. Handoff section 40.
+- 22 (x^3 + y^3 = 2z^3 only trivially; rational points of y^2 = x^3 + 1 and y^2 = x^3 - 27; x^3 - 2y^3 = +-1;
+  triangular cubes) and 23 (Stormer: n(n+1) and x^2 - 1 7-smooth, x^2 + 1 13-smooth up to 239, x^2 - 2y^2 = +-1
+  with y 13-smooth up to 13860): prompts compiled 10 Oct (jobs t22_statements, t23_statements: build 0, five sorry
+  warnings, check 0), handed over about 18:00 IST by the chat that cooks tasks 22-29 (18-21 belong to another
+  laptop). Golden plans in handoff section 42. Novelty hazards found 10 Oct: Ramanujan-Nagell is formalized in Lean 4
+  (arXiv 2604.09808); Catalan's conjecture incl. Euler's x^2 = y^3 + 1 and Ko Chao is formalized (cadamcat/catalan-lean4).
+  Prompt conventions added: finite sets as `Membership.mem (S : Finset ...) a` (ASCII for a in S), divisibility as
+  `N % p = 0`, and a paragraph after the Rules forbidding declarations in `TuringTask` that shadow Mathlib names.
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
