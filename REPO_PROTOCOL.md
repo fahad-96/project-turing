@@ -67,9 +67,9 @@ about every 10 minutes and at every job start/finish). If it is older than
 ~15 minutes and does not say "building job", the worker is not running:
 ask the user to double-click `lean_worker_git.bat`.
 
-## 5. The two worker scripts (run only ONE of them)
+## 5. The worker script (there is only one)
 
-- `lean_worker_git.bat` - USE THIS ONE. Double-click to start; leave the
+- `lean_worker_git.bat` - THE ONLY WORKER. Double-click to start; leave the
   window open. It serves both queues, one job at a time:
   the legacy local queue `D:\lean\TuringTask\_jobs\` (unchanged behaviour)
   and the repository queue `jobs\`. Every ~15 s it runs
@@ -86,14 +86,16 @@ ask the user to double-click `lean_worker_git.bat`.
   commands by hand in the laptop folder (two git commands at the same moment
   can fail): just edit files and let the worker commit, or work in a separate
   clone and push. It refuses to start if another worker window is open, and
-  before every job it checks again: if lean_worker.bat is also open it turns
+  before every job it checks again: if the retired worker is also open it turns
   yellow, builds nothing (PAUSED) and continues by itself once that window is
   closed. While a build runs it keeps the legacy `_jobs\worker_alive.txt`
   fresh every 5 s, so a long build does not look like a dead worker.
-  DO NOT start lean_worker.bat because a build is taking long.
-- `lean_worker.bat` - the original worker, kept as a fallback. Legacy queue
-  only, no Git. Never run it at the same time as lean_worker_git.bat
-  (two Mathlib builds must never run in parallel on this laptop).
+  A long build is never a reason to start another worker.
+- `lean_worker.bat` is RETIRED (10 Oct 2026). The file was renamed to
+  `lean_worker_OLD_do_not_run.bat` and is kept for reference only. Do not run
+  it and do not rename it back (two Mathlib builds must never run in parallel
+  on this laptop). Where an older document or prompt says "start
+  lean_worker.bat", start `lean_worker_git.bat` instead.
 
 Changing `lean_worker_git.bat` itself: cmd reads a running batch file from
 disk, so a pulled change to it can confuse the running worker. Close the

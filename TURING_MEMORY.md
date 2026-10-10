@@ -20,7 +20,7 @@ Pinned: Lean `leanprover/lean4:v4.33.0-rc1`, Mathlib `9944fe2973b8dc0b86949101ed
 
 ## The fellow's standing rules
 - Do things yourself; keep his manual steps minimal, but ask for a manual step when it saves a
-  long wait (for example starting `lean_worker.bat`).
+  long wait (for example starting `lean_worker_git.bat`).
 - No long silent waits. Say what is running; hand over each file as soon as it is usable.
 - Everything for a submission field is pure ASCII.
 - Prompts short, neutral names, no hints about the proof method.
@@ -47,7 +47,8 @@ Rubric CSV: header `"ID","Criterion","Weight"`, all fields quoted, LF, no traili
   `D:\lean\TuringTask` since 8 Oct 22:40 (moved from C:, which was full; `finish_move.bat` links
   C:\lean\TuringTask, C:\opt\mathlib4 and D:\opt\mathlib4 to it). Fresh-copy check of a golden zip:
   `verify_golden_offline.bat <task number>` (works on D:, uses D:\opt\mathlib4).
-  Worker `lean_worker.bat` watches `D:\lean\TuringTask\_jobs\<job>\`
+  The only worker is `lean_worker_git.bat`; `lean_worker.bat` is retired (renamed
+  `lean_worker_OLD_do_not_run.bat`, do not run it). It watches `D:\lean\TuringTask\_jobs\<job>\`
   (src\TuringTask\*.lean, optional src\TuringTask.lean, check.lean, READY written LAST in a separate
   commit; result log.txt + DONE). Warm build about 25 s per file, cold first build 500-730 s.
   NEVER build several Mathlib-importing files in parallel here (memory error, stale check output):

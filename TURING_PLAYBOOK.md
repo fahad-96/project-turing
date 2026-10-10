@@ -656,4 +656,5 @@ https://github.com/fahad-96/project-turing (clone: `git clone https://github.com
 Read `REPO_PROTOCOL.md` before working: pull before editing, commit with a message naming the task,
 push immediately, never force-push. Lean builds can also be submitted through `jobs/` (see
 `jobs/README.md`): the laptop runs `lean_worker_git.bat`, which builds them one at a time and pushes
-the logs back. `lean_worker.bat` stays as the fallback; never run both at once.
+the logs back. `lean_worker_git.bat` is the only worker; `lean_worker.bat` is retired (renamed
+`lean_worker_OLD_do_not_run.bat`, do not run it).

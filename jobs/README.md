@@ -49,5 +49,5 @@ is probably not running - ask the user to double-click lean_worker_git.bat.
 ## Legacy queue
 
 `D:\lean\TuringTask\_jobs\` (local only, not in Git) uses the same layout
-and is still served by both lean_worker.bat and lean_worker_git.bat.
-Only one of the two workers may run at a time.
+and is served by lean_worker_git.bat, the only worker.
+lean_worker.bat is retired (renamed lean_worker_OLD_do_not_run.bat); do not run it.
