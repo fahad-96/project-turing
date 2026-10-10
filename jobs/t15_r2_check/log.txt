@@ -1,0 +1,13 @@
+Job t15_r2_check started Sat 10/10/2026 14:22:46.93 
+===== lake build 
+✔ [8664/8666] Built TuringTask.Basic (37s)
+✔ [8665/8666] Built TuringTask (23s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.charSum_norm_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.legendreSum_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.exists_not_pow_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_residues_sub_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.exists_prime_nonresidue_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
