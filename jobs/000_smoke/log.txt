@@ -1,0 +1,9 @@
+Job 000_smoke started Sat 10/10/2026 10:12:20.38 
+===== lake build 
+✔ [8664/8666] Built TuringTask.Basic (680s)
+✔ [8665/8666] Built TuringTask (39s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'smoke' depends on axioms: [propext]
+CHECK EXIT CODE 0 
