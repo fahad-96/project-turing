@@ -1,0 +1,49 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. All variables are natural numbers, and $p$, $q$ are primes.
+
+1. $p = x^2 + 5 y^2$ for some $x, y$ if and only if $p = 5$ or $p \equiv 1, 9 \pmod{20}$.
+2. If $p \equiv 3$ or $7 \pmod{20}$ and $q \equiv 3$ or $7 \pmod{20}$, then $p q = x^2 + 5 y^2$ for some $x, y$.
+3. $p = x^2 + 6 y^2$ for some $x, y$ if and only if $p \equiv 1, 7 \pmod{24}$.
+4. $p = x^2 + 13 y^2$ for some $x, y$ if and only if $p = 13$ or $p \equiv 1, 9, 17, 25, 29, 49 \pmod{52}$.
+5. $p = x^2 + 21 y^2$ for some $x, y$ if and only if $p \equiv 1, 25, 37 \pmod{84}$.
+
+Lean statement. `Membership.mem S a` is the membership statement $a \in S$ for a finite set `S`. The file `TuringTask/Basic.lean` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem prime_eq_sq_add_five_mul_sq_iff (p : Nat) (hp : p.Prime) :
+    (exists x y : Nat, p = x ^ 2 + 5 * y ^ 2) <->
+      (p = 5 \/ Membership.mem ({1, 9} : Finset Nat) (p % 20)) := by
+  sorry
+
+theorem mul_eq_sq_add_five_mul_sq (p q : Nat) (hp : p.Prime) (hq : q.Prime)
+    (hp20 : Membership.mem ({3, 7} : Finset Nat) (p % 20))
+    (hq20 : Membership.mem ({3, 7} : Finset Nat) (q % 20)) :
+    exists x y : Nat, p * q = x ^ 2 + 5 * y ^ 2 := by
+  sorry
+
+theorem prime_eq_sq_add_six_mul_sq_iff (p : Nat) (hp : p.Prime) :
+    (exists x y : Nat, p = x ^ 2 + 6 * y ^ 2) <->
+      Membership.mem ({1, 7} : Finset Nat) (p % 24) := by
+  sorry
+
+theorem prime_eq_sq_add_thirteen_mul_sq_iff (p : Nat) (hp : p.Prime) :
+    (exists x y : Nat, p = x ^ 2 + 13 * y ^ 2) <->
+      (p = 13 \/ Membership.mem ({1, 9, 17, 25, 29, 49} : Finset Nat) (p % 52)) := by
+  sorry
+
+theorem prime_eq_sq_add_twenty_one_mul_sq_iff (p : Nat) (hp : p.Prime) :
+    (exists x y : Nat, p = x ^ 2 + 21 * y ^ 2) <->
+      Membership.mem ({1, 25, 37} : Finset Nat) (p % 84) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.
+
+Nothing may be declared inside the namespace `TuringTask` that shadows a Mathlib name: every name used in the five statements must keep its Mathlib meaning.
