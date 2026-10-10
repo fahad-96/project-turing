@@ -219,6 +219,12 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   about 23:45 IST by the chat that cooks tasks 22-30. Golden plans in handoff section 46. Near match disclosed for
   task 30: the Isabelle AFP entry Dedekind_Sums (2025) covers theorems 2 and 3 (nothing in Lean). Task 30 states
   the Dedekind sum through a hypothesis `hs` on a function `s : Nat -> Nat -> Rat` (no definitions in the prompt).
+- 31 (coefficients of cyclotomic polynomials: partial sums of Phi_pq in {0, 1}, Carlitz's count u v of the
+  coefficients 1, Bang's bound |a_pqr| <= p - 1, Kaplan's flatness for r = +-1 mod pq, Gallot and Moree's jump
+  one): prompt compiled 11 Oct (job t31_statements: build 0, five sorry warnings, check 0 with sorryAx only),
+  handed over about 4.10 IST by the overnight run of the chat that cooks tasks 22-40 (it paused about 00:30 to
+  03:45 IST on the usage limit and the 03:45 backup ping restarted it). Golden plan in handoff section 47. Near
+  match disclosed: Mathlib's Counterexamples/Cyclotomic105.lean (Phi_105 has the coefficient -2).
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
