@@ -197,6 +197,13 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   handoff section 43 (task 25 reuses the task 16 golden). Lucas numbers are written additively (L_n = c as
   `Nat.fib n + c = 2 * Nat.fib (n + 1)`), no Nat subtraction. Rejected this round: Mordell equations (textbook),
   triangular F and L (Jacobi coverings incomplete).
+- 26 (primes x^2 + ny^2 with one class per genus: p = x^2 + 5y^2 iff p = 5 or 1, 9 mod 20; p, q = 3, 7 mod 20 give
+  pq = x^2 + 5y^2; n = 6 mod 24 {1, 7}; n = 13 mod 52; n = 21 mod 84 {1, 25, 37}) and 27 (representation numbers
+  of x^2 + xy + y^2, x^2 + 3y^2, x^2 + 2y^2, x^2 + xy + 2y^2, x^2 + 7y^2 as Jacobi-symbol divisor sums): prompts
+  compiled 10 Oct (jobs t26_statements, t27_statements: build 0, five sorry warnings, check 0), handed over about
+  21:20 IST by the chat that cooks tasks 22-29. Golden plans in handoff section 44. Novelty hazard found: the
+  cannonball problem is formalized in Lean 4 (int-y1/proofs, SquarePyramid, Anglin's proof), so the y^2 = x^3 -
+  36x family is out. Counts are stated over the box Finset.Icc (-n) n with `Prod Int Int` (ASCII).
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
