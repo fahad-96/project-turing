@@ -119,7 +119,8 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   7 files, 1,177 lines, job t8_golden_01 build 0, no warnings, check 0, standard axioms;
   tasks\task 8\golden has zip + generator + explanation + 6-item rubric (proof items also require the
   statement's names to be Mathlib's, because of R1). Expected golden 6/6, R1 1/6 = 17, R2 and R3 6/6.
-  Offline check (verify_golden_offline.bat 8) PASSED 14:16 IST; platform steps pending. Handoff section 38.
+  Offline check (verify_golden_offline.bat 8) PASSED 14:16 IST; the fellow reported the platform steps
+  done 14:19 IST (verdicts and submit status not yet recorded). Handoff section 38.
   Lessons: a model may "prove" the statements by shadowing Mathlib names inside the namespace; only
   the check file catches it, so the rubric must name it. A model output whose modules do not form one
   chain fails on the laptop with 'failed to read ...olean.private': rerun one module per job.
@@ -164,6 +165,10 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   Mathlib's Euler-Mascheroni bounds is within reach of all three; expect the same for task 17.
   When a model's root module does not import Basic, run the check job with the default root and a
   second job with the model's root (stale oleans otherwise answer the check). Handoff section 37.
+- 15 (Polya-Vinogradov, least non-residues): 10 Oct 14:27 IST - all three models PASSED (jobs t15_r1_check,
+  t15_r2_check, t15_r3_check: 925 / 619 / 626 lines, build 0, check 0, standard axioms). REJECTED, no golden.
+  Lesson: when Mathlib has the Gauss-sum identities, the classical inequality is a 600-900 line exercise for
+  all three models (same as task 14). Handoff section 39.
 - 16 (Cohn: square, twice-square, power-of-two Fibonacci and Lucas numbers) and 17 (6/pi^2 densities):
   prompts compiled 9 Oct (jobs 023a, 023b), handed over about 21:20 IST; running. Handoff section 34.
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
