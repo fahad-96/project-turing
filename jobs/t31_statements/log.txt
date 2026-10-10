@@ -1,0 +1,18 @@
+Job t31_statements started Sun 10/11/2026  3:54:38.79 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (423s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:12:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:18:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:23:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:28:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (23s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.sum_range_coeff_cyclotomic_mul_mem' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.card_coeff_cyclotomic_mul_eq_one' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.abs_coeff_cyclotomic_mul_mul_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.coeff_cyclotomic_mul_mul_mem_of_mod' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.abs_coeff_succ_sub_coeff_cyclotomic_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
