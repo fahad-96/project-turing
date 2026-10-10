@@ -147,6 +147,13 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
 - 14 (average order of the divisor function, hyperbola method, Euler-Mascheroni) and 15 (Polya-Vinogradov,
   least non-residues): prompts compiled 9 Oct (jobs 018e, 018d), handed over about 20:00 IST; running.
   Handoff section 33.
+- 14 (divisor function averages): 10 Oct 13:55 IST - all three models PASSED (jobs t14_r1_check,
+  t14_r2_check, t14_r3_check: 1,812 / 1,255 / 1,745 lines, build 0, check 0, standard axioms). REJECTED,
+  no golden. R3's root `TuringTask.lean` imports only `TuringTask.Second`, so plain `lake build` skips
+  Basic.lean (packaging slip, not counted). Lesson: a textbook analytic estimate (hyperbola method) with
+  Mathlib's Euler-Mascheroni bounds is within reach of all three; expect the same for task 17.
+  When a model's root module does not import Basic, run the check job with the default root and a
+  second job with the model's root (stale oleans otherwise answer the check). Handoff section 37.
 - 16 (Cohn: square, twice-square, power-of-two Fibonacci and Lucas numbers) and 17 (6/pi^2 densities):
   prompts compiled 9 Oct (jobs 023a, 023b), handed over about 21:20 IST; running. Handoff section 34.
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs

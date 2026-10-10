@@ -27,7 +27,7 @@ Numbering note: number 7 was used on both laptops; the Honor laptop's task 7 (fo
 | 11 | Colourings that avoid bad events (local lemma applications) | Honor laptop | rejected | all passed | - |
 | 12 | New prime factors of Fibonacci and Lucas numbers (primitive divisors) | Honor laptop | golden | R1 fail (sorry), R2 running, R3 fail (empty proofs) | fresh-copy offline check, then platform upload and grading |
 | 13 | Resultants and discriminants of cyclotomic polynomials | Honor laptop | golden | R1 pass, R2 pass, R3 fail (no theorems) | fresh-copy offline check (verify_golden_offline.bat 13), then platform upload and grading |
-| 14 | Average order of the divisor function (Dirichlet, hyperbola method) | Honor laptop | prompt | not run | paste task14_prompt.txt; check outputs (jobs 022a-c) |
+| 14 | Average order of the divisor function (Dirichlet, hyperbola method) | Honor laptop | rejected | all passed (official jobs t14_r1_check, t14_r2_check, t14_r3_check, 10 Oct) | - |
 | 15 | Character sums modulo a prime (Polya-Vinogradov) and least non-residues | Honor laptop | prompt | not run | paste task15_prompt.txt; check outputs (jobs 024a-c) |
 | 16 | Square, twice-square and power-of-two Fibonacci and Lucas numbers (Cohn) | Honor laptop | prompt | not run | paste task16_prompt.txt; check outputs (jobs 025a-c) |
 | 17 | Densities governed by 6/pi^2: squarefree numbers, coprime pairs, Euler's function | Honor laptop | prompt | not run | paste task17_prompt.txt; check outputs (jobs 026a-c) |
@@ -220,17 +220,17 @@ ready, platform pending), submitted, returned (sent back by a reviewer), rejecte
 
 ### Task 14 - Average order of the divisor function (Dirichlet 1849, hyperbola method)
 
-- Status: prompt
-- State: Prompt compiled officially (job 018e_t14_statements, 9 Oct: build exit 0, five sorry warnings, check exit 0, 36 s); handed over 9 Oct 2026, about 23:15 IST (re-merged after an overwrite)
+- Status: rejected
+- State: All three models passed, no genuine failure (10 Oct 2026, 13:55 IST). No golden written. Prompt compiled officially 9 Oct (job 018e_t14_statements: build exit 0, five sorry warnings, check exit 0, 36 s)
 - Laptop: Honor laptop
 - Folder: tasks\task 14 (Honor laptop)
 - Topic: D(N) = sum of d(n) for n <= N. |D(N) - N log N - (2 gamma - 1) N| <= 4 sqrt N (N >= 1); |sum_(n <= N) d(n)/n - (log N)^2/2 - 2 gamma log N| <= 4 (N >= 1); (D(N) - N log N)/N -> 2 gamma - 1; (1/N) sum (d(n) - log n) -> 2 gamma; (sum_(n <= N) D(n) - N^2 log N / 2) / N^2 -> gamma - 3/4. 5 theorems, no definitions; Real.eulerMascheroniConstant, Nat.divisors, Filter.Tendsto
 - Files: task14_prompt.txt (3,217 chars, sha256 c8d81f650649215d...), TuringTask\Basic.lean (4d237da0e3b5431e...), StatementAndAxiomsCheck.lean, statements_worker_log.txt. Generator checks: 2,000,012 (theorems 1 and 2 for every N <= 10^6 with gamma to 40 digits: largest |error|/sqrt N = 0.9607 and largest deviation 1.0 (at N = 1, tending to gamma^2 - 2 gamma_1 = 0.4789) against the stated 4; the three limits at N = 10^3..10^6 within 8/sqrt N)
-- Model outputs: Not run yet
-- Rubric: Plan: build + 5 proofs = 6 items; sorry-only 1/6 = 17 percent
-- Notes: Novelty 9 Oct: Mathlib (pinned) has eulerMascheroniConstant with the two monotone sequences (error O(1/n)) and a TODO "Dirichlet hyperbola method" in ArithmeticFunction/Misc.lean; no divisor-sum asymptotics anywhere (Mathlib, TauCeti, FCBench, KummerCriterion, PNT+, compfiles, PutnamBench, formal-conjectures, web). Checks are finite-N numerics (theorems 3-5 are limits). Golden plan in handoff section 33 (700 to 1,000 lines)
-- Next: Paste task14_prompt.txt on the platform; check the three outputs (jobs 022a-c); golden only after a genuine failure
-- Updated: 9 Oct 2026, about 23:15 IST (re-merged after an overwrite)
+- Model outputs: R1 `turing_task_r1.zip` (sha256 b2303adb590a314d...) PASS: job t14_r1_check, 1,812 lines in one file, build exit 0, no warnings, check exit 0, five axiom lists [propext, Classical.choice, Quot.sound]. R2 `turingtask-lean_r2.zip` (cc1f61653f264b94...) PASS: job t14_r2_check, 1,255 lines in 10 files (Hyperbola, Divisors, Harmonic, Floor, Thm1, LogSum, Thm2, Stirling, Limits, Basic), build exit 0, no warnings, check exit 0, standard axioms. R3 final `r3\TuringTask.zip` (d0f51961369bf1d7...; the four other r3 zips are earlier attempts with five sorry in Basic) PASS on the mathematics: job t14_r3_check, 1,745 lines, chain Research -> First -> Second -> Limits -> Basic, build exit 0, no warnings, check exit 0, standard axioms; one `set_option maxHeartbeats 800000`. Packaging slip in R3 (not counted as a failure): its own `TuringTask.lean` imports only `TuringTask.Second`, so plain `lake build` never compiles Limits.lean and Basic.lean (job t14_r3_ownroot: 8,668 jobs, `import TuringTask` lacks the five theorems, Unknown constant). Statements whitespace-identical to the prompt in all three; no escapes, no shadowed names; proof bodies not read. Logs: model_outputs\check_r1_log.txt, check_r2_log.txt, check_r3_log.txt, check_summary.txt. Earlier runs: jobs\recheck_024a..d_t14_* (single worker, same results); the legacy _jobs\024a..d_t14_* logs are unreliable (two workers overlapped)
+- Rubric: not needed (rejected)
+- Notes: Novelty 9 Oct: Mathlib (pinned) has eulerMascheroniConstant with the two monotone sequences (error O(1/n)) and a TODO "Dirichlet hyperbola method" in ArithmeticFunction/Misc.lean; no divisor-sum asymptotics anywhere (Mathlib, TauCeti, FCBench, KummerCriterion, PNT+, compfiles, PutnamBench, formal-conjectures, web). Checks are finite-N numerics (theorems 3-5 are limits). Golden plan in handoff section 33 (700 to 1,000 lines). Post-mortem (handoff 37): solved by all three in 1,255 to 1,812 lines. Checklist answers in hindsight: textbook test yes (Apostol Theorem 3.3, Hardy-Wright 320: hyperbola method plus H_n = log n + gamma + O(1/n)); Mathlib-assist yes (eulerMascheroniSeq/eulerMascheroniSeq' monotone bounds, harmonic_le_one_add_log, integral comparison for log x / x and x log x); ladder yes (theorems 3-5 follow from theorem 1 plus elementary limits). Platform run times of the three models: not recorded (ask the fellow)
+- Next: None
+- Updated: 10 Oct 2026, about 14:00 IST
 
 ### Task 15 - Character sums modulo a prime (Polya 1918, Vinogradov 1918) and least non-residues
 
