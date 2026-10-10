@@ -1,3 +1,4 @@
+The project folder is a Git repository (see REPO_PROTOCOL.md); pull before editing, push after
 # Project Turing - compact memory (read this first, then TURING_HANDOFF_2026-10-06.md)
 
 Last updated: 10 Oct 2026, about 08:20 IST: task 13 golden built and worker-verified (jobs 027a/027b); offline check pending.

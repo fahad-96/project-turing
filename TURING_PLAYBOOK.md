@@ -648,3 +648,12 @@ asked, rerun the offline check and both gradings, and draft a short ASCII reply 
 - [ ] Rubric: build item + proof-only items, CSV format, banned words absent, expected scores
       golden 100 and at least one output below 40.
 - [ ] Tracker and handoff updated.
+
+## 13. Git repository (10 Oct 2026)
+
+The project folder is now a private Git repository:
+https://github.com/fahad-96/project-turing (clone: `git clone https://github.com/fahad-96/project-turing.git`).
+Read `REPO_PROTOCOL.md` before working: pull before editing, commit with a message naming the task,
+push immediately, never force-push. Lean builds can also be submitted through `jobs/` (see
+`jobs/README.md`): the laptop runs `lean_worker_git.bat`, which builds them one at a time and pushes
+the logs back. `lean_worker.bat` stays as the fallback; never run both at once.
