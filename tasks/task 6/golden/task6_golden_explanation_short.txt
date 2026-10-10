@@ -1,0 +1,21 @@
+STEP-BY-STEP EXPLANATION OF THE GOLDEN ANSWER (SHORT VERSION)
+
+The zip is a complete Lake project (lakefile.toml and lake-manifest.json with Mathlib from the pinned checkout at /opt/mathlib4, commit 9944fe2973b8dc0b86949101ed98232c07cd54a0; lean-toolchain leanprover/lean4:v4.33.0-rc1; TuringTask.lean) with six source files in one import chain: TuringTask/Poly.lean, Root.lean, Sums.lean, Char.lean, Cot.lean, Basic.lean. Basic.lean keeps `import Mathlib`, the namespace, both definitions and the five statements exactly as in the prompt.
+
+Plan. Write $e(x)=\exp(2\pi i x)$, $n=2m+1$. Everything rests on the exact value of $\sum_{k<n}e(k^2/n)$, which Mathlib at the pinned commit does not have (only its square, for primes). The proof follows Gauss.
+
+1. Poly.lean (in $\mathbb{Z}[X]$). `gb m k` is the Gaussian binomial coefficient $[m,k]$, defined by the Pascal rule $[m+1,k+1]=X^{m-k}[m,k]+[m,k+1]$. `gb_mul_EP` is the product formula $[m,k]\prod_{i\le k}(1-X^i)=\prod_{j\le k}(1-X^{m-k+j})$; `gb_ratio` and `gb_succ_succ'` give the second Pascal rule. With $S_N=\sum_k(-1)^k[N,k]$ (`altS`) and $H_N=\sum_k(-1)^kX^{N-k}[N,k]$ (`altH`), the two Pascal rules give $S_{N+1}=S_N-H_N$ and $H_{N+1}=X^{N+1}S_N-H_N$, hence $S_{N+2}=(1-X^{N+1})S_N$ and `altS_even`: $\sum_{k=0}^{2m}(-1)^k[2m,k]=\prod_{j<m}(1-X^{2j+1})$.
+
+2. Root.lean. For $z$ of exact order $2m+1$ in a field, `aeval_gb_mul` shows that $[2m,k]$ takes the value $(-1)^kz^{-k(k+1)/2}$ at $z$, so `sum_pow_tri`: $\sum_{k\le 2m}w^{k(k+1)/2}=\prod_{j<m}(1-z^{2j+1})$ for $w=z^{-1}$. `conj_sum_mul`: for an exponent $c$ with $c(l+d)=c(l)+c(d)+r\,d\,l$ and $\gcd(r,n)=1$, $(\sum_k w^{c(k)})(\sum_l w^{-c(l)})=n$.
+
+3. Sums.lean. `cx` is the same expression as `ex`. `one_sub_cx_neg`: $1-e(-x)=e(-x/2)\cdot 2i\sin(\pi x)$, so (`prod_one_sub`, `root_sum`) the product of step 2 is a unit complex number times a product of real sines. `norm_sum_pow`: the absolute value of the sum is $\sqrt n$ (from `conj_sum_mul`). `sum_tri_cx` (theorem 2): all sines are positive. `sum_sq_core`: after the shift $k\to k+m+1$, $\sum_{k<n}e(k^2/n)=i^m\prod_{j<m}2\sin(2\pi(2j+1)/n)$. `sum_sq_cx` (theorem 1): for $n=4t+1$ exactly $t$ sines are negative and $i^{2t}(-1)^t=1$; for $n=4t+3$ exactly $t$ are negative and $i^{2t+1}(-1)^t=i$.
+
+4. Char.lean. `psi` is $y\mapsto e(y/p)$ on `ZMod p`. `sum_sq_fiber`: $\sum_x h(x^2)=\sum_y(1+(y|p))h(y)$ (Mathlib's count of square roots). Hence `sum_char_psi`, `sum_char_twist`, `sum_legendre_cx` (theorem 3) and `sum_sq_twist_cx`: $\sum_{k<p}e(ak^2/p)=(a|p)\rho(p)$. `sum_sq_mul_cx` (theorem 4) multiplies two such sums and uses Mathlib's `legendreSym.quadratic_reciprocity` and the case check `rtv_mul`.
+
+5. Cot.lean. `cot_formula`: $\cot(\pi k/p)=i(1+\frac{2}{p}\sum_{j<p}j\,e(jk/p))$ for $0<k<p$. Summing against $(k|p)$ and using theorem 3 for $a=0$ and $a=j$ gives `sum_cot_real` (theorem 5).
+
+6. Basic.lean. The five theorems are one-line calls of `sum_sq_cx`, `sum_tri_cx`, `sum_legendre_cx`, `sum_sq_mul_cx`, `sum_cot_real`.
+
+Verification: the zip was extracted afresh and checked offline without edits, with Mathlib at /opt/mathlib4 (pinned commit, dependencies linked as lean-offline-init does) and Lean 4.33.0-rc1: `lake build` ends with "Build completed successfully", exit code 0, no errors, no warnings; the included StatementAndAxiomsCheck.lean passes and reports only `propext`, `Classical.choice`, `Quot.sound` for each of the five theorems. No `sorry`, `admit`, `native_decide` or new axiom.
+
+Sources: Gauss, Summatio quarumdam serierum singularium (1811); Berndt, Evans, Williams, Gauss and Jacobi Sums (1998), chapter 1; Ireland and Rosen, A Classical Introduction to Modern Number Theory, chapter 6. Statements, proofs and Lean code are my own. Related Lean code: Mathlib has only the square of the quadratic Gauss sum; TauCetiProject/TauCeti has values for powers of 2 only; yuhangshi888/sun-cotangent-permanent-counterexample-lean has the case $p=29$. Other complete proofs (for example Schur's matrix proof) are equally acceptable.

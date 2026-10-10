@@ -1,0 +1,79 @@
+### Overview
+
+The zip is a complete Lake project. `lakefile.toml` and `lake-manifest.json` use the pinned Mathlib checkout at `/opt/mathlib4` (commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`), and `lean-toolchain` is `leanprover/lean4:v4.33.0-rc1`. The proof is split into seven files under `TuringTask/` that import each other in a chain: `Hcyc`, `Prim`, `Size`, `Zsig`, `Apps`, `Main`, `Basic`. The required file `TuringTask/Basic.lean` is the file of the prompt: `import Mathlib`, the namespace and the five statements are unchanged, and each `sorry` is replaced by a one-line call of the matching theorem in `Main.lean`.
+
+Notation: $\Phi_n$ is the $n$-th cyclotomic polynomial and $\varphi$ is Euler's function. For natural numbers $a > b \ge 1$ the homogeneous value $\Phi_n(a,b) = b^{\varphi(n)}\Phi_n(a/b)$ is an integer (`hcyc n a b`). A prime $q$ is primitive for $n$ if $q \mid a^n - b^n$ and $q \nmid a^k - b^k$ for $1 \le k < n$.
+
+The proof follows the classical argument for Zsigmondy's theorem:
+- (A) a prime of $\Phi_n(a,b)$ that does not divide $n$ is primitive;
+- (B) a prime $q$ of $\Phi_n(a,b)$ that divides $n$ is the largest prime factor of $n$ and divides $\Phi_n(a,b)$ only once (for $n \ge 3$);
+- (C) $\Phi_n(a,b) > q$ in that situation, except for $(a,b,n) = (2,1,6)$.
+
+So for $n \ge 3$ the number $\Phi_n(a,b)$ always has a prime factor not dividing $n$. Theorem 1 follows, and theorems 2 to 5 are derived from theorem 1.
+
+### 1. Hcyc.lean: the homogeneous cyclotomic value
+
+- `hcyc n a b` is $\sum_i c_i a^i b^{\varphi(n) - i}$, where the $c_i$ are the integer coefficients of $\Phi_n$.
+- `hcyc_cast`: in any field where $b \ne 0$, `hcyc n a b` $= b^{\varphi(n)} \Phi_n(a/b)$. The proof uses `natDegree_cyclotomic` and `map_cyclotomic_int`.
+- `prod_hcyc`: $\prod_{d \mid n} \Phi_d(a,b) = a^n - b^n$. This is computed in $\mathbb{Q}$ with Mathlib's `prod_cyclotomic_eq_X_pow_sub_one` and $\sum_{d \mid n}\varphi(d) = n$ (`Nat.sum_totient`). Corollaries: `hcyc_dvd` ($\Phi_n(a,b) \mid a^n - b^n$), `hcyc_one` ($\Phi_1(a,b) = a - b$) and `hcyc_prime_mul` ($\Phi_q(a,b)(a - b) = a^q - b^q$ for a prime $q$).
+- `hcyc_ge`, `hcyc_gt`, `hcyc_le`, `hcyc_pos`: $(a-b)^{\varphi(n)} \le \Phi_n(a,b) \le (a+b)^{\varphi(n)}$, with strict inequality on the left for $n \ge 2$. These follow from Mathlib's bounds for $\Phi_n(x)$ at real $x > 1$ (`sub_one_pow_totient_le_cyclotomic_eval`, `sub_one_pow_totient_lt_cyclotomic_eval`, `cyclotomic_eval_le_add_one_pow_totient`) with $x = a/b$.
+- `hcyc_mul_dvd`: if $q \mid j$, then $\Phi_{jq}(a,b) = \Phi_j(a^q, b^q)$. `hcyc_mul_not_dvd`: if $q \nmid j$, then $\Phi_{jq}(a,b)\,\Phi_j(a,b) = \Phi_j(a^q, b^q)$. Both come from Mathlib's `cyclotomic_expand_eq_cyclotomic` and `cyclotomic_expand_eq_cyclotomic_mul` together with the totient of $jq$. Iterating the first gives `hcyc_pow_mul`: $\Phi_{q^{k+1} m}(a,b) = \Phi_{qm}(a^{q^k}, b^{q^k})$.
+
+### 2. Prim.lean: the prime divisors of $\Phi_n(a,b)$
+
+- `not_dvd_right`: a prime dividing $a^n - b^n$ ($n \ge 1$, $a, b$ coprime) does not divide $b$.
+- `primitive_of_not_dvd`, step (A): let $q \mid \Phi_n(a,b)$ with $q \nmid n$. In $\mathbb{Z}/q$ the element $x = a/b$ is a root of $\Phi_n$, and $n \ne 0$ there, so $x$ is a primitive $n$-th root of unity (Mathlib's `isRoot_cyclotomic_iff`). Hence $x^k \ne 1$ for $0 < k < n$, which means $q \nmid a^k - b^k$.
+- `structure_of_dvd`: let $q \mid \Phi_n(a,b)$ with $q \mid n$, and write $n = q^k m$ with $q \nmid m$, $k \ge 1$. In characteristic $q$ we have $\Phi_{q^k m} = \Phi_m^{\,q^k - q^{k-1}}$ (`cyclotomic_mul_prime_pow_eq`), so $x$ is a primitive $m$-th root of unity in $\mathbb{Z}/q$. Fermat's little theorem gives $m \mid q - 1$, and since $m \mid n/q$ we get $q \mid a^{n/q} - b^{n/q}$. In particular every prime factor of $n$ is at most $q$.
+- `not_sq_dvd_hcyc`, step (B): for $n \ge 3$, $q^2 \nmid \Phi_n(a,b)$. Put $r = n/q$. The product formula shows that $\Phi_n(a,b)\,(a^r - b^r)$ divides $a^n - b^n = (a^r - b^r)\,S$ with $S = \sum_{i<q} a^{ri} b^{r(q-1-i)}$, so $\Phi_n(a,b) \mid S$.
+  - If $q$ is odd, lifting the exponent (Mathlib's `padicValNat.pow_sub_pow`) gives $v_q(a^n - b^n) = v_q(a^r - b^r) + 1$, so $v_q(S) = 1$.
+  - If $q = 2$, then $m = 1$ and $n = 2^k$ with $k \ge 2$, so $S = a^r + b^r$ with $r$ even and $a, b$ odd. Odd squares are $1 \bmod 4$, so $S \equiv 2 \pmod 4$.
+
+### 3. Size.lean: the size bound
+
+- `pow_sub_pow_gt`: $q(A - B) < A^q - B^q$ for integers $A > B \ge 1$, $q \ge 2$ (induction on $q$).
+- `pow_sub_pow_ge_add`, `pow_sub_pow_ge_three`, `pow_sub_pow_ge_mul_add`: $q(A + B) \le A^q - B^q$ for $q \ge 3$, except for $A = 2$, $q = 3$.
+- `size_core`: let $A > B \ge 1$, $q$ prime, $q \nmid m$, $m \mid q - 1$, and exclude $(A, q, m) = (2, 3, 2)$. Then $q < \Phi_{qm}(A,B)$.
+  - For $m = 1$: $\Phi_q(A,B)(A - B) = A^q - B^q > q(A - B)$.
+  - For $m \ge 2$ (so $q \ge 3$): $\Phi_{qm}(A,B)\,\Phi_m(A,B) = \Phi_m(A^q, B^q) > (A^q - B^q)^{\varphi(m)} \ge (q(A+B))^{\varphi(m)} \ge q\,(A+B)^{\varphi(m)} \ge q\,\Phi_m(A,B)$, computed in $\mathbb{R}$.
+- `size_bound`, step (C): if $n = q^k m$ with $k \ge 1$, $q \nmid m$, $m \mid q - 1$, $n \ge 3$ and $(a,b,n) \ne (2,1,6)$, then $q < \Phi_n(a,b)$. Use `hcyc_pow_mul` with $A = a^{q^{k-1}}$, $B = b^{q^{k-1}}$. The excluded case $A = 2$, $q = 3$, $m = 2$ forces $a = 2$, $k = 1$, $b = 1$, i.e. $(a,b,n) = (2,1,6)$.
+
+### 4. Zsig.lean: Zsigmondy's theorem
+
+- `exists_good_prime`: for $n \ge 3$ and $(a,b,n) \ne (2,1,6)$, some prime divides $\Phi_n(a,b)$ but not $n$. Suppose not, and let $N = \Phi_n(a,b) > (a-b)^{\varphi(n)} \ge 1$.
+  - Every prime factor $q$ of $N$ divides $n$, and by `structure_of_dvd` it is at least every prime factor of $n$. So $N$ has exactly one prime factor $q$, and $N = q^e$ (`Nat.eq_prime_pow_of_unique_prime_dvd`).
+  - `not_sq_dvd_hcyc` gives $e \le 1$, so $N \le q$, which contradicts `size_bound`.
+- `zsigmondy` (theorem 1):
+  - For $n = 2$: $a + b$ is not a power of $2$, so it has an odd prime factor $q$. If $q$ also divided $a - b$, it would divide $2a$ and $2b$, hence $a$ and $b$.
+  - For $n \ge 3$: take the prime from `exists_good_prime`. It divides $a^n - b^n$ by `hcyc_dvd` and is primitive by `primitive_of_not_dvd`.
+
+### 5. Apps.lean: the four consequences
+
+- `zsigmondy_add` (theorem 2): apply theorem 1 to $2n$; the exceptions do not occur because $2n \ge 4$ and $(a,b,2n) = (2,1,6)$ means $n = 3$. A primitive prime $q$ of $a^{2n} - b^{2n} = (a^n + b^n)(a^n - b^n)$ does not divide $a^n - b^n$, so it divides $a^n + b^n$. If it divided $a^k + b^k$ with $k < n$, it would divide $a^{2k} - b^{2k}$.
+- `card_divisors_bound` (theorem 3): $d \mapsto$ a primitive prime of $a^d - 1$ is injective on the divisors $d$ of $n$ that have one (`prim_unique`), and its values are prime factors of $a^n - 1$. By `exists_prim` (theorem 1 with $b = 1$), only $d = 1$ and $d = 6$ (when $a = 2$) or $d = 2$ (when $a + 1$ is a power of $2$) can lack a primitive prime, so at most two divisors are missed.
+- `prime_pow_eq` (theorem 4):
+  - If $n = 2$ and $a + 1 = 2^t$, then $q = 2$ and $a - 1$, $a + 1$ are powers of $2$ that differ by $2$, so $a = 3$ and $m = 3$.
+  - The case $a = 2$, $n = 6$ is impossible because $63$ is not a prime power ($7 \mid 63$ but $49 \nmid 63$).
+  - Otherwise a primitive prime of $a^n - 1$ equals $q$. If $a \ge 3$, the prime factors of $a - 1$ would also equal $q$, which is impossible. So $a = 2$ and $2^n - 1 = q^m$ with $q$ odd. Then theorem 2 for $q^m + 1 = 2^n$ gives a prime of $2^n$ (so $2$) that does not divide $q + 1$, which is impossible because $q$ is odd.
+- `same_prime_factors` (theorem 5):
+  - Outside the two exceptional cases, a primitive prime of $a^n - 1$ would be a prime factor of $a^m - 1$, which is impossible.
+  - For $n = 2$ the claim holds.
+  - For $a = 2$, $n = 6$, both $3$ and $7$ divide $63$, but no $2^m - 1$ with $m < 6$ is divisible by both (checked for $m = 1, \dots, 5$).
+
+### 6. Main.lean and Basic.lean
+
+`Main.lean` restates the five theorems exactly as in the prompt, under other names, converting `x % q = 0` to divisibility (`Nat.mod_eq_zero_of_dvd`, `Nat.dvd_of_mod_eq_zero`). `Basic.lean` proves each required theorem with one call of the corresponding theorem in `Main.lean`.
+
+### Verification
+
+- I extracted the final zip into a fresh folder and checked it offline, without editing anything, in the setting of the review environment: Mathlib at `/opt/mathlib4` (the pinned checkout, commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`, with its dependencies linked into `.lake/packages` as `lean-offline-init` does), Lean `4.33.0-rc1`, network access blocked.
+- `lake build` ends with "Build completed successfully", exit code 0, with no errors and no warnings. Every file uses the full `import Mathlib`.
+- `lake env lean StatementAndAxiomsCheck.lean` (included in the zip) re-states the five theorems of the prompt, so it fails if any statement was changed, and it reports exactly the axioms `propext`, `Classical.choice` and `Quot.sound` for each of the five theorems; exit code 0.
+- The project contains no `sorry`, `admit`, `native_decide`, new axiom, `set_option` or instance declaration.
+
+### Sources and related work
+
+The theorem is due to Bang (1886, for $b = 1$) and Zsigmondy (Zur Theorie der Potenzreste, Monatshefte fur Mathematik und Physik 3, 1892); see also Birkhoff and Vandiver (On the integral divisors of $a^n - b^n$, Annals of Mathematics 5, 1904) and Roitman (On Zsigmondy primes, Proceedings of the AMS 125, 1997) for the cyclotomic-polynomial argument used here. Theorem 4 is a special case of Catalan's equation. The write-up and the Lean code are my own.
+
+Related Lean code: Mathlib at the pinned commit provides cyclotomic polynomials, their evaluation bounds and the lifting-the-exponent lemma used above, but no primitive-divisor theorem. I found no Lean formalization of Zsigmondy's theorem or of the five statements (Mathlib, TauCetiProject/TauCeti, riccardobrasca/KummerCriterion, web search).
+
+The golden answer is one valid route, not the only one. Any complete proof of the five statements is acceptable.

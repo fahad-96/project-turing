@@ -1,0 +1,52 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. For a real number $t$ let $\{t\} = t - \lfloor t \rfloor$ be its fractional part. Let $x$ be an irrational real number and $0 \le a \le b \le 1$. For $N \ge 1$ let $P_N$ be the proportion of $n \in \{0, 1, \dots, N - 1\}$ with $a \le \{nx\} < b$.
+
+1. $P_N \to b - a$ as $N \to \infty$.
+2. The same holds with $\{n^2 x\}$ in place of $\{nx\}$.
+3. The convergence in 1 is uniform in $a$ and $b$: for every $\varepsilon > 0$ there is $N_0$ such that $|P_N - (b - a)| < \varepsilon$ for all $N \ge N_0$ and all $0 \le a \le b \le 1$.
+4. For $d \in \{1, \dots, 9\}$, the proportion of $n \in \{0, \dots, N - 1\}$ for which the first decimal digit of $2^n$ is $d$ tends to $\log_{10}((d + 1)/d)$.
+5. $\frac{1}{N} \sum_{n=0}^{N-1} |\sin n| \to 2/\pi$.
+
+Lean statement. `Int.fract t` is $\{t\}$, the proportion is the number of such $n$ in `Finset.range N` divided by `N`, and `2 ^ n / 10 ^ Nat.log 10 (2 ^ n)` (division of natural numbers) is the first decimal digit of $2^n$. The file `TuringTask/Basic.lean` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem freq_mul (x a b : Real) (hx : Irrational x) (ha : 0 <= a) (hab : a <= b) (hb : b <= 1) :
+    Filter.Tendsto (fun N : Nat => (((Finset.range N).filter (fun n : Nat =>
+      a <= Int.fract ((n : Real) * x) /\ Int.fract ((n : Real) * x) < b)).card : Real) / N)
+      Filter.atTop (nhds (b - a)) := by
+  sorry
+
+theorem freq_sq (x a b : Real) (hx : Irrational x) (ha : 0 <= a) (hab : a <= b) (hb : b <= 1) :
+    Filter.Tendsto (fun N : Nat => (((Finset.range N).filter (fun n : Nat =>
+      a <= Int.fract ((n : Real) ^ 2 * x) /\ Int.fract ((n : Real) ^ 2 * x) < b)).card : Real)
+      / N) Filter.atTop (nhds (b - a)) := by
+  sorry
+
+theorem freq_unif (x : Real) (hx : Irrational x) (e : Real) (he : 0 < e) :
+    exists N0 : Nat, forall N : Nat, N0 <= N -> forall a b : Real, 0 <= a -> a <= b -> b <= 1 ->
+      abs ((((Finset.range N).filter (fun n : Nat =>
+        a <= Int.fract ((n : Real) * x) /\ Int.fract ((n : Real) * x) < b)).card : Real) / N
+        - (b - a)) < e := by
+  sorry
+
+theorem freq_lead (d : Nat) (hd : 1 <= d) (hd' : d <= 9) :
+    Filter.Tendsto (fun N : Nat => (((Finset.range N).filter (fun n : Nat =>
+      2 ^ n / 10 ^ Nat.log 10 (2 ^ n) = d)).card : Real) / N)
+      Filter.atTop (nhds (Real.logb 10 (((d : Real) + 1) / d))) := by
+  sorry
+
+theorem mean_abs_sin :
+    Filter.Tendsto
+      (fun N : Nat => Finset.sum (Finset.range N) (fun n : Nat => abs (Real.sin n)) / N)
+      Filter.atTop (nhds (2 / Real.pi)) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.

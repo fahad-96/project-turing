@@ -1,0 +1,42 @@
+Job 006_statements_t7 started Thu 10/08/2026 16:58:52.12 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (501s)
+warning: TuringTask/Basic.lean:8:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:13:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:18:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:22:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:27:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (35s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+JobCheck.lean:13:42: error: Application type mismatch: The last
+  p
+argument has type
+  ℕ
+of sort `Type` but is expected to have type
+  a % 2 = 1
+of sort `Prop` in the application
+  csum_sq_of_sq p hp a b c hab p
+JobCheck.lean:22:39: error: Application type mismatch: The last
+  p
+argument has type
+  ℕ
+of sort `Type` but is expected to have type
+  a % 4 = 1
+of sort `Prop` in the application
+  choose_modEq p hp a b hab p
+JobCheck.lean:28:37: error: Application type mismatch: The last
+  p
+argument has type
+  ℕ
+of sort `Type` but is expected to have type
+  a % 4 = 1
+of sort `Prop` in the application
+  card_curve p hp a b hab p
+'TuringTask.csum_sq_add_sq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.csum_sq_of_sq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.csum_one_emod' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.choose_modEq' depends on axioms: [propext, sorryAx]
+'TuringTask.card_curve' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 1 

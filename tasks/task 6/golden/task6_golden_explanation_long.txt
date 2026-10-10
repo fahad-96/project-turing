@@ -1,0 +1,88 @@
+STEP-BY-STEP EXPLANATION OF THE GOLDEN ANSWER
+
+The zip is a complete Lake project: lakefile.toml and lake-manifest.json (Mathlib from the pinned checkout at /opt/mathlib4, commit 9944fe2973b8dc0b86949101ed98232c07cd54a0), lean-toolchain (leanprover/lean4:v4.33.0-rc1), TuringTask.lean and six source files. In build order they are TuringTask/Poly.lean, TuringTask/Root.lean, TuringTask/Sums.lean, TuringTask/Char.lean, TuringTask/Cot.lean and TuringTask/Basic.lean; each file imports the previous one. The required file TuringTask/Basic.lean keeps `import Mathlib`, the namespace `TuringTask`, both definitions and the five theorem statements exactly as in the prompt. It adds one import line and five one-line proofs that call the main results of the helper files.
+
+0. THE MATHEMATICAL PLAN
+
+Write $e(x)=\exp(2\pi i x)$ and let $n=2m+1$ be odd. All five theorems rest on the exact value of $G(n)=\sum_{k=0}^{n-1}e(k^2/n)$. Its absolute value $\sqrt n$ is easy; the classical difficulty is the fourth root of unity in front of $\sqrt n$ (the "sign"). Mathlib at the pinned commit only has the square of this sum, for prime $n$. The proof follows Gauss's original idea:
+(A) a polynomial identity for an alternating sum of Gaussian binomial coefficients;
+(B) evaluated at a root of unity of order $n$, it turns $\sum_k w^{k(k+1)/2}$ into a product of $m$ factors $1-z^{2j+1}$;
+(C) each factor is a unit complex number times a real sine whose sign is known;
+(D) the absolute value $\sqrt n$ then fixes the value completely.
+Theorem 2 is the direct output of (A) to (D), theorem 1 needs one more substitution and a count of negative sines. Theorems 3, 4, 5 are derived from theorem 1: theorem 3 by counting square roots in $\mathbb{Z}/p$, theorem 4 from the same count and the quadratic reciprocity law of Mathlib, theorem 5 from a finite Fourier expansion of the cotangent and theorem 3.
+
+1. Poly.lean - THE POLYNOMIAL IDENTITY (231 lines)
+
+Everything is in $\mathbb{Z}[X]$.
+- `tri i` is $i(i+1)/2$, with `two_mul_tri` and `tri_succ`.
+- `EP n` is $\prod_{i=1}^{n}(1-X^i)$.
+- `gb m k` is the Gaussian binomial coefficient $[m,k]$ in the variable $X$, defined by recursion with the Pascal rule $[m+1,k+1]=X^{m-k}[m,k]+[m,k+1]$ (`gb_succ_succ`). `gb_of_lt`: $[m,k]=0$ for $m<k$.
+- `gb_mul_EP`: the product formula $[m,k]\prod_{i=1}^{k}(1-X^i)=\prod_{j=1}^{k}(1-X^{m-k+j})$ for $k\le m$, by induction on $m$.
+- `gb_ratio`: $(1-X^{k+1})[m,k+1]=(1-X^{m-k})[m,k]$. For $k<m$ compare the product formulas for $k$ and $k+1$ and cancel `EP k`, which is not zero because its value at $0$ is $1$ (`EP_ne_zero`). The cases $k\ge m$ are trivial.
+- `gb_succ_succ'`: the second Pascal rule $[m+1,k+1]=[m,k]+X^{k+1}[m,k+1]$, which is the first rule plus `gb_ratio`.
+- `altS N` is $S_N=\sum_{k=0}^{N}(-1)^k[N,k]$ and `altH N` is the auxiliary sum $H_N=\sum_{k=0}^{N}(-1)^kX^{N-k}[N,k]$.
+- `altS_tail`: the index shift $\sum_{k=0}^{N}(-1)^{k+1}[N,k+1]=S_N-1$.
+- `altS_succ`: $S_{N+1}=S_N-H_N$ (first Pascal rule). `altH_succ`: $H_{N+1}=X^{N+1}S_N-H_N$ (second Pascal rule).
+- `altS_add_two`: $S_{N+2}=(1-X^{N+1})S_N$, from the two previous lemmas.
+- `altS_even`, the identity (A): $\sum_{k=0}^{2m}(-1)^k[2m,k]=\prod_{j=0}^{m-1}(1-X^{2j+1})$, by induction on $m$ starting from $S_0=1$.
+
+2. Root.lean - EVALUATION AT A ROOT OF UNITY AND TWO FACTS ABOUT FINITE SUMS (193 lines)
+
+$K$ is any field and $z\in K$ satisfies $z^{2m+1}=1$ and $z^i\ne 1$ for $0<i\le 2m$.
+- `prod_pow_succ`: $\prod_{j<k}z^{j+1}=z^{k(k+1)/2}$.
+- `aeval_gb_mul`: the value of $[2m,k]$ at $X=z$, times $z^{k(k+1)/2}$, is $(-1)^k$. Evaluate `gb_mul_EP` at $z$, reverse the order of the factors on the right, use $z^{j+1}(1-z^{2m-j})=-(1-z^{j+1})$, and cancel $\prod_{i\le k}(1-z^i)\ne 0$.
+- `sum_pow_tri`, step (B): if $wz=1$ then $\sum_{k=0}^{2m}w^{k(k+1)/2}=\prod_{j=0}^{m-1}(1-z^{2j+1})$. This is `altS_even` evaluated at $z$, with every term rewritten by `aeval_gb_mul`.
+- `sum_range_shift`: if $F$ has period $n$ then $\sum_{d<n}F(l+d)=\sum_{k<n}F(k)$ (induction on $l$).
+- `geom_sum_eq_zero'`: $x^n=1$ and $x\ne 1$ imply $\sum_{l<n}x^l=0$.
+- `conj_sum_mul`: let $w$ have exact order $n$, let $uw=1$, and let $c$ be an exponent function with $c(l+d)=c(l)+c(d)+r\,d\,l$, $\gcd(r,n)=1$, $n\mid c(n)$ and $c(0)=0$. Then $\big(\sum_{k<n}w^{c(k)}\big)\big(\sum_{l<n}u^{c(l)}\big)=n$. Proof: substitute $k=l+d$ with `sum_range_shift`; the product becomes $\sum_d w^{c(d)}\sum_l(w^{rd})^l$, and the inner sum is $n$ for $d=0$ and $0$ otherwise. It is used with $c(k)=k(k+1)/2$, $r=1$ and with $c(k)=k^2$, $r=2$.
+
+3. Sums.lean - THEOREMS 1 AND 2 (505 lines)
+
+- `cx x` is $\exp(2\pi i x)$, the same expression as `ex` in the prompt. Its basic properties are `cx_add`, `cx_int`, `cx_nat`, `cx_pow` ($\mathrm{cx}(x)^k=\mathrm{cx}(kx)$), `cx_neg_mul`, `norm_cx`, `conj_cx`, `cx_quarter` ($\mathrm{cx}(1/4)=i$) and `prod_cx`.
+- `cx_eq_one`: $\mathrm{cx}(x)=1$ only if $x$ is an integer (from Mathlib's `Complex.exp_eq_one_iff`). `cx_frac_pow_self` and `cx_frac_pow_ne_one`: for $\gcd(c,n)=1$ the number $\mathrm{cx}(c/n)$ has exact order $n$. No library notion of primitive root is used.
+- `one_sub_cx_neg`: $1-e(-x)=e(-x/2)\cdot 2i\sin(\pi x)$.
+- `prod_one_sub`, step (C): $\prod_{j<m}\big(1-e(-(2j+1)y)\big)=e\big(m/4-m^2y/2\big)\cdot\prod_{j<m}2\sin(\pi(2j+1)y)$. It uses $\sum_{j<m}(2j+1)=m^2$ (`sum_odd_mul`) and $i^m=e(m/4)$.
+- `root_sum`: `sum_pow_tri` for $z=e(-c/n)$, $w=e(c/n)$, combined with `prod_one_sub`: $\sum_{k<n}e(c/n)^{k(k+1)/2}=e\big(m/4-m^2c/(2n)\big)\cdot\prod_{j<m}2\sin(\pi(2j+1)c/n)$ for $\gcd(c,n)=1$.
+- `norm_of_mul_conj`, `norm_sum_pow`: $\big|\sum_{k<n}e(1/n)^{c(k)}\big|=\sqrt n$. This is `conj_sum_mul`, because the second sum there is the complex conjugate of the first (`conj_cx`).
+- `eq_sqrt_of_norm`, step (D): if $S=uP$ with $|u|=1$, $P\ge 0$ real and $|S|=\sqrt n$, then $S=u\sqrt n$.
+- `sin_pi_mul_pos`, `sin_pi_mul_neg`: $\sin(\pi x)>0$ for $0<x<1$ and $\sin(\pi x)<0$ for $1<x<2$. `prod_neg_eq`, `sign_split`: a product whose first $t_0$ factors are positive and whose next $t$ factors are negative is $(-1)^t$ times a positive number.
+- `sum_tri_cx`, theorem 2: $e(k(k+1)/(2n))=e(1/n)^{k(k+1)/2}$ (`two_mul_tri_real`), then `root_sum` with $c=1$. All sines $\sin(\pi(2j+1)/n)$ with $j<m$ are positive, the absolute value is $\sqrt n$ by `norm_sum_pow` (the exponent $k(k+1)/2$ is additive in the required sense by `tri_add`), and $m/4-m^2/(2n)=(n-1)/(8n)$.
+- `sum_sq_core`: $\sum_{k<n}e(1/n)^{k^2}=i^m\prod_{j<m}2\sin(2\pi(2j+1)/n)$. Shift the summation index by $m+1$ (`sum_range_shift`). Since $(m+1+d)^2=(m+1)^2+d^2+d+nd$, the sum equals $e((m+1)^2/n)\sum_d e(2/n)^{d(d+1)/2}$. Apply `root_sum` with $c=2$. The exponential factors combine to $e(m/4+1)=i^m$ because $(m+1)^2-m^2=n$.
+- `norm_sum_sq`: the absolute value of this sum is $\sqrt n$ (`norm_sum_pow` with $c(k)=k^2$, $r=2$).
+- `sinFac`, `sinFac_pos`, `sinFac_neg`: the factor $2\sin(2\pi(2j+1)/n)$ is positive if $2(2j+1)<n$ and negative if $n<2(2j+1)<2n$.
+- `sum_sq_cx`, theorem 1. For $n=4t+1$ we have $m=2t$; the first $t$ factors are positive and the last $t$ negative, so the sum is $i^{2t}(-1)^tP=P$ with $P>0$, hence it is $\sqrt n$. For $n=4t+3$ we have $m=2t+1$; the first $t+1$ factors are positive and the last $t$ negative, so the sum is $i^{2t+1}(-1)^tP=iP$, hence it is $i\sqrt n$.
+
+4. Char.lean - THEOREMS 3 AND 4 (265 lines)
+
+- `rtv n` is the same expression as `rt n` in the prompt.
+- `psi p x` is $e(\mathrm{val}(x)/p)$ for $x$ in `ZMod p`. `psi_intCast`: $\psi(c \bmod p)=e(c/p)$ for every integer $c$. `sum_range_zmod`: a sum over `range p` of a function of the residue class is the sum over `ZMod p`. `sum_psi_zero`: $\sum_y\psi(y)=0$. `sum_mul_left`: the substitution $y\mapsto ay$ for $a\ne 0$.
+- `sum_sq_fiber`: $\sum_x h(x^2)=\sum_y\big(1+(y|p)\big)h(y)$ for every function $h$, because $y$ has $1+(y|p)$ square roots (Mathlib's `quadraticChar_card_sqrts`).
+- `sum_char_psi`: $\sum_y(y|p)\psi(y)=\rho(p)$. Apply `sum_sq_fiber` to $\psi$, then theorem 1 and `sum_psi_zero`.
+- `sum_char_twist`: $\sum_y(y|p)\psi(ay)=(a|p)\rho(p)$ for $a\ne 0$, by the substitution $y\mapsto ay$ and $(a|p)^2=1$ (`quadraticChar_sq_cast`).
+- `sum_legendre_cx`, theorem 3: translate the sum to `ZMod p`. If $p\mid a$ both sides are $0$ (`quadraticChar_sum_zero`); otherwise it is `sum_char_twist`.
+- `sum_sq_twist_cx`: $\sum_{k<p}e(ak^2/p)=(a|p)\rho(p)$ for $p\nmid a$, again by `sum_sq_fiber`.
+- `rtv_mul`: $(-1)^{\lfloor p/2\rfloor\lfloor q/2\rfloor}\rho(p)\rho(q)=\rho(pq)$ for odd $p,q$ (four cases modulo $4$, with $\sqrt{pq}=\sqrt p\sqrt q$ and $i^2=-1$).
+- `sum_sq_mul_cx`, theorem 4: the two factors are $(q|p)\rho(p)$ and $(p|q)\rho(q)$ by `sum_sq_twist_cx`. Mathlib's `legendreSym.quadratic_reciprocity` gives $(p|q)(q|p)=(-1)^{\lfloor p/2\rfloor\lfloor q/2\rfloor}$, and `rtv_mul` finishes the proof.
+
+5. Cot.lean - THEOREM 5 (182 lines)
+
+- `sub_one_mul_sum_mul_pow`, `sub_one_mul_sum`: if $x^n=1$ and $x\ne 1$ then $(x-1)\sum_{j<n}j\,x^j=n$.
+- `cot_mul`: $\cot(\pi y)\,\big(e(y)-1\big)=i\,\big(e(y)+1\big)$ if $\sin(\pi y)\ne 0$, from $e(y)=(\cos\pi y+i\sin\pi y)^2$.
+- `cot_formula`: for $0<k<p$, $\cot(\pi k/p)=i\Big(1+\frac{2}{p}\sum_{j<p}j\,e(jk/p)\Big)$, from the two previous lemmas with $x=e(k/p)$.
+- `sum_cot_real`, theorem 5: multiply `cot_formula` by $(k|p)$ and sum over $k$; the term $k=0$ is zero on both sides. Theorem 3 with $a=0$ gives $\sum_k(k|p)=0$, and theorem 3 with $a=j$ gives $\sum_k(k|p)e(jk/p)=(j|p)\,i\sqrt p$, because $p\equiv 3\pmod 4$. Hence $\sum_k(k|p)\cot(\pi k/p)=i\cdot\frac{2}{p}\cdot i\sqrt p\sum_j j\,(j|p)$, and multiplying by $\sqrt p$ gives $-2\sum_j j\,(j|p)$. The computation is done in $\mathbb{C}$ and transferred to $\mathbb{R}$ by injectivity of the coercion.
+
+6. Basic.lean - THE REQUIRED FILE (47 lines)
+
+The two definitions and the five statements are copied from the prompt. Each proof is one line: `sum_sq` is `sum_sq_cx`, `sum_tri` is `sum_tri_cx` with $m=\lfloor n/2\rfloor$, `sum_legendre` is `sum_legendre_cx`, `sum_sq_mul` is `sum_sq_mul_cx` and `sum_cot` is `sum_cot_real`. They type-check because `ex` and `cx`, and `rt` and `rtv`, unfold to the same terms.
+
+7. VERIFICATION
+
+The zip was extracted afresh into an empty folder and checked offline without any edit, in the setting of the review environment: Mathlib at /opt/mathlib4 (the pinned checkout, commit 9944fe2973b8dc0b86949101ed98232c07cd54a0, with its dependencies linked into .lake/packages as lean-offline-init does), Lean 4.33.0-rc1, network access blocked. `lake build` ends with "Build completed successfully (8671 jobs)", exit code 0, with no errors and no warnings; every file uses the full `import Mathlib`. `lake env lean StatementAndAxiomsCheck.lean` (included in the zip) re-states the two definitions and the five theorems of the prompt, so it fails if any of them was changed, and it reports for each of the five theorems exactly the axioms `propext`, `Classical.choice` and `Quot.sound`; exit code 0. The project contains no `sorry`, `admit`, `native_decide`, new axiom, `set_option` or instance declaration.
+
+8. SOURCES, RELATED LEAN CODE, OTHER ROUTES
+
+The mathematics is classical. Steps (A) to (D) follow Gauss's determination of the sign (Summatio quarumdam serierum singularium, 1811). Textbook accounts of the quadratic Gauss sum are in Berndt, Evans and Williams, Gauss and Jacobi Sums (Wiley, 1998), chapter 1, and in Ireland and Rosen, A Classical Introduction to Modern Number Theory, chapter 6. Theorem 5 is the finite form of Dirichlet's class number formula for the field $\mathbb{Q}(\sqrt{-p})$. The statements and proofs above are in my own words and the Lean code is my own.
+
+Related Lean code that I know of: Mathlib at the pinned commit contains the square of the quadratic Gauss sum (`gaussSum_sq`) and quadratic reciprocity, but not the value of the sum; the public repository TauCetiProject/TauCeti contains Gauss sums of finite quadratic modules, with explicit values only for powers of 2; the public repository yuhangshi888/sun-cotangent-permanent-counterexample-lean proves the single case $p=29$ by explicit cosines. None of that code is used here, apart from the Mathlib lemmas named above.
+
+The golden answer is one valid route, not the only one. Any complete proof of the five statements is acceptable, for example Schur's proof through the eigenvalues of the finite Fourier matrix, a proof by multiplicativity and prime powers, or an analytic proof.

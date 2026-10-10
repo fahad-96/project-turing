@@ -1,0 +1,61 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. Write $e(x) = \exp(2\pi i x)$ for real $x$. For an odd integer $n \ge 1$ put $\rho(n) = \sqrt{n}$ if $n \equiv 1 \pmod 4$ and $\rho(n) = i\sqrt{n}$ if $n \equiv 3 \pmod 4$. For an odd prime $p$ and an integer $a$ let $(a|p)$ be the Legendre symbol.
+
+1. For every odd $n \ge 1$: $\sum_{k=0}^{n-1} e(k^2/n) = \rho(n)$.
+2. For every odd $n \ge 1$: $\sum_{k=0}^{n-1} e\big(k(k+1)/(2n)\big) = e\big((n-1)/(8n)\big)\sqrt{n}$.
+3. For every odd prime $p$ and every integer $a$: $\sum_{k=0}^{p-1} (k|p)\, e(ak/p) = (a|p)\,\rho(p)$.
+4. For distinct odd primes $p$ and $q$: $\big(\sum_{j=0}^{p-1} e(q j^2/p)\big)\big(\sum_{k=0}^{q-1} e(p k^2/q)\big) = \rho(pq)$.
+5. For every prime $p \equiv 3 \pmod 4$: $\sqrt{p}\,\sum_{k=1}^{p-1} (k|p)\cot(\pi k/p) = -2\sum_{k=1}^{p-1} k\,(k|p)$.
+
+Lean statement. `ex` and `rt` are $e$ and $\rho$; the value of `rt n` for even `n` is never used. `legendreSym p a` is Mathlib's Legendre symbol $(a|p)$. In theorem 5 both sums start at $k = 0$, where the term is zero. The file `TuringTask/Basic.lean` must contain these two definitions and five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+noncomputable def ex (x : Real) : Complex :=
+  Complex.exp (2 * (Real.pi : Complex) * Complex.I * (x : Complex))
+
+noncomputable def rt (n : Nat) : Complex :=
+  if n % 4 = 1 then ((Real.sqrt (n : Real) : Real) : Complex)
+  else Complex.I * ((Real.sqrt (n : Real) : Real) : Complex)
+
+theorem sum_sq (n : Nat) (hn : n % 2 = 1) :
+    Finset.sum (Finset.range n) (fun k : Nat => ex ((k : Real) ^ 2 / (n : Real))) = rt n := by
+  sorry
+
+theorem sum_tri (n : Nat) (hn : n % 2 = 1) :
+    Finset.sum (Finset.range n) (fun k : Nat =>
+        ex ((k : Real) * ((k : Real) + 1) / (2 * (n : Real)))) =
+      ex (((n : Real) - 1) / (8 * (n : Real))) * ((Real.sqrt (n : Real) : Real) : Complex) := by
+  sorry
+
+theorem sum_legendre (p : Nat) [Fact p.Prime] (hp : p % 2 = 1) (a : Int) :
+    Finset.sum (Finset.range p) (fun k : Nat =>
+        ((legendreSym p (k : Int) : Int) : Complex) *
+          ex ((a : Real) * (k : Real) / (p : Real))) =
+      ((legendreSym p a : Int) : Complex) * rt p := by
+  sorry
+
+theorem sum_sq_mul (p q : Nat) [Fact p.Prime] [Fact q.Prime]
+    (hp : p % 2 = 1) (hq : q % 2 = 1) (hpq : Not (p = q)) :
+    Finset.sum (Finset.range p) (fun j : Nat =>
+        ex ((q : Real) * (j : Real) ^ 2 / (p : Real))) *
+      Finset.sum (Finset.range q) (fun k : Nat =>
+        ex ((p : Real) * (k : Real) ^ 2 / (q : Real))) = rt (p * q) := by
+  sorry
+
+theorem sum_cot (p : Nat) [Fact p.Prime] (hp : p % 4 = 3) :
+    Real.sqrt (p : Real) * Finset.sum (Finset.range p) (fun k : Nat =>
+        ((legendreSym p (k : Int) : Int) : Real) *
+          Real.cot (Real.pi * (k : Real) / (p : Real))) =
+      -2 * Finset.sum (Finset.range p) (fun k : Nat =>
+        (k : Real) * ((legendreSym p (k : Int) : Int) : Real)) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, the two definitions, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.

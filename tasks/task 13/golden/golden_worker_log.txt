@@ -1,0 +1,15 @@
+Job 027b_t13_golden started Sat 10/10/2026  8:08:07.24 
+===== lake build 
+✔ [8665/8669] Built TuringTask.Resultants (25s)
+✔ [8666/8669] Built TuringTask.Discr (24s)
+✔ [8667/8669] Built TuringTask.Basic (22s)
+✔ [8668/8669] Built TuringTask (22s)
+Build completed successfully (8669 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.resultant_cyclotomic_eq_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.resultant_cyclotomic_mul_prime_pow' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.discr_cyclotomic' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.isCoprime_cyclotomic_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.resultant_cyclotomic_X_pow_sub_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

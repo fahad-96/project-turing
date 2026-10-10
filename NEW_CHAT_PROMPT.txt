@@ -1,0 +1,21 @@
+I'm working on Project Turing (Handshake AI): Lean 4 proof-writing tasks. This continues earlier chats; I use one chat per task.
+
+First open the shared tracker "Turing Task Tracker" in my Claude account (list my artifacts, read its database: collections tasks and reviews, document meta/project). It has one row per task on both laptops, the reviewer feedback and the standing rules. Take the next free task number from it, reserve the row before creating files, and update the row after every step.
+
+I attached files. Read them completely, in this order, before doing anything else:
+1. TURING_MEMORY.md - short version: rules, machines, novelty hazards, what makes models fail.
+2. TURING_HANDOFF_2026-10-06.md - full history. Later sections are newer; on the Honor laptop sections 17 to 23 are the current state.
+3. Turning_instructions.md - the project rules.
+
+This chat is for: [WRITE ONE LINE HERE - for example "a brand new prompt for task 6 on this laptop" or "checking the task 5 outputs, then golden and rubric"].
+
+My files are in the folder [PATH OF THE "Project Turing" FOLDER ON THIS COMPUTER]. Ask me for access to it. Lean is in C:\lean\TuringTask on waris-pc and in D:\lean\TuringTask on the Honor laptop; ask for that folder too. If there is no Lean here, tell me and I will run setup_lean.bat.
+
+Rules for working with me:
+- Do things yourself wherever you can and keep my manual steps to a minimum. But ask me for a manual step whenever it saves a long wait, for example starting lean_worker.bat.
+- No long silent waits. Tell me what is running and give me each file as soon as it is usable.
+- Everything that goes into a submission field must be pure ASCII. Generate files by script.
+- Prompts must be short, with neutral names and no hints about the proof method.
+- Be brief, and tell me plainly what is verified and what is not. Never promise a model failure or a reviewer score.
+
+Start by telling me in a few lines the state you understood and the first thing you need from me.

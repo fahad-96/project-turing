@@ -1,0 +1,28 @@
+Task 7 (Honor laptop; tracker number 7.5) - cubic character sums mod p (Jacobsthal) - model outputs
+Checked 9 Oct 2026, 19:15-19:35 IST, OFFICIAL on the laptop worker (D:\lean\TuringTask, pinned
+toolchain leanprover/lean4:v4.33.0-rc1, Mathlib 9944fe2973b8dc0b86949101ed98232c07cd54a0, full
+`import Mathlib`), check file = tasks\task 7\StatementAndAxiomsCheck.lean (the fixed one, job 006b).
+
+Zips (sha256):
+  R1 turing_task_r1.zip        6a94bbc8f7f4a74c42113a4455fad92bab4ec673ef1e70e21bac0e1530d9f00a
+  R2 turingtask-lean_r2.zip    cab92f324c1075181ab0e630cc1add4c227036a468cfee480f09d3776c523304
+  R3 r3\TuringTask-final.zip   c2d1deee24353d985ebf5257a91fc738954685edce7eeac15ab1a0a25f56c7af (final project)
+     r3\TuringTask.zip         9ddcb0e11b46a9aa27099342dc1a2ac91d594fc7a275f1c32ff10cecdf82876f (same four
+     proof files byte-identical, plus scratch/probe files); the three small r3 zips are intermediate attempts.
+
+Pre-checks in the cloud (all three): the definition `csum` and the five theorem statements are
+whitespace-identical to the prompt; no sorry, admit, native_decide, axiom, unsafe, implemented_by,
+extern, opaque, set_option, instance, attribute, macro or elab in any project file; only harmless
+`local notation` (R2: chi, R3: Q); no declaration shadows a Mathlib name; the check file's `rfl`
+example confirms `TuringTask.csum` is the prompt's definition.
+
+Official results:
+  R1 (job 018a_t7_r1, 1,781 lines, one file): build exit 0, no warnings; check exit 0;
+     five axiom lists [propext, Classical.choice, Quot.sound].  PASS
+  R2 (job 018b_t7_r2, 1,126 lines, one file): build exit 0 (7 linter warnings: unused `hp`,
+     unused simp args); check exit 0; standard axioms.  PASS
+  R3 (job 018c_t7_r3, 1,302 lines, chain CharacterProof -> InternalBasic -> InternalRemaining ->
+     Basic): build exit 0, no warnings; check exit 0; standard axioms.  PASS
+
+Result: no genuine failure. Task rejected (official rule 3); no golden written.
+Job sources are byte-identical to the unpacked zips (copied, not edited).

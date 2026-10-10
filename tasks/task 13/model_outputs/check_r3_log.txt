@@ -1,0 +1,18 @@
+Job 020c_t13_r3 started Fri 10/09/2026 23:53:33.28 
+===== lake build 
+✔ [8664/8666] Built TuringTask.Basic (22s)
+✔ [8665/8666] Built TuringTask (22s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+JobCheck.lean:8:2: error(lean.unknownIdentifier): Unknown identifier `TuringTask.resultant_cyclotomic_eq_one`
+JobCheck.lean:14:2: error(lean.unknownIdentifier): Unknown identifier `TuringTask.resultant_cyclotomic_mul_prime_pow`
+JobCheck.lean:20:2: error(lean.unknownIdentifier): Unknown identifier `TuringTask.discr_cyclotomic`
+JobCheck.lean:25:2: error(lean.unknownIdentifier): Unknown identifier `TuringTask.isCoprime_cyclotomic_iff`
+JobCheck.lean:32:2: error(lean.unknownIdentifier): Unknown identifier `TuringTask.resultant_cyclotomic_X_pow_sub_one`
+JobCheck.lean:34:14: error(lean.unknownIdentifier): Unknown constant `TuringTask.resultant_cyclotomic_eq_one`
+JobCheck.lean:35:14: error(lean.unknownIdentifier): Unknown constant `TuringTask.resultant_cyclotomic_mul_prime_pow`
+JobCheck.lean:36:14: error(lean.unknownIdentifier): Unknown constant `TuringTask.discr_cyclotomic`
+JobCheck.lean:37:14: error(lean.unknownIdentifier): Unknown constant `TuringTask.isCoprime_cyclotomic_iff`
+JobCheck.lean:38:14: error(lean.unknownIdentifier): Unknown constant `TuringTask.resultant_cyclotomic_X_pow_sub_one`
+CHECK EXIT CODE 1 

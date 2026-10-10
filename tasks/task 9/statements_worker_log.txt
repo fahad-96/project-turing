@@ -1,0 +1,18 @@
+Job 008_statements_t9 started Thu 10/08/2026 17:57:27.38 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (42s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:11:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:18:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:26:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:30:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (41s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.card_cubic' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.card_cube_pairs' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.card_noncube_pairs' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.two_cube_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.cubic_sum' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

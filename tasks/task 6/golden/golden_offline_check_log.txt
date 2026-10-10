@@ -1,0 +1,51 @@
+Offline check of golden_solution.zip started Thu 10/08/2026 10:34:48.93 
+Junction created for C:\opt\mathlib4 <<===>> C:\lean\TuringTask\.lake\packages\mathlib
+===== /opt/mathlib4 commit 
+9944fe2973b8dc0b86949101ed98232c07cd54a0
+===== fresh folder C:\lean\golden_check_t6_4814 
+lake-manifest.json
+lakefile.toml
+lean-toolchain
+README.md
+StatementAndAxiomsCheck.lean
+TuringTask
+TuringTask.lean
+===== lean --version 
+Lean (version 4.33.0-rc1, x86_64-w64-windows-gnu, commit 62eed1db4d67327ec8120be05f1a1b0847d74561, Release)
+===== lake build 
+✔ [8664/8671] Built TuringTask.Poly (729s)
+✔ [8665/8671] Built TuringTask.Root (14s)
+✔ [8666/8671] Built TuringTask.Sums (15s)
+✔ [8667/8671] Built TuringTask.Char (14s)
+✔ [8668/8671] Built TuringTask.Cot (14s)
+✔ [8669/8671] Built TuringTask.Basic (13s)
+✔ [8670/8671] Built TuringTask (13s)
+Build completed successfully (8671 jobs).
+BUILD EXIT CODE 0 
+===== lake env lean StatementAndAxiomsCheck.lean 
+'TuringTask.sum_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_tri' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_legendre' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_sq_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_cot' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
+===== source files in the fresh copy 
+ Volume in drive C is Windows
+ Volume Serial Number is 68E5-4A64
+
+ Directory of C:\lean\golden_check_t6_4814\golden_solution\TuringTask
+
+10/08/2026  10:34 AM    <DIR>          .
+10/08/2026  10:34 AM    <DIR>          ..
+10/08/2026  12:00 AM              1949 Basic.lean
+10/08/2026  12:00 AM             11265 Char.lean
+10/08/2026  12:00 AM              8674 Cot.lean
+10/08/2026  12:00 AM              8055 Poly.lean
+10/08/2026  12:00 AM              7610 Root.lean
+10/08/2026  12:00 AM             20445 Sums.lean
+               6 File(s)          57998 bytes
+
+     Total Files Listed:
+               6 File(s)          57998 bytes
+               2 Dir(s)      2130878464 bytes free
+Finished Thu 10/08/2026 10:53:20.24 

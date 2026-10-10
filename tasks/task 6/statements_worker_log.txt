@@ -1,0 +1,18 @@
+Job 001_statements_t6 started Wed 10/07/2026 20:17:47.21 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (206s)
+warning: TuringTask/Basic.lean:12:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:16:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:22:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:29:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:37:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (21s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.sum_sq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sum_tri' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sum_legendre' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sum_sq_mul' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sum_cot' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

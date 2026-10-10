@@ -1,0 +1,18 @@
+Job 017a_t12_statements started Fri 10/09/2026 18:13:00.23 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (23s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:10:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:15:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:19:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:24:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (21s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.exists_prime_fib' depends on axioms: [propext, sorryAx]
+'TuringTask.exists_prime_lucas' depends on axioms: [propext, sorryAx]
+'TuringTask.card_divisors_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.primeFactors_fib_eq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.exists_prime_fib_mod' depends on axioms: [propext, sorryAx]
+CHECK EXIT CODE 0 

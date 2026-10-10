@@ -1,0 +1,47 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. $Q(N)$ is the number of squarefree integers in $[1, N]$ (Mathlib's `Squarefree`), $C(N)$ the number of pairs $(a, b) \in [1, N]^2$ with $\gcd(a, b) = 1$ (`Nat.Coprime`), $\varphi$ is Euler's function (`Nat.totient`) and $\log$ the natural logarithm. $N$, $n$ denote natural numbers.
+
+1. For every $N \ge 1$: $\left| Q(N) - \dfrac{6}{\pi^2} N \right| \le 3 \sqrt{N}$.
+2. For every $N \ge 1$: $\left| C(N) - \dfrac{6}{\pi^2} N^2 \right| \le 6 N (\log N + 1)$.
+3. For every $N \ge 1$: $\left| \sum_{n=1}^{N} \varphi(n) - \dfrac{3}{\pi^2} N^2 \right| \le 4 N (\log N + 1)$.
+4. For every $N \ge 1$: $\left| \sum_{n=1}^{N} \dfrac{\varphi(n)}{n} - \dfrac{6}{\pi^2} N \right| \le \log N + 2$.
+5. $Q(N) / N \to 6 / \pi^2$ as $N \to \infty$.
+
+Lean statement. `Finset.product` is the Cartesian product, sums run over `Finset.Icc 1 N`, `Real.log 0 = 0`, and `Real.pi`, `Real.sqrt`, `Real.log`, `Filter.Tendsto`, `Filter.atTop` and `nhds` are Mathlib's. The file `TuringTask/Basic.lean` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem card_squarefree_sub_le (N : Nat) (hN : 1 <= N) :
+    abs ((((Finset.Icc 1 N).filter (fun n : Nat => Squarefree n)).card : Real) -
+        6 / Real.pi ^ 2 * N) <= 3 * Real.sqrt N := by
+  sorry
+
+theorem card_coprime_sub_le (N : Nat) (hN : 1 <= N) :
+    abs ((((Finset.product (Finset.Icc 1 N) (Finset.Icc 1 N)).filter
+        (fun p : Prod Nat Nat => Nat.Coprime p.1 p.2)).card : Real) - 6 / Real.pi ^ 2 * N ^ 2) <=
+      6 * N * (Real.log N + 1) := by
+  sorry
+
+theorem sum_totient_sub_le (N : Nat) (hN : 1 <= N) :
+    abs ((Finset.Icc 1 N).sum (fun n => (Nat.totient n : Real)) - 3 / Real.pi ^ 2 * N ^ 2) <=
+      4 * N * (Real.log N + 1) := by
+  sorry
+
+theorem sum_totient_div_sub_le (N : Nat) (hN : 1 <= N) :
+    abs ((Finset.Icc 1 N).sum (fun n => (Nat.totient n : Real) / n) - 6 / Real.pi ^ 2 * N) <=
+      Real.log N + 2 := by
+  sorry
+
+theorem tendsto_card_squarefree_div :
+    Filter.Tendsto (fun N : Nat => (((Finset.Icc 1 N).filter (fun n : Nat => Squarefree n)).card :
+        Real) / N) Filter.atTop (nhds (6 / Real.pi ^ 2)) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.

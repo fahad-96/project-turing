@@ -1,0 +1,18 @@
+Job 018d_t15_statements started Fri 10/09/2026 19:33:54.20 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (38s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:10:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:15:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:20:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:26:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (35s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.charSum_norm_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.legendreSum_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.exists_not_pow_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.card_residues_sub_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.exists_prime_nonresidue_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

@@ -1,0 +1,13 @@
+Job 018a_t7_r1 started Fri 10/09/2026 19:18:19.19 
+===== lake build 
+✔ [8664/8666] Built TuringTask.Basic (44s)
+✔ [8665/8666] Built TuringTask (24s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.csum_sq_add_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.csum_sq_of_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.csum_one_emod' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.choose_modEq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_curve' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

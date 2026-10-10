@@ -1,0 +1,27 @@
+Job 003_t6_r3 started Thu 10/08/2026  0:59:53.16 
+===== lake build 
+✖ [8664/8678] Building TuringTask.Fourier (124s)
+trace: .> LEAN_PATH=C:\lean\TuringTask\.lake\packages\Cli\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\batteries\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\Qq\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\aesop\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\proofwidgets\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\importGraph\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\LeanSearchClient\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\plausible\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\mathlib\.lake\build\lib\lean;C:\lean\TuringTask\.lake\build\lib\lean c:\Users\fahad\.elan\toolchains\leanprover--lean4---v4.33.0-rc1\bin\lean.exe C:\lean\TuringTask\TuringTask\Fourier.lean -o C:\lean\TuringTask\.lake\build\lib\lean\TuringTask\Fourier.olean -i C:\lean\TuringTask\.lake\build\lib\lean\TuringTask\Fourier.ilean -c C:\lean\TuringTask\.lake\build\ir\TuringTask\Fourier.c --setup C:\lean\TuringTask\.lake\build\ir\TuringTask\Fourier.setup.json --json
+error: TuringTask/Fourier.lean:1:0: failed to read file 'C:\lean\TuringTask\.lake\packages\mathlib\.lake\build\lib\lean\Mathlib\RingTheory\Coalgebra\TensorProduct.olean'
+error: Lean exited with code 1
+✖ [8665/8678] Building TuringTask.CotPointwise (124s)
+trace: .> LEAN_PATH=C:\lean\TuringTask\.lake\packages\Cli\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\batteries\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\Qq\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\aesop\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\proofwidgets\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\importGraph\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\LeanSearchClient\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\plausible\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\mathlib\.lake\build\lib\lean;C:\lean\TuringTask\.lake\build\lib\lean c:\Users\fahad\.elan\toolchains\leanprover--lean4---v4.33.0-rc1\bin\lean.exe C:\lean\TuringTask\TuringTask\CotPointwise.lean -o C:\lean\TuringTask\.lake\build\lib\lean\TuringTask\CotPointwise.olean -i C:\lean\TuringTask\.lake\build\lib\lean\TuringTask\CotPointwise.ilean -c C:\lean\TuringTask\.lake\build\ir\TuringTask\CotPointwise.c --setup C:\lean\TuringTask\.lake\build\ir\TuringTask\CotPointwise.setup.json --json
+error: TuringTask/CotPointwise.lean:1:0: failed to read file 'C:\lean\TuringTask\.lake\packages\mathlib\.lake\build\lib\lean\Mathlib\RingTheory\Coalgebra\TensorProduct.olean'
+error: Lean exited with code 1
+✖ [8667/8678] Building OddGaussSum.Spectral (124s)
+trace: .> LEAN_PATH=C:\lean\TuringTask\.lake\packages\Cli\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\batteries\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\Qq\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\aesop\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\proofwidgets\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\importGraph\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\LeanSearchClient\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\plausible\.lake\build\lib\lean;C:\lean\TuringTask\.lake\packages\mathlib\.lake\build\lib\lean;C:\lean\TuringTask\.lake\build\lib\lean c:\Users\fahad\.elan\toolchains\leanprover--lean4---v4.33.0-rc1\bin\lean.exe C:\lean\TuringTask\OddGaussSum\Spectral.lean -o C:\lean\TuringTask\.lake\build\lib\lean\OddGaussSum\Spectral.olean -i C:\lean\TuringTask\.lake\build\lib\lean\OddGaussSum\Spectral.ilean -c C:\lean\TuringTask\.lake\build\ir\OddGaussSum\Spectral.c --setup C:\lean\TuringTask\.lake\build\ir\OddGaussSum\Spectral.setup.json --json
+error: OddGaussSum/Spectral.lean:1:0: failed to read file 'C:\lean\TuringTask\.lake\packages\mathlib\.lake\build\lib\lean\Mathlib\RingTheory\Coalgebra\TensorProduct.olean'
+error: Lean exited with code 1
+Some required targets logged failures:
+- TuringTask.Fourier
+- TuringTask.CotPointwise
+- OddGaussSum.Spectral
+error: build failed
+BUILD EXIT CODE 1 
+===== check file 
+'TuringTask.sum_sq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sum_tri' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sum_legendre' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sum_sq_mul' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sum_cot' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

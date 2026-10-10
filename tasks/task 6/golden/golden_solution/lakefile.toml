@@ -1,0 +1,12 @@
+name = "TuringTask"
+version = "0.1.0"
+defaultTargets = ["TuringTask"]
+
+# Mathlib: the pinned checkout (commit 9944fe2973b8dc0b86949101ed98232c07cd54a0)
+# provided by the offline environment at /opt/mathlib4.
+[[require]]
+name = "mathlib"
+path = "/opt/mathlib4"
+
+[[lean_lib]]
+name = "TuringTask"

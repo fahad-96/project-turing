@@ -1,0 +1,19 @@
+Job 016c_t10_golden started Fri 10/09/2026 17:15:38.12 
+===== lake build 
+✔ [8664/8672] Built TuringTask.Hcyc (24s)
+✔ [8665/8672] Built TuringTask.Prim (25s)
+✔ [8666/8672] Built TuringTask.Size (25s)
+✔ [8667/8672] Built TuringTask.Zsig (23s)
+✔ [8668/8672] Built TuringTask.Apps (23s)
+✔ [8669/8672] Built TuringTask.Main (22s)
+✔ [8670/8672] Built TuringTask.Basic (22s)
+✔ [8671/8672] Built TuringTask (23s)
+Build completed successfully (8672 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.exists_prime_sub' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.exists_prime_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_divisors_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.eq_prime_pow' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.primeFactors_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

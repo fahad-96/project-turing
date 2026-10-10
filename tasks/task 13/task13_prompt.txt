@@ -1,0 +1,50 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. $\Phi_n \in \mathbb{Z}[X]$ is the $n$-th cyclotomic polynomial (`Polynomial.cyclotomic n Int`) and $\varphi$ is Euler's function. $\mathrm{Res}(f, g)$ is Mathlib's resultant `Polynomial.resultant f g` (the determinant of the Sylvester matrix of $f$ and $g$ for their degrees) and $\mathrm{disc}(f)$ is Mathlib's discriminant `Polynomial.discr f`. All letters denote natural numbers.
+
+1. If $1 \le n < m$ and $m$ is not of the form $n p^k$ with $p$ prime, then $\mathrm{Res}(\Phi_m, \Phi_n) = 1$.
+2. If $n \ge 1$, $p$ is prime, $k \ge 1$ and $(n, p, k) \ne (1, 2, 1)$, then $\mathrm{Res}(\Phi_{n p^k}, \Phi_n) = p^{\varphi(n)}$.
+3. If $n \ge 1$, then $\mathrm{disc}(\Phi_n) \cdot \prod_{p \mid n} p^{\varphi(n)/(p-1)} = (-1)^{\varphi(n)/2} \, n^{\varphi(n)}$, where the product runs over the primes $p$ dividing $n$.
+4. If $1 \le n < m$, then $\Phi_m$ and $\Phi_n$ are coprime in $\mathbb{Z}[X]$ (that is, $A \Phi_m + B \Phi_n = 1$ for some $A, B \in \mathbb{Z}[X]$) if and only if $m$ is not of the form $n p^k$ with $p$ prime.
+5. If $n \ge 3$, $m \ge 1$ and $n \nmid m$, then $\mathrm{Res}(\Phi_n, X^m - 1) = \Phi_k(1)^{\varphi(n)/\varphi(k)}$ with $k = n / \gcd(n, m)$.
+
+Lean statement. All divisions in the exponents are exact. The file `TuringTask/Basic.lean` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem resultant_cyclotomic_eq_one (m n : Nat) (hn : 1 <= n) (hnm : n < m)
+    (h : forall p k : Nat, p.Prime -> Not (m = n * p ^ k)) :
+    Polynomial.resultant (Polynomial.cyclotomic m Int) (Polynomial.cyclotomic n Int) = 1 := by
+  sorry
+
+theorem resultant_cyclotomic_mul_prime_pow (n p k : Nat) (hn : 1 <= n) (hp : p.Prime)
+    (hk : 1 <= k) (h : Not (n = 1 /\ p = 2 /\ k = 1)) :
+    Polynomial.resultant (Polynomial.cyclotomic (n * p ^ k) Int) (Polynomial.cyclotomic n Int) =
+      (p : Int) ^ n.totient := by
+  sorry
+
+theorem discr_cyclotomic (n : Nat) (hn : 1 <= n) :
+    Polynomial.discr (Polynomial.cyclotomic n Int) *
+        n.primeFactors.prod (fun p => (p : Int) ^ (n.totient / (p - 1))) =
+      (-1) ^ (n.totient / 2) * (n : Int) ^ n.totient := by
+  sorry
+
+theorem isCoprime_cyclotomic_iff (m n : Nat) (hn : 1 <= n) (hnm : n < m) :
+    IsCoprime (Polynomial.cyclotomic m Int) (Polynomial.cyclotomic n Int) <->
+      forall p k : Nat, p.Prime -> Not (m = n * p ^ k) := by
+  sorry
+
+theorem resultant_cyclotomic_X_pow_sub_one (n m : Nat) (hn : 3 <= n) (hm : 1 <= m)
+    (h : Not (m % n = 0)) :
+    Polynomial.resultant (Polynomial.cyclotomic n Int) (Polynomial.X ^ m - 1) =
+      Polynomial.eval 1 (Polynomial.cyclotomic (n / Nat.gcd n m) Int) ^
+        (n.totient / (n / Nat.gcd n m).totient) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.

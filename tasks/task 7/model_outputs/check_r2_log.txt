@@ -1,0 +1,57 @@
+Job 018b_t7_r2 started Fri 10/09/2026 19:20:24.26 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (82s)
+warning: TuringTask/Basic.lean:90:18: Variable name `hp` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hp
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: TuringTask/Basic.lean:133:22: Variable name `hp` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hp
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: TuringTask/Basic.lean:304:63: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Finset.mem_univ, if_true, Finset.sum_singleton, zero_add]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: TuringTask/Basic.lean:358:17: Variable name `hp` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hp
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: TuringTask/Basic.lean:483:23: Variable name `hp` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hp
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: TuringTask/Basic.lean:508:25: Variable name `hp` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hp
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: TuringTask/Basic.lean:920:8: This simp argument is unused:
+  Set.mem_toFinset
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [8665/8666] Built TuringTask (37s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.csum_sq_add_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.csum_sq_of_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.csum_one_emod' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.choose_modEq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_curve' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

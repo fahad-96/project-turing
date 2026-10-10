@@ -1,0 +1,1 @@
+Superseded. Use task6_prompt.txt in this folder (identical text, statements compiled on 7 Oct 2026).

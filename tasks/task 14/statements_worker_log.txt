@@ -1,0 +1,18 @@
+Job 018e_t14_statements started Fri 10/09/2026 19:41:22.23 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (36s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:10:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:15:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:21:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:26:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (35s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.sum_card_divisors_sub_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sum_card_divisors_div_sub_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.tendsto_sum_card_divisors' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.tendsto_sum_card_divisors_sub_log' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.tendsto_sum_sum_card_divisors' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

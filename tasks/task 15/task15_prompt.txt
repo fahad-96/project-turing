@@ -1,0 +1,47 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. $p$ is a prime, $\chi$ is a multiplicative character of $\mathbb{Z}/p$ (`MulChar (ZMod p) Complex`: $\chi(0) = 0$, $\chi$ is multiplicative on units), $\chi = 1$ is the principal character, $\left(\frac{n}{p}\right)$ is the Legendre symbol (`legendreSym p n`, with value $0$ when $p \mid n$), and $\log$ is the natural logarithm. $N$, $n$, $k$ denote natural numbers.
+
+1. If $\chi \ne 1$, then for every $N$: $\left| \sum_{n=1}^{N} \chi(n) \right| \le \sqrt{p} \, \log p$.
+2. If $p \ne 2$, then for every $N$: $\left| \sum_{n=1}^{N} \left(\frac{n}{p}\right) \right| \le \sqrt{p} \, \log p$.
+3. If $k \ge 2$ and $k \mid p - 1$, there is $n$ with $1 \le n \le \sqrt{p} \, \log p + 1$ that is not a $k$-th power modulo $p$.
+4. If $p \ne 2$ and $N < p$, then the number $R$ of quadratic residues among $1, \dots, N$ satisfies $|2R - N| \le \sqrt{p} \, \log p$.
+5. If $p \ne 2$, there is a prime $q \le \sqrt{p} \, \log p + 1$ that is a quadratic non-residue modulo $p$.
+
+Lean statement. Sums run over `Finset.Icc 1 N`, `Norm.norm` is the complex absolute value, and `Real.sqrt`, `Real.log` are Mathlib's. The file `TuringTask/Basic.lean` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem charSum_norm_le (p : Nat) (hp : p.Prime) (chi : MulChar (ZMod p) Complex)
+    (h : Not (chi = 1)) (N : Nat) :
+    Norm.norm ((Finset.Icc 1 N).sum (fun n => chi (n : ZMod p))) <= Real.sqrt p * Real.log p := by
+  sorry
+
+theorem legendreSum_le (p : Nat) [hp : Fact p.Prime] (h2 : Not (p = 2)) (N : Nat) :
+    abs (((Finset.Icc 1 N).sum (fun n => legendreSym p (n : Int)) : Int) : Real) <=
+      Real.sqrt p * Real.log p := by
+  sorry
+
+theorem exists_not_pow_le (p k : Nat) (hp : p.Prime) (hk : 2 <= k) (hkp : (p - 1) % k = 0) :
+    exists n : Nat, 1 <= n /\ (n : Real) <= Real.sqrt p * Real.log p + 1 /\
+      forall x : ZMod p, Not (x ^ k = (n : ZMod p)) := by
+  sorry
+
+theorem card_residues_sub_le (p : Nat) [hp : Fact p.Prime] (h2 : Not (p = 2)) (N : Nat)
+    (hN : N < p) :
+    abs (2 * (((Finset.Icc 1 N).filter (fun n : Nat => legendreSym p (n : Int) = 1)).card : Real) -
+        N) <= Real.sqrt p * Real.log p := by
+  sorry
+
+theorem exists_prime_nonresidue_le (p : Nat) [hp : Fact p.Prime] (h2 : Not (p = 2)) :
+    exists q : Nat, q.Prime /\ (q : Real) <= Real.sqrt p * Real.log p + 1 /\
+      legendreSym p (q : Int) = -1 := by
+  sorry
+
+end TuringTask
+```
+
+Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.

@@ -1,0 +1,203 @@
+Job 004e_t6_r3_full started Thu 10/08/2026  1:23:52.45 
+===== lake build 
+⚠ [8666/8678] Replayed OddGaussSum.Spectral
+warning: OddGaussSum/Spectral.lean:165:10: `Cardinal.nat_lt_aleph0` has been deprecated: Use `Cardinal.natCast_lt_aleph0` instead
+warning: OddGaussSum/Spectral.lean:149:6: This simp argument is unused:
+  Polynomial.aeval_C
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [p, Polynomial.aeval_sub, Polynomial.aeval_X_pow, map_one]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: OddGaussSum/Spectral.lean:177:12: This simp argument is unused:
+  Matrix.diagonal_apply_ne _ hij
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hij]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: OddGaussSum/Spectral.lean:238:16: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [8667/8678] Replayed OddGaussSum.DFT
+warning: OddGaussSum/DFT.lean:37:10: This simp argument is unused:
+  h
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hik]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: OddGaussSum/DFT.lean:28:12: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [8668/8678] Replayed OddGaussSum.Determinant
+warning: OddGaussSum/Determinant.lean:72:22: This simp argument is unused:
+  pairIndexSum
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: OddGaussSum/Determinant.lean:127:4: 'change (e.symm j).val • (ZMod.finEquiv n (e.symm i)) = i * j' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: OddGaussSum/Determinant.lean:170:8: This simp argument is unused:
+  Complex.ofReal_cos
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Complex.ofReal_sin, Complex.cos_neg, Complex.sin_neg]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: OddGaussSum/Determinant.lean:200:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+⚠ [8669/8678] Replayed OddGaussSum.Twisted
+warning: OddGaussSum/Twisted.lean:56:10: This simp argument is unused:
+  h
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hik]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: OddGaussSum/Twisted.lean:37:12: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: OddGaussSum/Twisted.lean:86:27: This simp argument is unused:
+  twistedFourierMatrix
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Matrix.trace, twistedQuadraticSumZMod]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [8671/8678] Replayed OddGaussSum.DoubleSign
+warning: OddGaussSum/DoubleSign.lean:101:8: Try `simp at h` instead of `simpa using h`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+⚠ [8672/8678] Replayed OddGaussSum.Triangular
+warning: OddGaussSum/Triangular.lean:46:69: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: OddGaussSum/Triangular.lean:46:69: 'omega' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+info: OddGaussSum/Triangular.lean:69:83: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+warning: OddGaussSum/Triangular.lean:69:65: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: OddGaussSum/Triangular.lean:69:79: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: OddGaussSum/Triangular.lean:84:4: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: OddGaussSum/Triangular.lean:111:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: OddGaussSum/Triangular.lean:128:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+info: OddGaussSum/Triangular.lean:195:36: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+warning: OddGaussSum/Triangular.lean:240:42: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: OddGaussSum/Triangular.lean:240:56: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: OddGaussSum/Triangular.lean:240:42: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: OddGaussSum/Triangular.lean:240:56: 'ring' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: OddGaussSum/Triangular.lean:246:10: This simp argument is unused:
+  Complex.cos_ofReal_re
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Complex.sin_ofReal_re]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: OddGaussSum/Triangular.lean:246:33: This simp argument is unused:
+  Complex.sin_ofReal_re
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Complex.cos_ofReal_re]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: OddGaussSum/Triangular.lean:246:56: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: OddGaussSum/Triangular.lean:250:39: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: OddGaussSum/Triangular.lean:250:53: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: OddGaussSum/Triangular.lean:326:47: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: OddGaussSum/Triangular.lean:355:51: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: OddGaussSum/Triangular.lean:386:51: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: OddGaussSum/Triangular.lean:417:51: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: OddGaussSum/Triangular.lean:326:47: 'omega' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: OddGaussSum/Triangular.lean:355:51: 'omega' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: OddGaussSum/Triangular.lean:386:51: 'omega' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: OddGaussSum/Triangular.lean:417:51: 'omega' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [8674/8678] Replayed OddGaussSum
+warning: OddGaussSum.lean:30:4: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+✔ [8675/8678] Built TuringTask.CotMain (25s)
+⚠ [8676/8678] Built TuringTask.Basic (26s)
+warning: TuringTask/Basic.lean:177:6: 'push_cast' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: TuringTask/Basic.lean:243:36: This simp argument is unused:
+  Int.cast_natCast
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Int.cast_one, one_mul] at hrange
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: TuringTask/Basic.lean:350:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+info: TuringTask/Basic.lean:542:32: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+✔ [8677/8678] Built TuringTask (21s)
+Build completed successfully (8678 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.sum_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_tri' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_legendre' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_sq_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_cot' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

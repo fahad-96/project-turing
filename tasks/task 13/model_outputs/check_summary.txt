@@ -1,0 +1,19 @@
+Task 13 - model outputs checked officially on the Honor laptop worker, 9 Oct 2026, 23:31-23:55 IST
+Check file: tasks/task 13/StatementAndAxiomsCheck.lean (job 017b version, sha256 cd44c118db93ee88)
+
+R1  TuringTask_r1.zip  sha256 6fe4d0166d0fa2a180f7e96a375b02f55dc8454f3361655ad2306d9d4dea7036
+    one file TuringTask/Basic.lean (984 lines); statements identical to the prompt; no sorry/admit/native_decide/axiom/set_option
+    job 020a_t13_r1: build exit 0 (Basic 422 s cold), no warnings; check exit 0; five axiom lists [propext, Classical.choice, Quot.sound]. PASS
+
+R2  turingtask-cyclotomic-resultants_r2.zip  sha256 dd59e26e67c7db44f702a4f7c9e0e21cc78e0cc1473dc68f59ede315a2a11764
+    TuringTask/Prelim.lean (904 lines, namespace TTAux) -> TuringTask/Basic.lean (176 lines); statements identical to the prompt;
+    one `set_option linter.unusedVariables false in` (lint only); no sorry/admit/native_decide/axiom
+    job 020b_t13_r2: build exit 0, no warnings; check exit 0; five axiom lists [propext, Classical.choice, Quot.sound]. PASS
+
+R3  r3/TuringTask.zip (final project; the other three zips in r3/ are earlier partial attempts)  sha256 a92220affbf20fc249d05e085ac9fb3ebb6254ce33633eec1a7fe6b605cc5b0d
+    other r3 zips: TuringTask-cyclotomic-resultants-partial.zip b184b8d0f9c705fc, TuringTask-cyclotomic-discriminant.zip b143ac223a7aef28, TuringTask-resultant-research.zip 1b5b764546ee03d5
+    TuringTask/Basic.lean is an empty namespace (5 lines); README: 'The requested five-theorem development is incomplete';
+    RESEARCH.md: could not connect Polynomial.discr to Mathlib's number-field discriminant
+    job 020c_t13_r3: build exit 0, but the check file reports Unknown identifier for all five theorems; check exit 1. GENUINE FAILURE
+
+Result: one genuine failure (R3). Expected 6-item rubric: R1 6/6, R2 6/6, R3 1/6 = 17 percent. Golden to be written (own work; proof bodies of R1 and R2 not read).

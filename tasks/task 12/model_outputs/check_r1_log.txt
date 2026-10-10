@@ -1,0 +1,20 @@
+Job 019a_t12_r1 started Fri 10/09/2026 20:44:09.22 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (534s)
+warning: TuringTask/Basic.lean:107:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:318:8: declaration uses `sorry`
+info: TuringTask/Basic.lean:336:0: 'TuringTask.exists_prime_fib' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+info: TuringTask/Basic.lean:337:0: 'TuringTask.exists_prime_lucas' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+info: TuringTask/Basic.lean:338:0: 'TuringTask.card_divisors_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+info: TuringTask/Basic.lean:339:0: 'TuringTask.primeFactors_fib_eq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+info: TuringTask/Basic.lean:340:0: 'TuringTask.exists_prime_fib_mod' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+✔ [8665/8666] Built TuringTask (44s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.exists_prime_fib' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.exists_prime_lucas' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.card_divisors_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.primeFactors_fib_eq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.exists_prime_fib_mod' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

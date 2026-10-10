@@ -1,0 +1,64 @@
+### Overview
+
+The zip is a complete Lake project. `lakefile.toml` and `lake-manifest.json` use the pinned Mathlib checkout at `/opt/mathlib4` (commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`), and `lean-toolchain` is `leanprover/lean4:v4.33.0-rc1`. The proof is split into five files under `TuringTask/` that import each other in a chain: `Cubes`, `Jacobi3`, `Counts`, `Main`, `Basic`. The required file `TuringTask/Basic.lean` is the file of the prompt: `import Mathlib`, the namespace and the five statements are unchanged, and each `sorry` is replaced by a one-line call of the matching theorem in `Main.lean`.
+
+Notation: $p$ is a prime with $p \equiv 1 \pmod 3$, $\chi$ is a multiplicative character of order 3 on $\mathbb{Z}/p$ with values in $\mathbb{C}$ (so $\chi(0) = 0$), $J = J(\chi,\chi) = \sum_x \chi(x)\chi(1-x)$ is its Jacobi sum, and $T = J(\chi,\chi) + J(\chi^{-1},\chi^{-1}) = J + \bar J$.
+
+Two facts carry the whole proof:
+- (A) for every $c$, the number of $u$ with $u^3 = c$ is $1 + \chi(c) + \chi^{-1}(c)$;
+- (B) every $L$ with $4p = L^2 + 27M^2$ and $L \equiv 1 \pmod 3$ equals $T$.
+
+With (A), the counts in theorems 1 to 3 become sums of products of character values, and these reduce to $p$, $J$, $\bar J$ and $-1$. Theorem 4 follows from theorem 1 by a parity argument, and theorem 5 from Gauss sums.
+
+### 1. Cubes.lean: the cubic character and the number of cube roots
+
+- `exists_order_three_char`: since $3 \mid p - 1$, Mathlib's `MulChar.exists_mulChar_orderOf` gives a character $\chi$ of order 3 (with the primitive cube root of unity $e^{2\pi i/3}$).
+- `o3_*`: facts about a character of order 3: $\chi^3 = 1$, $\chi \ne 1$, $\chi^2 \ne 1$, $\chi^{-1} = \chi^2$ (so $\chi^{-1}(x) = \chi(x)^2$), $\chi(x)^3 = 1$ for $x \ne 0$, and $\chi(-1) = \chi((-1)^3) = \chi(-1)^3 = 1$, hence $\chi(-x) = \chi(x)$.
+- `one_add_add_sq_eq_zero`: if $z^3 = 1$ and $z \ne 1$, then $1 + z + z^2 = 0$.
+- `cubeCount c` is the number of $u$ with $u^3 = c$, and `cubeGuess c` is $1$ if $c = 0$, $3$ if $\chi(c) = 1$, and $0$ otherwise. `cubeGuess_cast`: as a complex number, `cubeGuess c` equals $1 + \chi(c) + \chi^{-1}(c)$.
+- `cubeCount_le`: `cubeCount c` is at most `cubeGuess c`. For $c = 0$ only $u = 0$ works. If $\chi(c) = 1$, the roots lie in `Polynomial.nthRootsFinset 3 c`, which has at most 3 elements. If $c \ne 0$ and $\chi(c) \ne 1$, there is no root, because $\chi(u^3) = \chi(u)^3 = 1$.
+- `sum_cubeCount`: the counts add up to $p$, since every $u$ is counted once. The guesses also add up to $p$, because $\sum_c \chi(c) = \sum_c \chi^{-1}(c) = 0$ (Mathlib's `MulChar.sum_eq_zero_of_ne_one`). Each count is at most its guess, so they are all equal (`cubeCount_eq_guess`). This is fact (A) (`cube_count_eq`).
+- `isCube_iff`: $c$ is a cube iff $c = 0$ or $\chi(c) = 1$.
+- `sum_over_cubes`: $\sum_x f(x^3) = \sum_c (1 + \chi(c) + \chi^{-1}(c)) f(c)$ for every function $f$, by grouping the $x$ according to $x^3$ and using (A).
+
+### 2. Jacobi3.lean: the Jacobi sum and $4p = L^2 + 27M^2$
+
+- `rep_sign_aux`, `rep_eq_of_rep`: uniqueness of $L$. If $4p = L^2 + 27M^2 = L'^2 + 27M'^2$, then $(LM' - L'M)(LM' + L'M) = 4p(M'^2 - M^2)$, so $p$ divides one of the two factors; write it as $xv - uy$. The identity $(xu + 27yv)^2 + 27(xv - uy)^2 = (4p)^2$ shows $|xv - uy| < p$, so $xv - uy = 0$. Then $xu + 27yv = \pm 4p$ and $u(xu + 27yv) = 4px$ give $x = \pm u$. Hence $L = \pm L'$, and $L \equiv L' \equiv 1 \pmod 3$ leaves only $L = L'$.
+- `prim3_rel`, `prim3_star`: a primitive cube root of unity $\mu$ satisfies $\mu^2 + \mu + 1 = 0$ and $\bar\mu = \mu^2$.
+- `adjoin_two_coords`: every element of $\mathbb{Z}[\mu]$ is $c + d\mu$ with integers $c, d$ (induction over polynomials, using $\mu^2 = -1 - \mu$).
+- `jacobi_inv_eq_star`: $J(\chi^{-1},\chi^{-1}) = \bar J$, because $\overline{\chi(x)} = \chi^{-1}(x)$ (Mathlib's `MulChar.star_apply'`).
+- `jacobi_trace_rep`: Mathlib's `exists_jacobiSum_eq_neg_one_add` gives $J = -1 + w(\mu - 1)^2$ with $w \in \mathbb{Z}[\mu]$. Writing $w = c + d\mu$ and using $(\mu - 1)^2 = -3\mu$ gives $J = A + B\mu$ with $A = 3d - 1$ and $B = 3d - 3c$, and then $\bar J = (A - B) - B\mu$. Mathlib's `jacobiSum_mul_jacobiSum_inv` gives $J \bar J = p$, that is $A^2 - AB + B^2 = p$. With $L' = 2A - B = 3c + 3d - 2$ and $M' = d - c$ this becomes $4p = L'^2 + 27M'^2$ with $L' \equiv 1 \pmod 3$, and $J + \bar J = 2A - B = L'$.
+- `jacobi_trace_eq`: by the uniqueness lemma, every admissible $L$ equals $T$. This is fact (B). `exists_rep`: admissible $L, M$ exist (used for theorem 4).
+
+### 3. Counts.lean: the counts and the Gauss sum in terms of $T$
+
+- `sum_nine`: $\sum_x (1 + \chi(x) + \chi^{-1}(x))(1 + \chi(1-x) + \chi^{-1}(1-x)) = p - 2 + T$. Expanding gives nine sums: $p$, four character sums equal to $0$, $J$, $\bar J$, and $J(\chi,\chi^{-1}) = J(\chi^{-1},\chi) = -\chi(-1) = -1$ (Mathlib's `jacobiSum_nontrivial_inv`).
+- `sum_nine_shift`, `sum_pair_shift`: the same kind of sums with $x + 1$ in place of $1 - x$ (substitute $x \mapsto -x$ and use $\chi(-x) = \chi(x)$). In particular $\sum_x (1 + \chi(x)\chi(x+1) + \chi^{-1}(x)\chi^{-1}(x+1)) = p + T$. `sum_one_sub_mul_inv`: $\sum_x (1 - \chi(x)\chi^{-1}(x)) = 1$, since only $x = 0$ contributes.
+- `count_fermat_cubic` (theorem 1): the number of pairs is $\sum_{x,y} [x^3 + y^3 = 1]$. Applying `sum_over_cubes` to $y$ and then to $x$ turns it into $\sum_a (1 + \chi(a) + \chi^{-1}(a))(1 + \chi(1-a) + \chi^{-1}(1-a)) = p - 2 + T$.
+- `count_both_cubes` (theorem 2): with $a = \chi(x)$ and $b = \chi(x+1)$, the identity $9 \cdot [x \ne 0,\ x + 1 \ne 0,\ x \text{ and } x + 1 \text{ cubes}] = (1 + a + a^2)(1 + b + b^2) - 3(1 - a^3) - 3(1 - b^3)$ holds for every $x$. It is checked separately for $x = 0$, for $x = -1$, and for the remaining $x$ with `isCube_iff` and `one_add_add_sq_eq_zero`. Summing over $x$ gives $(p - 2 + T) - 3 - 3 = p - 8 + T$.
+- `count_noncube_pairs` (theorem 3): here $9 \cdot [\ldots] = 3(1 + ab + a^2b^2) - (1 + a + a^2)(1 + b + b^2)$ for every $x$, so nine times the count is $3(p + T) - (p - 2 + T) = 2(p + 1 + T)$.
+- `card_swap_parity`, `card_diag`, `two_cube_iff_even`: the swap $(x, y) \mapsto (y, x)$ maps the solutions of $x^3 + y^3 = 1$ to themselves, so their number is the number of diagonal solutions plus an even number. The diagonal solutions are the cube roots of $1/2$: there are 3 of them if $\chi(1/2) = 1$ and none otherwise. Hence 2 is a cube (equivalently, $1/2$ is a cube) iff the number of solutions $p - 2 + L$ is odd, iff $L$ is even, because $p$ is odd.
+- `cubic_gauss_core` (theorem 5): let $\psi$ be Mathlib's standard additive character `ZMod.stdAddChar`, $\psi(y) = e^{2\pi i\,\mathrm{val}(y)/p}$, and let $g_1 = g(\chi,\psi)$ and $g_2 = g(\chi^{-1},\psi)$ be the Gauss sums. By `sum_over_cubes`, $G = \sum_x \psi(ax^3) = \sum_t \psi(at) + \sum_t \chi(t)\psi(at) + \sum_t \chi^{-1}(t)\psi(at) = 0 + \chi^{-1}(a) g_1 + \chi(a) g_2$ (Mathlib's `AddChar.sum_mulShift` and `gaussSum_mulShift_eq`). Mathlib also gives $g_1^3 = \chi(-1) p J = pJ$ (`gaussSum_pow_eq_prod_jacobiSum`), $g_2^3 = p \bar J$, and $g_1 g_2 = \chi(-1) p = p$ (`gaussSum_mul_gaussSum_pow_orderOf_sub_one`). With $u = \chi(a)$ and $u^3 = 1$ we get $G = u^2 g_1 + u g_2$ and $G^3 = g_1^3 + g_2^3 + 3 g_1 g_2 G = pJ + p\bar J + 3pG = 3pG + pT$ (one `linear_combination`).
+
+### 4. Main.lean and Basic.lean
+
+`Main.lean` states the five theorems exactly as in the prompt, under the names `points_x3y3`, `nine_cube_pairs`, `nine_noncube_pairs`, `two_is_cube_iff` and `cubic_gauss_cube`.
+- Theorems 1, 2, 3 and 5: choose $\chi$, replace $T$ by $L$ with `jacobi_trace_eq`, and move the equation from $\mathbb{C}$ to $\mathbb{Z}$ with `exact_mod_cast`. For theorem 5 the exponential sum is first rewritten as $\sum_x \psi(ax^3)$ with `ZMod.toCircle_apply`.
+- Theorem 4: take $L, M$ from `exists_rep`. By theorem 1 and `two_cube_iff_even`, "2 is a cube" means "$L$ is even". If $L = 2l$, then $27M^2 = 4p - 4l^2$ is even, so $M = 2m$ and $p = l^2 + 27m^2$. Conversely, if $p = x^2 + 27y^2$, then $3 \nmid x$ (otherwise $3 \mid p$), so $L' = \pm 2x$ with the sign chosen such that $L' \equiv 1 \pmod 3$ satisfies $4p = L'^2 + 27(2y)^2$; uniqueness gives $L = L'$, which is even.
+
+`Basic.lean` proves each of the five required theorems with one call of the corresponding theorem of `Main.lean`.
+
+### Verification
+
+- I extracted the final zip into a fresh folder and checked it offline, without editing anything, in the setting of the review environment: Mathlib at `/opt/mathlib4` (the pinned checkout, commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`, with its dependencies linked into `.lake/packages` as `lean-offline-init` does), Lean `4.33.0-rc1`, network access blocked.
+- `lake build` ends with "Build completed successfully", exit code 0, with no errors and no warnings. Every file uses the full `import Mathlib`.
+- `lake env lean StatementAndAxiomsCheck.lean` (included in the zip) re-states the five theorems of the prompt, so it fails if any statement was changed, and it reports exactly the axioms `propext`, `Classical.choice` and `Quot.sound` for each of the five theorems; exit code 0.
+- The project contains no `sorry`, `admit`, `native_decide`, new axiom, `set_option` or instance declaration.
+
+### Sources and related work
+
+The mathematics is classical: Gauss, Disquisitiones Arithmeticae (1801), art. 358 (cyclotomic periods of order 3, $4p = L^2 + 27M^2$, the number of solutions of $x^3 + y^3 = 1$); Jacobi (1827) on cubic residues and the cubic character of 2; Ireland and Rosen, A Classical Introduction to Modern Number Theory, 2nd ed., chapter 8 (Gauss and Jacobi sums, the equation $x^3 + y^3 = 1$ over $\mathbb{F}_p$) and chapter 9 (cubic reciprocity, the cubic character of 2); Berndt, Evans and Williams, Gauss and Jacobi Sums (Wiley, 1998). The write-up and the Lean code are my own.
+
+Related Lean code: Mathlib at the pinned commit contains the general theory of Gauss and Jacobi sums that is used above (`jacobiSum_mul_jacobiSum_inv`, `exists_jacobiSum_eq_neg_one_add`, `gaussSum_pow_eq_prod_jacobiSum`), but none of the five statements. I found no Lean formalization of them elsewhere.
+
+The golden answer is one valid route, not the only one. Any complete proof of the five statements is acceptable, for example a proof through cubic reciprocity in $\mathbb{Z}[\omega]$ or through Gaussian periods.

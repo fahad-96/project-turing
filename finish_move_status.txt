@@ -1,0 +1,9 @@
+Finish move started Thu 10/08/2026 22:47:16.93 
+Junction created for C:\opt\mathlib4 <<===>> D:\lean\TuringTask\.lake\packages\mathlib
+C:\opt\mathlib4 ok 
+Junction created for D:\opt\mathlib4 <<===>> D:\lean\TuringTask\.lake\packages\mathlib
+D:\opt\mathlib4 ok 
+Junction created for C:\lean\TuringTask <<===>> D:\lean\TuringTask
+C:\lean\TuringTask link ok 
+C: free 10.1 GB, D: free 187.2 GB
+DONE 

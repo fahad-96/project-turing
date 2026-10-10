@@ -1,0 +1,48 @@
+Offline check of golden_solution.zip started Fri 10/09/2026 13:01:31.41 
+===== /opt/mathlib4 commit 
+9944fe2973b8dc0b86949101ed98232c07cd54a0
+===== fresh folder D:\lean\golden_check_t9_20779 
+lake-manifest.json
+lakefile.toml
+lean-toolchain
+README.md
+StatementAndAxiomsCheck.lean
+TuringTask
+TuringTask.lean
+===== lean --version 
+Lean (version 4.33.0-rc1, x86_64-w64-windows-gnu, commit 62eed1db4d67327ec8120be05f1a1b0847d74561, Release)
+===== lake build 
+✔ [8664/8670] Built TuringTask.Cubes (649s)
+✔ [8665/8670] Built TuringTask.Jacobi3 (25s)
+✔ [8666/8670] Built TuringTask.Counts (24s)
+✔ [8667/8670] Built TuringTask.Main (23s)
+✔ [8668/8670] Built TuringTask.Basic (21s)
+✔ [8669/8670] Built TuringTask (21s)
+Build completed successfully (8670 jobs).
+BUILD EXIT CODE 0 
+===== lake env lean StatementAndAxiomsCheck.lean 
+'TuringTask.card_cubic' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_cube_pairs' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_noncube_pairs' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.two_cube_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.cubic_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
+===== source files in the fresh copy 
+ Volume in drive D is Data
+ Volume Serial Number is 92E5-A612
+
+ Directory of D:\lean\golden_check_t9_20779\golden_solution\TuringTask
+
+10/09/2026  01:01 PM    <DIR>          .
+10/09/2026  01:01 PM    <DIR>          ..
+10/09/2026  12:00 AM              1841 Basic.lean
+10/09/2026  12:00 AM             18537 Counts.lean
+10/09/2026  12:00 AM              7724 Cubes.lean
+10/09/2026  12:00 AM              8171 Jacobi3.lean
+10/09/2026  12:00 AM              3761 Main.lean
+               5 File(s)          40034 bytes
+
+     Total Files Listed:
+               5 File(s)          40034 bytes
+               2 Dir(s)    200969625600 bytes free
+Finished Fri 10/09/2026 13:19:01.40 

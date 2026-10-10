@@ -1,0 +1,57 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. Write $e = \exp(1)$. A hypergraph on the vertex set $\{0, \dots, n - 1\}$ has edges $E_0, \dots, E_{m-1}$, where $E_i$ is the set of vertices $v$ with $I(i, v)$ true. A 2-colouring of the vertices is proper if no edge is monochromatic.
+
+1. If every edge has $k$ vertices and meets at most $d$ other edges, and $e(d + 1) \le 2^{k-1}$, then the hypergraph has a proper 2-colouring.
+2. If $k \ge 9$, every edge has $k$ vertices and every vertex lies in at most $k$ edges, then the hypergraph has a proper 2-colouring.
+3. Let clause $i$ (for $i < m$) have the variable set $\{v : V(i, v)\}$ of size $k$; an assignment $x \in \{\mathrm{true}, \mathrm{false}\}^n$ satisfies clause $i$ if $x_v = s(i, v)$ for some variable $v$ of the clause. If every clause shares a variable with at most $d$ other clauses and $e(d + 1) \le 2^k$, then some assignment satisfies every clause.
+4. If $e\left(\binom{k}{2}\binom{n}{k-2} + 1\right) \le 2^{\binom{k}{2} - 1}$, then the edges of the complete graph on $n$ vertices can be 2-coloured so that no $k$ vertices span a monochromatic complete subgraph.
+5. If $e(k^2 N + 1) \le 2^{k-1}$, then $\{0, \dots, N - 1\}$ can be 2-coloured so that no arithmetic progression of $k$ terms with positive difference is monochromatic.
+
+Lean statement. Edges, clause variable sets and clause signs are given by Boolean functions `I`, `V`, `s`; an edge colouring of the complete graph is a function on `Sym2 (Fin n)`. The file `TuringTask/Basic.lean` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem color_meet (n m k d : Nat) (I : Fin m -> Fin n -> Bool)
+    (hk : forall i, (Finset.univ.filter (fun v => I i v = true)).card = k)
+    (hd : forall i, (Finset.univ.filter (fun j => Not (j = i) /\
+      exists v, I i v = true /\ I j v = true)).card <= d)
+    (hkd : Real.exp 1 * ((d : Real) + 1) <= 2 ^ (k - 1)) :
+    exists c : Fin n -> Bool, forall i,
+      (exists v, I i v = true /\ c v = true) /\ (exists v, I i v = true /\ c v = false) := by
+  sorry
+
+theorem color_deg (n m k : Nat) (hk9 : 9 <= k) (I : Fin m -> Fin n -> Bool)
+    (hk : forall i, (Finset.univ.filter (fun v => I i v = true)).card = k)
+    (hdeg : forall v, (Finset.univ.filter (fun i => I i v = true)).card <= k) :
+    exists c : Fin n -> Bool, forall i,
+      (exists v, I i v = true /\ c v = true) /\ (exists v, I i v = true /\ c v = false) := by
+  sorry
+
+theorem sat_exists (n m k d : Nat) (V s : Fin m -> Fin n -> Bool)
+    (hk : forall i, (Finset.univ.filter (fun v => V i v = true)).card = k)
+    (hd : forall i, (Finset.univ.filter (fun j => Not (j = i) /\
+      exists v, V i v = true /\ V j v = true)).card <= d)
+    (hkd : Real.exp 1 * ((d : Real) + 1) <= 2 ^ k) :
+    exists x : Fin n -> Bool, forall i, exists v, V i v = true /\ x v = s i v := by
+  sorry
+
+theorem ramsey_color (n k : Nat)
+    (h : Real.exp 1 * (((Nat.choose k 2 * Nat.choose n (k - 2) : Nat) : Real) + 1)
+      <= 2 ^ (Nat.choose k 2 - 1)) :
+    exists c : Sym2 (Fin n) -> Bool, forall s : Finset (Fin n), s.card = k ->
+      2 <= (s.offDiag.image (fun q => c (Sym2.mk q.1 q.2))).card := by
+  sorry
+
+theorem ap_color (N k : Nat) (h : Real.exp 1 * (((k ^ 2 * N : Nat) : Real) + 1) <= 2 ^ (k - 1)) :
+    exists c : Nat -> Bool, forall a r : Nat, 1 <= r -> a + (k - 1) * r < N ->
+      2 <= ((Finset.range k).image (fun j => c (a + j * r))).card := by
+  sorry
+
+end TuringTask
+```
+
+Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.

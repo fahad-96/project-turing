@@ -1,0 +1,27 @@
+Task 12 (new prime factors of Fibonacci and Lucas numbers, Carmichael) - model outputs
+Checked 9 Oct 2026, 20:44-21:10 IST, OFFICIAL on the laptop worker (D:\lean\TuringTask, pinned
+toolchain leanprover/lean4:v4.33.0-rc1, Mathlib 9944fe2973b8dc0b86949101ed98232c07cd54a0, full
+`import Mathlib`), check file = tasks\task 12\StatementAndAxiomsCheck.lean.
+
+Zips (sha256):
+  R1 turing_task_r1.zip   a39238928ec2d568b7867521ff155d29df6e412cf1a4e240bbd6ed3bafada5fc (6,311 bytes)
+  R3 TuringTask_r2.zip    18fbf5fb0a3ea35e4cce3962b423a8d2f1ed6aea80a2af9449b1f050977b8d3a (2,655 bytes)
+     (the fellow said the two files are R1 and R3; the platform relabels columns while a rollout is
+     still running; the second rollout was still running at 21:10 IST)
+
+Pre-checks in the cloud: the five theorem statements are whitespace-identical to the prompt in both;
+no native_decide, axiom, unsafe, set_option, instance, attribute, macro, elab; R1 has `sorry` at
+lines 125 and 334; the second file has every theorem as `:= by` with an empty tactic block and a
+README that says the proofs are not completed.
+
+Official results:
+  R1 (job 019a_t12_r1, 342 lines): build exit 0 with two `declaration uses sorry` warnings
+     (exists_prime_fib at line 107, exists_prime_fib_mod at line 318; the general case n >= 13 is
+     left open in both, small n done by hand); check file exit 0; all five axiom lists contain
+     sorryAx (exists_prime_lucas, card_divisors_le, primeFactors_fib_eq are reduced to the first
+     theorem). Its README claims the theorems are proved; Lean says otherwise.  GENUINE FAILURE.
+  R3 (job 019c_t12_r3, 24 lines): build exit 1, five "unsolved goals" errors (empty proofs);
+     check file exit 1 (no olean).  GENUINE FAILURE (nothing proved; not an environment failure:
+     Mathlib loaded, the errors are in the file).
+
+Result: task 12 is valid. Golden to be written (own work). Job sources byte-identical to the zips.

@@ -1,0 +1,18 @@
+Job 017b_t13_statements started Fri 10/09/2026 18:14:24.14 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (22s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:10:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:16:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:22:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:27:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (21s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.resultant_cyclotomic_eq_one' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.resultant_cyclotomic_mul_prime_pow' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.discr_cyclotomic' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.isCoprime_cyclotomic_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.resultant_cyclotomic_X_pow_sub_one' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

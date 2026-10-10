@@ -1,0 +1,46 @@
+Put my Project Turing folder under Git and GitHub, and give the Lean worker a Git-based job queue. You are running on my Honor laptop (Windows, device name "fahad"); you have a real shell here. Work carefully: this folder is live work and nothing in it may be lost or rewritten.
+
+CONTEXT
+- Project folder (becomes the repository root): D:\HandShake\project turing\Project Turing
+  It holds Markdown documents (TURING_PLAYBOOK.md, TURING_TRACKER_EXPORT.md, TURING_HANDOFF_2026-10-06.md, TURING_MEMORY.md, Turning_instructions.md), Windows scripts (*.bat, *.ps1), a Lean starter project (TuringTask_starter\), and tasks\task N\ folders with Python generators, prompts, Lean files, logs, model output zips (up to 3 MB each) and golden zips. Total well under 50 MB. Everything in it belongs in the repo.
+- Lean project (NOT part of the repo): D:\lean\TuringTask (pinned toolchain leanprover/lean4:v4.33.0-rc1, Mathlib at commit 9944fe2973b8dc0b86949101ed98232c07cd54a0 with its cache in .lake). Never touch .lake.
+- Current worker: Project Turing\lean_worker.bat. It watches D:\lean\TuringTask\_jobs\<job>\ for folders containing src\TuringTask\*.lean (optional src\TuringTask.lean), optional check.lean and an empty READY file; for each such folder without DONE it replaces D:\lean\TuringTask\TuringTask\ with src\TuringTask, runs `lake build`, then `lake env lean JobCheck.lean` (check.lean copied there), writes log.txt (log.tmp while running) and DONE, and refreshes _jobs\worker_alive.txt every 5 s. Read it before writing anything; keep its behaviour exactly. Another Claude chat is using it right now, so the old queue must keep working.
+- Git for Windows and the GitHub CLI (gh) may or may not be installed; check, and tell me what to install if something is missing (winget is fine). If `gh auth login` is needed, ask me to do it in the terminal and wait.
+
+DO THIS, IN ORDER, AND TELL ME BEFORE EACH STEP THAT CHANGES SOMETHING
+
+1. Repository
+   - `git init` in the project folder. Set `core.autocrlf false` for this repo and add a `.gitattributes` with the single line `* -text` so that Git never converts line endings: the Lean files and golden zips are compared byte for byte by sha256 and must round-trip unchanged.
+   - `.gitignore`: `__pycache__/`, `*.pyc`, `.lake/`, `*.olean`, `*.ilean`, `*.tmp`, `log.tmp`, `Thumbs.db`, `desktop.ini`. Do NOT ignore the model output zips, golden zips, logs or documents.
+   - Create a PRIVATE GitHub repository named `project-turing` under my account with `gh repo create project-turing --private --source . --remote origin`, first commit "Project Turing: import of the working folder, 10 Oct 2026", push to `main`. Confirm the URL to me.
+   - Tell me the exact repository URL and the clone command. Nothing in the folder may be moved, renamed or deleted.
+
+2. Git-based job queue for the worker (new script, old one untouched)
+   - Create `lean_worker_git.bat` (or a .bat that calls a .ps1, your choice; one double-click to start, Windows-only, no extra installs) next to lean_worker.bat. It does everything lean_worker.bat does, with these additions:
+     a. Two job roots: the legacy D:\lean\TuringTask\_jobs\ (unchanged behaviour) and the new `<repo>\jobs\` inside the repository. A job folder has the same layout in both (src\TuringTask\*.lean, optional src\TuringTask.lean, optional check.lean, READY; results log.txt and DONE). Process at most ONE job at a time across both roots (Mathlib builds must never run in parallel on this laptop).
+     b. Every loop iteration (about every 15 s): in the repo, `git add -A`, commit if there are changes (message "sync <date time>" or "worker: <job name> done" after a job), then `git pull --rebase --autostash`, then `git push`. If the rebase or push fails (conflict), run `git rebase --abort`, write `<repo>\WORKER_GIT_CONFLICT.txt` with the error, print a loud message in the window and keep building jobs without pushing until the file is removed by hand. Never force-push, never reset, never delete files.
+     c. Refresh `<repo>\jobs\worker_alive.txt` every loop (and the legacy worker_alive.txt as before).
+     d. Print one line per event (job started, job finished, pushed, conflict).
+   - Why: Claude chats in the cloud can only reach GitHub, not this laptop. With this, a chat pushes a job folder to the repo, this worker builds it and pushes the log back, and nobody needs the laptop link. Also, when I drop model output zips into tasks\task N\model_outputs\, they get pushed automatically.
+   - Add `jobs\README.md` describing the job folder format and the rule "READY last".
+   - Test it: create `jobs\000_smoke\src\TuringTask\Basic.lean` containing exactly:
+       import Mathlib
+
+       theorem smoke : (2 : Nat) + 2 = 4 := by norm_num
+     and `jobs\000_smoke\check.lean` containing `import TuringTask.Basic` and `#print axioms smoke`, then READY. Wait for DONE (first build after idle can take about 10 minutes), show me log.txt, and confirm the job folder and its log were pushed to GitHub. Remove nothing.
+
+3. One-click sync for me
+   - `sync.bat`: `git add -A`, commit "sync <date time>" if there are changes, `git pull --rebase --autostash`, `git push`, print the result, pause. For the moments when the worker is not running.
+
+4. Documentation (append, do not rewrite)
+   - Create `REPO_PROTOCOL.md` in the repo root: repository URL; the rule that every Claude chat clones or pulls before reading or editing, commits with a message naming the task, and pushes immediately; conflicts are resolved by the chat that pulls, never by overwriting; the jobs\ queue format and the two worker scripts; sync.bat; the line-ending rule; what is ignored.
+   - Append a short section "Git repository (10 Oct 2026)" to TURING_PLAYBOOK.md pointing to REPO_PROTOCOL.md, and one line to the top of TURING_MEMORY.md: "The project folder is a Git repository (see REPO_PROTOCOL.md); pull before editing, push after".
+   - Commit and push these.
+
+5. Report
+   - Give me: the repository URL, the clone command, which worker to run from now on (lean_worker_git.bat; the old one stays as a fallback and must not run at the same time), and anything you could not do.
+
+RULES
+- Be brief and tell me plainly what is verified. Everything you write into the repo is pure ASCII.
+- Never delete, rename or move my files. Never rewrite the documents beyond the appends in step 4. Never run two Lean builds at once. Never force-push.
+- If a command needs my login (gh auth login) or an install, stop and ask.

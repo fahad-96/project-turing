@@ -1,0 +1,18 @@
+Job 005_golden_a started Thu 10/08/2026  1:27:28.13 
+===== lake build 
+✔ [8664/8671] Built TuringTask.Poly (29s)
+✔ [8665/8671] Built TuringTask.Root (23s)
+✔ [8666/8671] Built TuringTask.Sums (26s)
+✔ [8667/8671] Built TuringTask.Char (24s)
+✔ [8668/8671] Built TuringTask.Cot (24s)
+✔ [8669/8671] Built TuringTask.Basic (22s)
+✔ [8670/8671] Built TuringTask (21s)
+Build completed successfully (8671 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.sum_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_tri' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_legendre' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_sq_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sum_cot' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

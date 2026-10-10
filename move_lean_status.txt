@@ -1,0 +1,2 @@
+Move of C:\lean to D:\lean started Thu 10/08/2026 22:37:47.16 
+STOPPED: C:\lean\TuringTask not found 

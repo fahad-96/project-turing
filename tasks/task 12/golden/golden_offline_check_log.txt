@@ -1,0 +1,54 @@
+Offline check of golden_solution.zip started Sat 10/10/2026  0:59:03.87 
+===== /opt/mathlib4 commit 
+9944fe2973b8dc0b86949101ed98232c07cd54a0
+===== fresh folder D:\lean\golden_check_t12_30267 
+lake-manifest.json
+lakefile.toml
+lean-toolchain
+README.md
+StatementAndAxiomsCheck.lean
+TuringTask
+TuringTask.lean
+===== lean --version 
+Lean (version 4.33.0-rc1, x86_64-w64-windows-gnu, commit 62eed1db4d67327ec8120be05f1a1b0847d74561, Release)
+===== lake build 
+✔ [8664/8673] Built TuringTask.Fib (16s)
+✔ [8665/8673] Built TuringTask.Rank (15s)
+✔ [8666/8673] Built TuringTask.Psi (14s)
+✔ [8667/8673] Built TuringTask.Size (16s)
+✔ [8668/8673] Built TuringTask.Prim (14s)
+✔ [8669/8673] Built TuringTask.Apps (14s)
+✔ [8670/8673] Built TuringTask.Main (19s)
+✔ [8671/8673] Built TuringTask.Basic (22s)
+✔ [8672/8673] Built TuringTask (21s)
+Build completed successfully (8673 jobs).
+BUILD EXIT CODE 0 
+===== lake env lean StatementAndAxiomsCheck.lean 
+'TuringTask.exists_prime_fib' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.exists_prime_lucas' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_divisors_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.primeFactors_fib_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.exists_prime_fib_mod' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
+===== source files in the fresh copy 
+ Volume in drive D is Data
+ Volume Serial Number is 92E5-A612
+
+ Directory of D:\lean\golden_check_t12_30267\golden_solution\TuringTask
+
+10/10/2026  12:59 AM    <DIR>          .
+10/10/2026  12:59 AM    <DIR>          ..
+10/10/2026  12:00 AM              9003 Apps.lean
+10/10/2026  12:00 AM              1192 Basic.lean
+10/10/2026  12:00 AM             11803 Fib.lean
+10/10/2026  12:00 AM              1723 Main.lean
+10/10/2026  12:00 AM             10711 Prim.lean
+10/10/2026  12:00 AM             16617 Psi.lean
+10/10/2026  12:00 AM             19412 Rank.lean
+10/10/2026  12:00 AM             17883 Size.lean
+               8 File(s)          88344 bytes
+
+     Total Files Listed:
+               8 File(s)          88344 bytes
+               2 Dir(s)    198714630144 bytes free
+Finished Sat 10/10/2026  1:02:15.57 

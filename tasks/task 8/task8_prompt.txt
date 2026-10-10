@@ -1,0 +1,54 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. For a real number $t$ let $\{t\} = t - \lfloor t \rfloor$ be its fractional part. For a real sequence $u_0, u_1, \dots$, an integer $N \ge 1$ and $0 \le a \le b \le 1$, let $P_N(u; a, b)$ be the proportion of $n \in \{0, 1, \dots, N - 1\}$ with $a \le \{u_n\} < b$.
+
+1. Let $x$ be irrational. For every $\varepsilon > 0$ there is $N_0$ such that $|P_N(n^2 x; a, b) - (b - a)| < \varepsilon$ for all $N \ge N_0$ and all $0 \le a \le b \le 1$.
+2. Let $f$ be a real polynomial of degree at least $1$ whose leading coefficient is irrational. Then $P_N(f(n); a, b) \to b - a$ as $N \to \infty$.
+3. For $d \in \{1, \dots, 9\}$, the proportion of $n \in \{0, \dots, N - 1\}$ for which the first decimal digit of $2^{n^2}$ is $d$ tends to $\log_{10}((d + 1)/d)$.
+4. $\frac{1}{N} \sum_{n=0}^{N-1} |\sin(n^2)| \to 2/\pi$.
+5. If $x/\pi$ is irrational, then $\frac{1}{N} \sum_{n=0}^{N-1} \cos(n^2 x) \to 0$.
+
+Lean statement. `Int.fract t` is $\{t\}$, the proportion is the number of such $n$ in `Finset.range N` divided by `N`, `Polynomial.eval (n : Real) P` is $f(n)$ for `P : Polynomial Real` (with `P.leadingCoeff` and `P.natDegree` its leading coefficient and degree), and `2 ^ (n ^ 2) / 10 ^ Nat.log 10 (2 ^ (n ^ 2))` (division of natural numbers) is the first decimal digit of $2^{n^2}$. The file `TuringTask/Basic.lean` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem freq_sq_unif (x : Real) (hx : Irrational x) (e : Real) (he : 0 < e) :
+    exists N0 : Nat, forall N : Nat, N0 <= N -> forall a b : Real, 0 <= a -> a <= b -> b <= 1 ->
+      abs ((((Finset.range N).filter (fun n : Nat =>
+        a <= Int.fract ((n : Real) ^ 2 * x) /\ Int.fract ((n : Real) ^ 2 * x) < b)).card : Real)
+        / N - (b - a)) < e := by
+  sorry
+
+theorem freq_poly (P : Polynomial Real) (hP : Irrational P.leadingCoeff) (hdeg : 1 <= P.natDegree)
+    (a b : Real) (ha : 0 <= a) (hab : a <= b) (hb : b <= 1) :
+    Filter.Tendsto (fun N : Nat => (((Finset.range N).filter (fun n : Nat =>
+      a <= Int.fract (Polynomial.eval (n : Real) P) /\
+        Int.fract (Polynomial.eval (n : Real) P) < b)).card : Real) / N)
+      Filter.atTop (nhds (b - a)) := by
+  sorry
+
+theorem freq_lead_sq (d : Nat) (hd : 1 <= d) (hd' : d <= 9) :
+    Filter.Tendsto (fun N : Nat => (((Finset.range N).filter (fun n : Nat =>
+      2 ^ (n ^ 2) / 10 ^ Nat.log 10 (2 ^ (n ^ 2)) = d)).card : Real) / N)
+      Filter.atTop (nhds (Real.logb 10 (((d : Real) + 1) / d))) := by
+  sorry
+
+theorem mean_abs_sin_sq :
+    Filter.Tendsto (fun N : Nat =>
+      Finset.sum (Finset.range N) (fun n : Nat => abs (Real.sin ((n : Real) ^ 2))) / N)
+      Filter.atTop (nhds (2 / Real.pi)) := by
+  sorry
+
+theorem mean_cos_sq (x : Real) (hx : Irrational (x / Real.pi)) :
+    Filter.Tendsto (fun N : Nat =>
+      Finset.sum (Finset.range N) (fun n : Nat => Real.cos ((n : Real) ^ 2 * x)) / N)
+      Filter.atTop (nhds 0) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.

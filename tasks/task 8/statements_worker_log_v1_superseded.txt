@@ -1,0 +1,18 @@
+Job 007_statements_t8 started Thu 10/08/2026 17:54:36.22 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (42s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:11:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:17:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:24:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:30:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (42s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.freq_mul' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.freq_sq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.freq_unif' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.freq_lead' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.mean_abs_sin' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

@@ -1,0 +1,49 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. $d(n)$ is the number of divisors of $n$ (`Nat.divisors n` has `d(n)` elements), $D(N) = \sum_{n \le N} d(n)$, $\log$ is the natural logarithm and $\gamma$ is the Euler-Mascheroni constant (`Real.eulerMascheroniConstant`, the limit of $1 + 1/2 + \dots + 1/n - \log n$). $N$ and $n$ denote natural numbers.
+
+1. For every $N \ge 1$: $\left| D(N) - N \log N - (2\gamma - 1) N \right| \le 4 \sqrt{N}$.
+2. For every $N \ge 1$: $\left| \sum_{n=1}^{N} \dfrac{d(n)}{n} - \tfrac{1}{2} (\log N)^2 - 2\gamma \log N \right| \le 4$.
+3. $\dfrac{D(N) - N \log N}{N} \to 2\gamma - 1$ as $N \to \infty$.
+4. $\dfrac{1}{N} \sum_{n=1}^{N} \left( d(n) - \log n \right) \to 2\gamma$ as $N \to \infty$.
+5. $\dfrac{1}{N^2} \left( \sum_{n=1}^{N} D(n) - \tfrac{1}{2} N^2 \log N \right) \to \gamma - \tfrac{3}{4}$ as $N \to \infty$.
+
+Lean statement. Sums run over `Finset.Icc 1 N`, `Real.log 0 = 0`, and `Real.sqrt`, `Real.log`, `Filter.Tendsto`, `Filter.atTop` and `nhds` are Mathlib's. The file `TuringTask/Basic.lean` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem sum_card_divisors_sub_le (N : Nat) (hN : 1 <= N) :
+    abs ((Finset.Icc 1 N).sum (fun n => (n.divisors.card : Real)) - (N : Real) * Real.log N -
+        (2 * Real.eulerMascheroniConstant - 1) * N) <= 4 * Real.sqrt N := by
+  sorry
+
+theorem sum_card_divisors_div_sub_le (N : Nat) (hN : 1 <= N) :
+    abs ((Finset.Icc 1 N).sum (fun n => (n.divisors.card : Real) / n) - Real.log N ^ 2 / 2 -
+        2 * Real.eulerMascheroniConstant * Real.log N) <= 4 := by
+  sorry
+
+theorem tendsto_sum_card_divisors :
+    Filter.Tendsto (fun N : Nat => ((Finset.Icc 1 N).sum (fun n => (n.divisors.card : Real)) -
+        (N : Real) * Real.log N) / N) Filter.atTop
+      (nhds (2 * Real.eulerMascheroniConstant - 1)) := by
+  sorry
+
+theorem tendsto_sum_card_divisors_sub_log :
+    Filter.Tendsto (fun N : Nat => (Finset.Icc 1 N).sum (fun n => (n.divisors.card : Real) -
+        Real.log n) / N) Filter.atTop (nhds (2 * Real.eulerMascheroniConstant)) := by
+  sorry
+
+theorem tendsto_sum_sum_card_divisors :
+    Filter.Tendsto (fun N : Nat => ((Finset.Icc 1 N).sum (fun n =>
+        (Finset.Icc 1 n).sum (fun m => (m.divisors.card : Real))) -
+        (N : Real) ^ 2 * Real.log N / 2) / (N : Real) ^ 2) Filter.atTop
+      (nhds (Real.eulerMascheroniConstant - 3 / 4)) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.
