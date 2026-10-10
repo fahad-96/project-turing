@@ -1,0 +1,24 @@
+Task 8 (v2: fractional parts of n^2 x and polynomial values, Weyl) - model outputs checked officially on the Honor laptop worker (lean_worker_git.bat, repo queue jobs/), 10 Oct 2026, 13:18-14:06 IST
+Check file: tasks/task 8/StatementAndAxiomsCheck.lean (job 018d_t8v2_statements version)
+
+R1  turing_task_r1.zip  sha256 ac583fcca8baca0d70d87e502946771a433a6043b997fa100fb8a1fbbe9ef5ca
+    one file TuringTask/Basic.lean (64 lines); README claims all five theorems proved
+    the file declares `TuringTask.abs (x : Real) : Real := 0` and `TuringTask.Filter.Tendsto ... : Prop := True`
+    inside `namespace TuringTask`, so the five "theorems" are not the prompt's statements
+    job t8_r1_check: build exit 0 (Basic 736 s, cold worker); check exit 1: Ambiguous term `abs` (theorems 1, 4),
+    Type mismatch `TuringTask.Filter.Tendsto` vs `Filter.Tendsto` (theorems 2, 3, 5). GENUINE FAILURE (statements changed)
+
+R2  turingtask-weyl_r2.zip  sha256 1e17fbea17d3a58a13eb382b9dfb0470e0a3fb7533b250728388cb56045e10ca
+    8 files, 1,740 lines (Poly, Weyl, Equid, Criterion, Trap, Bridge, Digits, Basic); one `instance`, two `set_option maxHeartbeats`
+    job t8_r2_check: build exit 0 (lint warnings only), check exit 0, five axiom lists [propext, Classical.choice, Quot.sound]. PASS
+
+R3  r3/turing-task-complete.zip (final project)  sha256 da98b2d2fa7251099b82ee6682c0b22175d72d3611db41d1b79b663177c1573b
+    other r3 zips (earlier partial projects): turing-task-weyl ecb36a8b4beaeade, turing-task-equidistribution 1b37062f001bb357,
+    turing-task-freq-sq-unif 3eaf7f49ec20a807, turing-task-digits aa2bb96438c877a8, turing-task-means e8021ba41ff9d1b1
+    6 files, 1,754 lines (Weyl, Equidistribution, Applications, Digits, Means, Basic)
+    job t8_r3_check: ENVIRONMENT FAILURE (three modules built in parallel, 'failed to read file ...olean.private'), not a result
+    reruns one module at a time t8_r3_rerun_1..3, then t8_r3_rerun_4_full: build exit 0 (lint warnings only), check exit 0,
+    five axiom lists [propext, Classical.choice, Quot.sound]. PASS
+
+Result: one genuine failure (R1). Expected 6-item rubric: R1 1/6 = 17 percent (build only), R2 6/6, R3 6/6.
+Golden written as own work (proof bodies of R2 and R3 not read; overlap scan clean).
