@@ -17,12 +17,14 @@ set "CONFLICT=%REPO%\WORKER_GIT_CONFLICT.txt"
 set "GITOUT=%TEMP%\lean_worker_git_out.txt"
 set "GIT_TERMINAL_PROMPT=0"
 set "PATH=%USERPROFILE%\.elan\bin;%PATH%"
+set "SELF=%~f0"
+if "%~1"==":heartbeat" goto :heartbeat
 if not exist "%DEST%\lakefile.toml" goto :noproject
 if not exist "%REPO%\.git" goto :norepo
 where git >nul 2>&1
 if errorlevel 1 goto :nogit
 rem refuse to start if another Lean worker window is already running
-powershell -NoProfile -Command "$me=(Get-CimInstance Win32_Process -Filter ('ProcessId='+$PID)).ParentProcessId; exit @(Get-CimInstance Win32_Process -Filter 'Name=''cmd.exe''' | Where-Object { $_.ProcessId -ne $me -and $_.CommandLine -like '*lean_worker*.bat*' }).Count"
+powershell -NoProfile -Command "$me=(Get-CimInstance Win32_Process -Filter ('ProcessId='+$PID)).ParentProcessId; exit @(Get-CimInstance Win32_Process -Filter 'Name=''cmd.exe''' | Where-Object { $_.ProcessId -ne $me -and $_.CommandLine -like '*lean_worker*.bat*' -and $_.CommandLine -notlike '*:heartbeat*' }).Count"
 if not errorlevel 1 goto :start
 echo Another Lean worker window - lean_worker.bat or lean_worker_git.bat - is already running.
 echo Close it first: two workers must never build at the same time.
@@ -41,18 +43,22 @@ echo Every 15 s it commits, pulls and pushes this repository.
 echo Leave this window open while you work with Claude. Close it to stop.
 echo Do not run lean_worker.bat at the same time.
 echo.
+del "%TEMP%\lean_worker_git_busy_*.flag" >nul 2>&1
 set /a TICK=3
 set /a HB=40
 set /a CWARN=0
+set /a PW=0
 :loop
+set "OTHER="
 for /d %%J in ("%JOBS%\*") do (
-  if exist "%%J\READY" if not exist "%%J\DONE" call :run "%%J"
+  if exist "%%J\READY" if not exist "%%J\DONE" call :job legacy "%%J"
 )
 for /d %%J in ("%RJOBS%\*") do (
-  if exist "%%J\READY" if not exist "%%J\DONE" call :runrepo "%%J"
+  if exist "%%J\READY" if not exist "%%J\DONE" call :job repo "%%J"
 )
 echo worker alive %DATE% %TIME% > "%JOBS%\worker_alive.txt"
-echo worker alive %DATE% %TIME% - lean_worker_git.bat on %COMPUTERNAME%> "%RJOBS%\worker_alive.txt"
+if defined OTHER echo PAUSED %DATE% %TIME% - lean_worker.bat is also running on %COMPUTERNAME%; close that window> "%RJOBS%\worker_alive.txt"
+if not defined OTHER echo worker alive %DATE% %TIME% - lean_worker_git.bat on %COMPUTERNAME%> "%RJOBS%\worker_alive.txt"
 set /a TICK+=1
 if !TICK! GEQ 3 (
   set /a TICK=0
@@ -75,6 +81,54 @@ exit /b 1
 echo git was not found on PATH. Install Git for Windows: winget install --id Git.Git
 pause
 exit /b 1
+
+rem ---------------------------------------------------------------------
+rem one pending job (%1 = legacy or repo, %2 = job folder).
+rem Never starts a build while another worker window is open, and keeps
+rem the legacy worker_alive.txt fresh while the build runs.
+:job
+if defined OTHER goto :eof
+call :otherworker
+if defined OTHER goto :paused
+set /a PW=0
+set "BUSY=%TEMP%\lean_worker_git_busy_%RANDOM%%RANDOM%.flag"
+echo busy> "%BUSY%"
+start "" /b cmd /c ""%SELF%" :heartbeat "%BUSY%""
+if "%~1"=="repo" call :runrepo "%~2"
+if not "%~1"=="repo" call :run "%~2"
+del "%BUSY%" >nul 2>&1
+goto :eof
+
+:paused
+set /a PW+=1
+if !PW! EQU 1 (
+  color 6F
+  echo.
+  echo ##########################################################################
+  echo ##  PAUSED: another Lean worker window - lean_worker.bat - is open.     ##
+  echo ##  Not building %~nx2
+  echo ##  Close the other window; this one continues by itself.              ##
+  echo ##########################################################################
+  echo.
+)
+if !PW! GEQ 60 set /a PW=0
+goto :eof
+
+rem sets OTHER=1 when another worker window (not this one) is running
+:otherworker
+set "OTHER="
+powershell -NoProfile -Command "$me=(Get-CimInstance Win32_Process -Filter ('ProcessId='+$PID)).ParentProcessId; exit @(Get-CimInstance Win32_Process -Filter 'Name=''cmd.exe''' | Where-Object { $_.ProcessId -ne $me -and $_.CommandLine -like '*lean_worker*.bat*' -and $_.CommandLine -notlike '*:heartbeat*' }).Count"
+if errorlevel 1 set "OTHER=1"
+if not defined OTHER if !PW! NEQ 0 color 07
+goto :eof
+
+rem background helper: refreshes the legacy worker_alive.txt every 5 s
+rem while the build named by the flag file %2 is running
+:heartbeat
+if not exist "%~2" exit
+echo worker alive %DATE% %TIME% > "%JOBS%\worker_alive.txt"
+ping -n 6 127.0.0.1 >nul
+goto :heartbeat
 
 rem ---------------------------------------------------------------------
 rem repo job: announce on GitHub, build exactly like the legacy worker,

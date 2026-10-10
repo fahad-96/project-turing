@@ -81,7 +81,12 @@ ask the user to double-click `lean_worker_git.bat`.
   keeps building jobs and committing locally WITHOUT pulling or pushing until
   that file is deleted by hand (after resolving: `git pull --rebase`, fix,
   `git rebase --continue`, `git push`). Being offline is not a conflict; it
-  just retries. It refuses to start if another worker window is open.
+  just retries. It refuses to start if another worker window is open, and
+  before every job it checks again: if lean_worker.bat is also open it turns
+  yellow, builds nothing (PAUSED) and continues by itself once that window is
+  closed. While a build runs it keeps the legacy `_jobs\worker_alive.txt`
+  fresh every 5 s, so a long build does not look like a dead worker.
+  DO NOT start lean_worker.bat because a build is taking long.
 - `lean_worker.bat` - the original worker, kept as a fallback. Legacy queue
   only, no Git. Never run it at the same time as lean_worker_git.bat
   (two Mathlib builds must never run in parallel on this laptop).
