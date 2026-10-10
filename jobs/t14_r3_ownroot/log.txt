@@ -1,0 +1,12 @@
+Job t14_r3_ownroot started Sat 10/10/2026 13:54:47.42 
+===== lake build 
+✔ [8667/8668] Built TuringTask (21s)
+Build completed successfully (8668 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+JobCheck.lean:3:14: error(lean.unknownIdentifier): Unknown constant `TuringTask.sum_card_divisors_sub_le`
+JobCheck.lean:4:14: error(lean.unknownIdentifier): Unknown constant `TuringTask.sum_card_divisors_div_sub_le`
+JobCheck.lean:5:14: error(lean.unknownIdentifier): Unknown constant `TuringTask.tendsto_sum_card_divisors`
+JobCheck.lean:6:14: error(lean.unknownIdentifier): Unknown constant `TuringTask.tendsto_sum_card_divisors_sub_log`
+JobCheck.lean:7:14: error(lean.unknownIdentifier): Unknown constant `TuringTask.tendsto_sum_sum_card_divisors`
+CHECK EXIT CODE 1 
