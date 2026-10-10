@@ -1,0 +1,19 @@
+Job t8_golden_01 started Sat 10/10/2026 13:56:02.30 
+===== lake build 
+✔ [8664/8672] Built TuringTask.Phase (31s)
+✔ [8665/8672] Built TuringTask.PolySum (24s)
+✔ [8666/8672] Built TuringTask.Circle (25s)
+✔ [8667/8672] Built TuringTask.Counting (30s)
+✔ [8668/8672] Built TuringTask.LeadDigit (24s)
+✔ [8669/8672] Built TuringTask.Main (26s)
+✔ [8670/8672] Built TuringTask.Basic (24s)
+✔ [8671/8672] Built TuringTask (23s)
+Build completed successfully (8672 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.freq_sq_unif' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.freq_poly' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.freq_lead_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.mean_abs_sin_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.mean_cos_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

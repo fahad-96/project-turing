@@ -1,0 +1,48 @@
+Task 14 - average order of the divisor function (Dirichlet, hyperbola method) - model outputs
+Checked 10 Oct 2026, 13:48-13:55 IST, OFFICIAL on the laptop worker lean_worker_git.bat (Git queue jobs/,
+D:\lean\TuringTask, pinned toolchain leanprover/lean4:v4.33.0-rc1, Mathlib
+9944fe2973b8dc0b86949101ed98232c07cd54a0, full `import Mathlib`).
+Check file = tasks\task 14\StatementAndAxiomsCheck.lean (job 018e version, sha256 9d61fdc96d57ff8f).
+
+Zips (sha256):
+  R1 turing_task_r1.zip                      b2303adb590a314d837ee516d84192911363cb6d73c31f68bebc88646de5581c
+  R2 turingtask-lean_r2.zip                  cc1f61653f264b94c4f42025e9bc4a67af58b19f858df0d5a60cbc4fc46fc331
+  R3 r3\TuringTask.zip (final project)       d0f51961369bf1d75347dbf07d2c350948707b7a321b58d22a3eb01d2a3bbf2c
+     earlier partial attempts in r3\ (Basic.lean still has five `sorry`):
+     turingtask-first-two-research.zip       14b742c4051f0508
+     turingtask-limits-proofs.zip            b1ff2d665ea0f06d
+     sum-card-divisors-kernel-proof.zip      0a9d7998bfaca53e
+     sum-card-divisors-div-sub-le.zip        bd5621ff93aad448
+
+Pre-checks in the cloud (all three final projects): the five theorem statements are
+whitespace-identical to the prompt; no sorry, admit, native_decide, axiom, unsafe, implemented_by,
+extern, opaque, instance, attribute, notation, macro or elab in any project file; R3 has one
+`set_option maxHeartbeats 800000` (Second.lean; not a kernel escape); no declaration shadows a
+Mathlib name (no TuringTask.Real.*, Nat.*, Finset.*, Filter.*). Proof bodies were not read.
+
+Official results (job sources byte-identical to the unpacked zips):
+  R1 (job t14_r1_check; 1,812 lines, one file TuringTask/Basic.lean): build exit 0, no warnings;
+     check exit 0; five axiom lists [propext, Classical.choice, Quot.sound].  PASS
+  R2 (job t14_r2_check; 1,255 lines in 10 files, root imports all of them): build exit 0, no
+     warnings; check exit 0; standard axioms.  PASS
+  R3 (job t14_r3_check; 1,745 lines, chain Research -> First -> Second -> Limits -> Basic, built with
+     the default root `import TuringTask.Basic`): build exit 0, no warnings; check exit 0; standard
+     axioms.  PASS on the mathematics.
+     Packaging note (job t14_r3_ownroot, R3's own TuringTask.lean = `import TuringTask.Second`):
+     `lake build` exit 0 but builds only Research, First, Second and the root (8,668 jobs instead of
+     8,670); TuringTask/Limits.lean and TuringTask/Basic.lean are never compiled by plain
+     `lake build`, and `import TuringTask` does not contain the five theorems (Unknown constant,
+     exit 1). In a fresh extraction `lake env lean StatementAndAxiomsCheck.lean` would stop on the
+     missing TuringTask/Basic.olean. This is a packaging slip, not a missing proof: all five
+     theorems are proved, kernel-checked, in the delivered files. Not counted as a genuine failure
+     (under the 6-item rubric it touches only the build item).
+
+Lake reused unchanged modules by their traces (same source hash): R2's eight inner modules from the
+per-module compiles 024b_t14_r2_02..08 (10:43-10:58 IST, each compiled with a check mark, no
+warnings) and R3's Research, First, Second from recheck_024c_t14_r3 (12:07 IST, no warnings);
+Limits, Basic and the root were recompiled in these jobs.
+Consistent earlier runs: jobs\recheck_024a..d_t14_* (11:57-12:12 IST, single worker) gave the same
+results. The legacy-queue runs D:\lean\TuringTask\_jobs\024a..d_t14_* (10:35-11:08 IST) overlapped
+with a second worker and are NOT reliable (see _README_WORKER_CHANGED_2026-10-10.txt there).
+
+Result: no genuine failure. Task rejected (official rule 3); no golden written.
