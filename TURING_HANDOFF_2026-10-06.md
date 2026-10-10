@@ -918,3 +918,16 @@ Post-mortem (playbook 4.1 checklist, in hindsight): all three READMEs describe e
 Result: task 15 REJECTED (no genuine failure); no golden, no rubric. Tracker row and TURING_MEMORY.md updated.
 
 Tool lesson (10 Oct, task 8 and 15 chat): when a cloud chat commits a shared document to the laptop with device_commit_files from the SAME container path twice, the second commit can deliver the PREVIOUS version (seen twice for TURING_TRACKER_EXPORT.md and TURING_MEMORY.md). Write every new version to a NEW file name (for example tracker_v3.md) before committing, and confirm the byte size on the laptop with device_list_dir afterwards.
+
+## 40. Task 17 (densities governed by 6/pi^2) - all three models passed, task rejected, 10 Oct 2026, about 15:05 IST
+
+Model outputs (`tasks\task 17\model_outputs`), checked OFFICIALLY on lean_worker_git.bat (Git queue `jobs\`, full `import Mathlib`), check file = the task's `StatementAndAxiomsCheck.lean` (job 023b version):
+- R1 `turing_project_r1.zip` (sha256 aaab9c37b97003aa...; `TuringTask_r1.zip` is the same file): one file `TuringTask/Basic.lean`, 790 lines. Job `t17_r1_check`: build exit 0 (Basic 31 s), no warnings; check exit 0; five axiom lists `[propext, Classical.choice, Quot.sound]`. PASS.
+- R2 `turingtask-lean_r2.zip` (9696a4435d699289...): one file, 777 lines. Job `t17_r2_check`: build exit 0, no warnings; check exit 0; standard axioms. PASS.
+- R3 final `r3\turing-task.zip` (fecc7d1011785c22...); `card-squarefree-proof.zip` and `totient-proofs.zip` are earlier scratch attempts (Basic.lean still has five `sorry`). Chain SquarefreeEstimates (354) -> TotientEstimates (491) -> Basic (204), 1,049 lines. Job `t17_r3_check`: build exit 0, no warnings; check exit 0; standard axioms. PASS.
+- Pre-checks: statements whitespace-identical to the prompt in all three; no sorry, admit, native_decide, axiom, unsafe, implemented_by, extern, opaque, set_option, instance, attribute, macro or elab; only harmless notation (R1 `open scoped LSeries.notation`, R2 a `local notation` for the Moebius function); no declaration shadows a Mathlib name; every root module imports Basic. Proof bodies were not read.
+- Logs: `model_outputs\check_r1_log.txt`, `check_r2_log.txt`, `check_r3_log.txt`, `check_summary.txt` (zip sha256 values).
+
+Post-mortem: as predicted in section 34 and after task 14 (section 37), the 6/pi^2 densities were within reach of all three models, in 777 to 1,049 lines (R3's zip file timestamps span about 45 minutes). Mathlib supplies the core (`riemannZeta_two`, `moebius_mul_coe_zeta`, `LSeries_convolution'`, `sum_Ioc_inv_sq_le_sub`, `Nat.sq_mul_squarefree`), so only Moebius-sum bookkeeping and floor-error estimates remained, and the stated constants were generous (actual errors 7 to 23 percent of the bounds). Lesson for topic choice: tasks 14, 15 and 17 (classical analytic estimates whose key identity or constant Mathlib already has) were all solved by all three models; avoid this family. Line counts: R1 790, R2 777, R3 1,049; platform run times not recorded (ask the fellow).
+
+Result: task 17 REJECTED (no genuine failure); no golden, no rubric. Tracker row and TURING_MEMORY.md updated.
