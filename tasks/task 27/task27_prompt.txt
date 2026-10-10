@@ -1,14 +1,14 @@
 Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
 
-Mathematical statement. For a positive integer $n$ and a positive definite binary quadratic form $f$, let $r_f(n)$ be the number of pairs of integers $(x, y)$ with $f(x, y) = n$ (all such pairs satisfy $|x|, |y| \le n$, which is the box used in Lean). Write $\left(\frac{a}{b}\right)$ for the Jacobi symbol (`jacobiSym a b` in Mathlib; it is $0$ when $\gcd(a, b) > 1$). For every $n \ge 1$:
+Mathematical statement. For a positive definite binary quadratic form $f$ and an integer $n \ge 1$, let $r_f(n)$ be the number of pairs of integers $(x, y)$ with $f(x, y) = n$. Write $\left(\frac{a}{b}\right)$ for the Jacobi symbol. Mathlib calls it `jacobiSym a b`, and it equals $0$ when $\gcd(a, b) > 1$. For every $n \ge 1$:
 
-1. $r(n) = 6 \sum_{d \mid n} \left(\frac{d}{3}\right)$ for $f = x^2 + x y + y^2$.
-2. $r(n) = 2 \sum_{d \mid n} \left(\frac{d}{3}\right) + 4 \sum_{d \mid n,\ 4 \mid d} \left(\frac{d/4}{3}\right)$ for $f = x^2 + 3 y^2$.
-3. $r(n) = 2 \sum_{d \mid n} \left(\frac{-2}{d}\right)$ for $f = x^2 + 2 y^2$.
-4. $r(n) = 2 \sum_{d \mid n} \left(\frac{d}{7}\right)$ for $f = x^2 + x y + 2 y^2$.
-5. $r(n) = 2 \sum_{d \mid n} \left(\frac{d}{7}\right) - 4 \sum_{d \mid n,\ d \text{ odd},\ n/d \text{ even}} \left(\frac{d}{7}\right)$ for $f = x^2 + 7 y^2$.
+1. $r_f(n) = 6 \sum_{d \mid n} \left(\frac{d}{3}\right)$ for $f = x^2 + x y + y^2$.
+2. $r_f(n) = 2 \sum_{d \mid n} \left(\frac{d}{3}\right) + 4 \sum_{d \mid n,\ 4 \mid d} \left(\frac{d/4}{3}\right)$ for $f = x^2 + 3 y^2$.
+3. $r_f(n) = 2 \sum_{d \mid n} \left(\frac{-2}{d}\right)$ for $f = x^2 + 2 y^2$.
+4. $r_f(n) = 2 \sum_{d \mid n} \left(\frac{d}{7}\right)$ for $f = x^2 + x y + 2 y^2$.
+5. $r_f(n) = 2 \sum_{d \mid n} \left(\frac{d}{7}\right) - 4 \sum_{d \mid n,\ d \text{ odd},\ n/d \text{ even}} \left(\frac{d}{7}\right)$ for $f = x^2 + 7 y^2$.
 
-Lean statement. The file `TuringTask/Basic.lean` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+Lean statement. Every solution of $f(x, y) = n$ satisfies $|x| \le n$ and $|y| \le n$. Each Lean statement therefore counts the pairs `v : Prod Int Int` in the box `Finset.product (Finset.Icc (-n) n) (Finset.Icc (-n) n)` with $f(v.1, v.2) = n$ and compares this count, as an integer, with the divisor sums. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
 
 ```lean
 import Mathlib
@@ -52,6 +52,6 @@ theorem card_sq_add_seven_mul_sq (n : Nat) (hn : 0 < n) :
 end TuringTask
 ```
 
-Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.
+Rules. You may add helper definitions and lemmas, in this file or in other project files that it imports, and you may use any proof that the Lean kernel checks. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms or any other way to bypass the kernel. For each of the five theorems, `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Use Lean toolchain `leanprover/lean4:v4.33.0-rc1` and Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Check the project with `lake build`, which must finish without errors.
 
-Nothing may be declared inside the namespace `TuringTask` that shadows a Mathlib name: every name used in the five statements must keep its Mathlib meaning.
+Do not declare anything inside the namespace `TuringTask` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.
