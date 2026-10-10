@@ -931,3 +931,31 @@ Model outputs (`tasks\task 17\model_outputs`), checked OFFICIALLY on lean_worker
 Post-mortem: as predicted in section 34 and after task 14 (section 37), the 6/pi^2 densities were within reach of all three models, in 777 to 1,049 lines (R3's zip file timestamps span about 45 minutes). Mathlib supplies the core (`riemannZeta_two`, `moebius_mul_coe_zeta`, `LSeries_convolution'`, `sum_Ioc_inv_sq_le_sub`, `Nat.sq_mul_squarefree`), so only Moebius-sum bookkeeping and floor-error estimates remained, and the stated constants were generous (actual errors 7 to 23 percent of the bounds). Lesson for topic choice: tasks 14, 15 and 17 (classical analytic estimates whose key identity or constant Mathlib already has) were all solved by all three models; avoid this family. Line counts: R1 790, R2 777, R3 1,049; platform run times not recorded (ask the fellow).
 
 Result: task 17 REJECTED (no genuine failure); no golden, no rubric. Tracker row and TURING_MEMORY.md updated.
+
+## 41. Task 16 (square, twice-square and power-of-two Fibonacci and Lucas numbers, Cohn) - R1 and R3 failed, R2 passed; golden built and verified by the worker, 10 Oct 2026, about 15:20 IST
+
+### Outputs (`tasks\task 16\model_outputs`), checked OFFICIALLY on lean_worker_git.bat (repo queue `jobs\`, check file = the task's `StatementAndAxiomsCheck.lean`, job 023a version)
+- R1 `turing_task_r1.zip` (sha256 109dda6e51ffea77...): one file, 472 lines, defines `lucas`/`lucasZ` (no Mathlib name shadowed). Job `t16_r1_check`: build exit 0 with four `declaration uses sorry` (fib_eq_sq, lucas_eq_sq, fib_eq_two_mul_sq, lucas_eq_two_mul_sq: sorryAx); fib_eq_two_pow proved with standard axioms (by its own 2-adic argument, without the square classification). GENUINE FAILURE.
+- R2 `turingtask-lean_r2.zip` (3cf82e1fb97f076b...): Lemmas (1,165) -> Basic (272). Job `t16_r2_check`: build exit 0, no warnings, check exit 0, standard axioms. PASS. Its README describes Cohn's method with a power-of-2 splitting `n = c + 2 * 2^j * t`, reflection formulas and Jacobi symbols (`jacobiSym`), plus periodicity mod 16 and 21.
+- R3: the four r3 zips are `fib-square-research`, `fib-quartic-research`, `agent-attempt` (research notes, no TuringTask project) and `turing-task-reduction` (the only TuringTask project, newest of the four). Job `t16_r3_check` on `turing-task-reduction`: build exit 0 with five `declaration uses sorry`, sorryAx in all five; its README says it reduces theorem 1 to Ljunggren's quartic equations and is not a solution. GENUINE FAILURE.
+- Logs: `model_outputs\check_r1_log.txt`, `check_r2_log.txt`, `check_r3_log.txt`, `check_summary.txt`. Proof bodies of R2 were not read.
+
+### Golden (own work, cloud Lean loop, about 40 minutes)
+Files, one import chain, each with `import Mathlib`: Lucas.lean (98 lines), Residues.lean (235), Equations.lean (281), Basic.lean (27); 641 lines.
+- Lucas: `lucZ n = Int.fib (n - 1) + Int.fib (n + 1)` on all integers; `fib_add_add_fib_sub`: F(a + k) + F(a - k) = F(a) L(k) for even k (two applications of `Int.fib_add` and the sign rules from `Int.fib_neg`); the Lucas analogue; shift congruences `lucZ_dvd_fib_shift(_pow)`, `lucZ_dvd_lucZ_shift(_pow)`: L(k) divides F(m + 2kt) - (-1)^t F(m) and the same for L.
+- Residues: `fib_mod_eq_of_period` (Pisano-type periodicity from `Nat.fib_add`), residue facts by `decide` on residue classes (L(k) = 3 mod 4 for k even and 3 not dividing k; L(n) = 2 or 3 mod 4 for even n; 3 does not divide L(k) for 4 | k; L(n) not 0 or 2 mod 8 for odd n; F(n) even iff 3 | n), `fib_two_mul_eq` (F(2m) = F(m) L(m)), `gcd_fib_lucNat_dvd_two`, `exists_prime_dvd_mod_four`, `not_dvd_sq_add_sq` (`ZMod.exists_sq_eq_neg_one_iff`), `exists_split_three` (N = 2kt, t = 3^e, via `Nat.exists_eq_pow_mul_and_not_dvd`), and the obstructions L(k) does not divide x^2 + 1, x^2 + 4, x^2 + 9 (the last for 4 | k).
+- Equations: theorem 2 (bases 1, 3), theorem 4 (bases 0, 6, -6; mod 8 for odd n), theorem 1 (odd: bases 1, -1; even: F(m) L(m) with coprime square factors, `exists_eq_pow_of_mul_eq_pow`, then theorems 2 and 4), theorem 3 (odd: bases 3, -3; even: the halves a, b of F(m), L(m) with ab = 2 y^2, then theorems 2 and 4, and F(12) = 144 is not twice a square), theorem 5 from theorems 1 and 3.
+- Overlap scan (names and normalised lines of 40+ characters) against all six output zips: two generic tactic lines reworded before the official job; final scan: shared names only the prompt's five theorem names, shared lines only the prompt's statement lines.
+- Worker job `t16_golden_01` (15:10 IST): build exit 0, NO warnings (Lucas 24 s, Residues 25 s, Equations 32 s, Basic 22 s), check exit 0, five axiom lists [propext, Classical.choice, Quot.sound].
+- `tasks\task 16\golden\`: golden_solution.zip (11,606 bytes, sha256 4e566344ea3352b367868095977993e9c62af9377ce1f365c6282fb8266fe8a6), turing_t16_golden_generator.py (from the task 13 generator; sha256 of every file, byte-identical to job t16_golden_01; check() passes), task16_golden_explanation.txt (9,955 chars), task16_rubric.csv / .txt (6 items: build + 5 proof-only), golden_worker_log.txt.
+- Expected scores: golden 6/6, R1 2/6 = 33 percent, R2 6/6, R3 1/6 = 17 percent.
+
+### Lean lessons
+- `Int.fib` (Mathlib.Data.Int.Fib) covers negative indices: `Int.fib_add (m n : Int)`, `Int.fib_neg`, `Int.fib_natCast`; small values such as `Int.fib (-6) = -8` close by `decide`.
+- `exists_eq_pow_of_mul_eq_pow (by rw [Nat.isUnit_iff]; exact hab.symm) h` splits a square product of coprime naturals.
+- `omega` handles `n % 12 = r`-style index bookkeeping; residues of `Nat.fib` at literals close by `decide`.
+- A deletion of `.lake/build` by `rm -rf` with a glob is blocked in the cloud shell; recompiling with `lean -o` overwrites the oleans anyway.
+
+### What remains for task 16
+1. verify_golden_offline.bat 16 (the fellow), read golden_offline_check_log.txt.
+2. Platform: upload golden_solution.zip, paste task16_golden_explanation.txt, upload task16_rubric.csv in the model-response section, run, download, upload in the golden section, run, compare (golden 6/6, R1 2/6 = 33 percent, R2 6/6, R3 1/6 = 17 percent), submit.
