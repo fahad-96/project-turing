@@ -209,6 +209,16 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   21:20 IST by the chat that cooks tasks 22-29. Golden plans in handoff section 44. Novelty hazard found: the
   cannonball problem is formalized in Lean 4 (int-y1/proofs, SquarePyramid, Anglin's proof), so the y^2 = x^3 -
   36x family is out. Counts are stated over the box Finset.Icc (-n) n with `Prod Int Int` (ASCII).
+- 28 (quartic and octic residuacity by Dirichlet's method: 2 quartic iff p = a^2 + 64b^2; -4 octic iff p = a^2 +
+  32b^2; 2 quartic iff e^2 = p + 2f^2 with e = 1, 3 mod 8; q = 2, 3 mod 4 with p = c^2 + qd^2: q quartic iff
+  J(q|c) = 1; 1 + sqrt 2 a square iff p = a^2 + 32b^2), 29 (signs of x -> ax on ZMod n: J(a|n) for odd n, Lerch's
+  formula for even n, the unit-group criterion through primitive roots, the power map x -> x^k mod p, the
+  transpose of an m x n array) and 30 (Dedekind sums: Knopp's Hecke identity, 2 gcd(3,k) k s(h,k) integral,
+  Rademacher's mod 8 law, s(h,k) = 0 iff k | h^2 + 1, equality for prime k): prompts compiled 10 Oct (jobs
+  t28_statements, t29_statements, t30_statements: build 0, five sorry warnings, check 0 for each), handed over
+  about 23:45 IST by the chat that cooks tasks 22-30. Golden plans in handoff section 46. Near match disclosed for
+  task 30: the Isabelle AFP entry Dedekind_Sums (2025) covers theorems 2 and 3 (nothing in Lean). Task 30 states
+  the Dedekind sum through a hypothesis `hs` on a function `s : Nat -> Nat -> Rat` (no definitions in the prompt).
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
