@@ -12,3 +12,14 @@ TuringTask.lean
 ===== lean --version 
 Lean (version 4.33.0-rc1, x86_64-w64-windows-gnu, commit 62eed1db4d67327ec8120be05f1a1b0847d74561, Release)
 ===== lake build 
+✔ [8664/8672] Built TuringTask.Phase (18s)
+✔ [8665/8672] Built TuringTask.PolySum (14s)
+✔ [8666/8672] Built TuringTask.Circle (15s)
+✔ [8667/8672] Built TuringTask.Counting (17s)
+✔ [8668/8672] Built TuringTask.LeadDigit (15s)
+✔ [8669/8672] Built TuringTask.Main (15s)
+✔ [8670/8672] Built TuringTask.Basic (14s)
+✔ [8671/8672] Built TuringTask (13s)
+Build completed successfully (8672 jobs).
+BUILD EXIT CODE 0 
+===== lake env lean StatementAndAxiomsCheck.lean 
