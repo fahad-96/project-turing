@@ -119,7 +119,7 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   7 files, 1,177 lines, job t8_golden_01 build 0, no warnings, check 0, standard axioms;
   tasks\task 8\golden has zip + generator + explanation + 6-item rubric (proof items also require the
   statement's names to be Mathlib's, because of R1). Expected golden 6/6, R1 1/6 = 17, R2 and R3 6/6.
-  Offline check (verify_golden_offline.bat 8) and platform pending. Handoff section 38.
+  Offline check (verify_golden_offline.bat 8) PASSED 14:16 IST; platform steps pending. Handoff section 38.
   Lessons: a model may "prove" the statements by shadowing Mathlib names inside the namespace; only
   the check file catches it, so the rubric must name it. A model output whose modules do not form one
   chain fails on the laptop with 'failed to read ...olean.private': rerun one module per job.

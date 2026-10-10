@@ -903,3 +903,16 @@ Result: task 14 REJECTED (no genuine failure); no golden, no rubric. Tracker row
 ### What remains for task 8
 1. DONE 14:16 IST: verify_golden_offline.bat 8 (fresh folder D:\lean\golden_check_t8_22124, /opt/mathlib4 at 9944fe29..., downloads blocked): build exit 0, no warnings, check exit 0, five axiom lists [propext, Classical.choice, Quot.sound]; log tasks\task 8\golden\golden_offline_check_log.txt.
 2. Platform: upload golden_solution.zip, paste task8_golden_explanation.txt into the Golden Answer box, upload task8_rubric.csv in the model-response section, run, download the CSV, upload it in the golden section, run, compare with our Lean runs (golden 6/6, R1 1/6 = 17 percent, R2 6/6, R3 6/6), submit. Pre-submit audit at the end of TURING_PLAYBOOK.md.
+
+## 39. Task 15 (character sums modulo a prime, Polya-Vinogradov) - all three models passed, task rejected, 10 Oct 2026, about 14:30 IST
+
+Model outputs (`tasks\task 15\model_outputs`), checked OFFICIALLY on lean_worker_git.bat (repo queue `jobs\`, full `import Mathlib`, check file = the task's `StatementAndAxiomsCheck.lean`, job 018d version):
+- R1 `turing_task_r1.zip` (sha256 6f6a0408aa1721c8...): one file `TuringTask/Basic.lean`, 925 lines (the zip also carries a `.lake` folder, not used). Job `t15_r1_check`: build exit 0 (Basic 36 s), no warnings; check exit 0; five axiom lists `[propext, Classical.choice, Quot.sound]`. PASS.
+- R2 `turing-task_r2.zip` (e3ccd35f13643287...): one file, 619 lines, one helper `def legChar` (no lake-manifest.json in the zip). Job `t15_r2_check`: build exit 0, no warnings; check exit 0; standard axioms. PASS.
+- R3 `TuringTask_r3.zip` (a0eb5fe169bef29f...): chain Core (343) -> Consequences (250) -> Basic (33), 626 lines. Job `t15_r3_check`: build exit 0 (only `Try this: rfl` info messages), check exit 0; standard axioms. PASS.
+- Pre-checks: statements identical to the prompt; no sorry, admit, native_decide, axiom, unsafe, set_option, instance, attribute, notation, macro or elab; no declaration shadows a Mathlib name (the task 8 R1 trick). Proof bodies were not read (READMEs and declaration headers only).
+- Logs: `model_outputs\check_r1_log.txt`, `check_r2_log.txt`, `check_r3_log.txt`, `check_summary.txt` (zip sha256 values).
+
+Post-mortem (playbook 4.1 checklist, in hindsight): all three READMEs describe exactly the route of section 33 (Gauss-sum expansion via `gaussSum_mulShift`, `|G| = sqrt p`, geometric sums bounded by `1/sin(pi a/p)`, Jordan's inequality `Real.mul_le_sin`, a harmonic bound; a character of exact order k for theorem 3; the least non-residue is prime for theorem 5). Textbook test yes (Davenport chapter 23, Apostol 13.15); Mathlib-assist yes (Gauss sums, characters of given order, quadratic character); ladder yes (theorems 2-5 follow from theorem 1 in a few dozen lines each). Like task 14, a classical analytic inequality whose ingredients are all in Mathlib is a 600-900 line exercise for every model. Platform run times not recorded (ask the fellow).
+
+Result: task 15 REJECTED (no genuine failure); no golden, no rubric. Tracker row and TURING_MEMORY.md updated.
