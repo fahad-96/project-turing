@@ -1,0 +1,16 @@
+Task 15 (character sums modulo a prime, Polya-Vinogradov, least non-residues) - model outputs checked officially on the Honor laptop worker (lean_worker_git.bat, repo queue jobs/), 10 Oct 2026, 14:20-14:27 IST
+Check file: tasks/task 15/StatementAndAxiomsCheck.lean (job 018d_t15_statements version)
+
+R1  turing_task_r1.zip  sha256 6f6a0408aa1721c8eb650b4dd2c3fb6b292e73e14dfe0a96d442dc4b44084e80
+    one file TuringTask/Basic.lean (925 lines; the zip also carries a .lake folder, not used); no sorry/admit/native_decide/axiom/set_option/instance
+    job t15_r1_check: build exit 0 (Basic 36 s), no warnings; check exit 0; five axiom lists [propext, Classical.choice, Quot.sound]. PASS
+
+R2  turing-task_r2.zip  sha256 e3ccd35f13643287b35c5f57d8587bde5487ebeb0b28d6a0f0a8f1ace6ebbaac
+    one file TuringTask/Basic.lean (619 lines; no lake-manifest.json in the zip); one helper def legChar; no sorry/admit/native_decide/axiom/set_option/instance
+    job t15_r2_check: build exit 0 (Basic 37 s), no warnings; check exit 0; standard axioms. PASS
+
+R3  TuringTask_r3.zip  sha256 a0eb5fe169bef29fc7f99ccb1e3928982fe9ee0e6c20fe2967f97d449d85fd78
+    chain Core (343) -> Consequences (250) -> Basic (33), 626 lines; no sorry/admit/native_decide/axiom/set_option/instance
+    job t15_r3_check: build exit 0 (info messages only), check exit 0; standard axioms. PASS
+
+Result: no genuine failure. Task 15 REJECTED; no golden, no rubric. Proof bodies were not read (READMEs and declaration headers only).
