@@ -1,0 +1,18 @@
+Job t23_statements started Sat 10/10/2026 17:51:35.28 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (39s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:11:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:17:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:22:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:27:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (37s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.mul_succ_smooth_seven' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sq_sub_one_smooth_seven' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.three_consecutive_smooth_seven' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sq_add_one_smooth_thirteen' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.sq_sub_two_mul_sq_smooth_thirteen' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

@@ -1,0 +1,51 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. All variables are natural numbers. The condition "every prime factor of $N$ is at most $B$" is written in Lean as: every prime $p$ with $N \bmod p = 0$ satisfies $p \le B$. Every prime divides $0$, so the condition fails for $N = 0$; note that $x^2 - 1$ is computed in $\mathbb{N}$, so it equals $0$ for $x \le 1$.
+
+1. If every prime factor of $n (n + 1)$ is at most $7$, then $n \in \{1, 2, 3, 4, 5, 6, 7, 8, 9, 14, 15, 20, 24, 27, 35, 48, 49, 63, 80, 125, 224, 2400, 4374\}$.
+2. If every prime factor of $x^2 - 1$ is at most $7$, then $x \in \{2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15, 17, 19, 26, 29, 31, 41, 49, 55, 71, 97, 99, 127, 161, 244, 251, 449, 4801, 8749\}$.
+3. If every prime factor of $n (n + 1) (n + 2)$ is at most $7$, then $n \in \{1, 2, 3, 4, 5, 6, 7, 8, 14, 48\}$.
+4. If every prime factor of $x^2 + 1$ is at most $13$, then $x \in \{0, 1, 2, 3, 5, 7, 8, 18, 57, 239\}$.
+5. If $x^2 - 2 y^2 = 1$ or $x^2 - 2 y^2 = -1$, and every prime factor of $y$ is at most $13$, then $y \in \{1, 2, 5, 12, 70, 169, 13860\}$.
+
+Lean statement. `Membership.mem S a` is the membership statement $a \in S$ for a finite set `S`. The file `TuringTask/Basic.lean` must contain the five theorems, stated exactly as below, with each `sorry` replaced by a complete proof:
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem mul_succ_smooth_seven (n : Nat)
+    (h : forall p : Nat, p.Prime -> n * (n + 1) % p = 0 -> p <= 7) :
+    Membership.mem ({1, 2, 3, 4, 5, 6, 7, 8, 9, 14, 15, 20, 24, 27, 35, 48, 49, 63, 80, 125, 224,
+      2400, 4374} : Finset Nat) n := by
+  sorry
+
+theorem sq_sub_one_smooth_seven (x : Nat)
+    (h : forall p : Nat, p.Prime -> (x ^ 2 - 1) % p = 0 -> p <= 7) :
+    Membership.mem ({2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15, 17, 19, 26, 29, 31, 41, 49, 55, 71, 97,
+      99, 127, 161, 244, 251, 449, 4801, 8749} : Finset Nat) x := by
+  sorry
+
+theorem three_consecutive_smooth_seven (n : Nat)
+    (h : forall p : Nat, p.Prime -> n * (n + 1) * (n + 2) % p = 0 -> p <= 7) :
+    Membership.mem ({1, 2, 3, 4, 5, 6, 7, 8, 14, 48} : Finset Nat) n := by
+  sorry
+
+theorem sq_add_one_smooth_thirteen (x : Nat)
+    (h : forall p : Nat, p.Prime -> (x ^ 2 + 1) % p = 0 -> p <= 13) :
+    Membership.mem ({0, 1, 2, 3, 5, 7, 8, 18, 57, 239} : Finset Nat) x := by
+  sorry
+
+theorem sq_sub_two_mul_sq_smooth_thirteen (x y : Nat)
+    (h : x ^ 2 = 2 * y ^ 2 + 1 \/ x ^ 2 + 1 = 2 * y ^ 2)
+    (hs : forall p : Nat, p.Prime -> y % p = 0 -> p <= 13) :
+    Membership.mem ({1, 2, 5, 12, 70, 169, 13860} : Finset Nat) y := by
+  sorry
+
+end TuringTask
+```
+
+Rules. Helper definitions and lemmas are allowed, in this file or in other project files that it imports, and so is any kernel-checkable proof strategy. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms, or any other way around the kernel: for each of the five theorems `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Environment: Lean toolchain `leanprover/lean4:v4.33.0-rc1`, Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Verify with `lake build`; it must finish with no errors.
+
+Nothing may be declared inside the namespace `TuringTask` that shadows a Mathlib name: every name used in the five statements must keep its Mathlib meaning.
