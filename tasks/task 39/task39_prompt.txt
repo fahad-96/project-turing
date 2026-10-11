@@ -1,0 +1,61 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. For $n \ge 1$, a function $F : \mathbb{Z}/n \to \mathbb{Z}/n$ is a polynomial function if there is a polynomial $P$ with coefficients in $\mathbb{Z}/n$ such that $F(x) = P(x)$ for all $x$. For integers $v_0, v_1, \dots$ write $\Delta^j v = \sum_{i=0}^{j} (-1)^{j-i} \binom{j}{i} v_i$ for the $j$-th forward difference at $0$.
+
+1. (Newton series.) Let $n \ge 1$. A function $F$ on $\mathbb{Z}/n$ is a polynomial function if and only if $\gcd(n, j!)$ divides $\Delta^j v$ for every $j < n$, where $v_i \in \{0, \dots, n-1\}$ represents $F(i)$.
+2. (Kempner.) For $n \ge 1$ there are exactly $\prod_{j=0}^{n-1} n/\gcd(n, j!)$ polynomial functions on $\mathbb{Z}/n$.
+3. (Keller and Olson.) Let $p$ be a prime and $k \ge 2$. The number $N$ of bijective polynomial functions on $\mathbb{Z}/p^k$ satisfies $N p^{2p} = p! \, (p-1)^p \prod_{j=0}^{p^k-1} p^k/\gcd(p^k, j!)$.
+4. (Kempner's function.) Let $p$ be a prime, $k \ge 1$, and let $s$ be the least integer with $p^k \mid s!$. Put $a_i = (p^{i+1}-1)/(p-1)$. Then there are $t \ge 0$ and digits $0 \le c_i \le p$ with $c_t \ge 1$ such that $k = \sum_{i=0}^{t} c_i a_i$, $s = \sum_{i=0}^{t} c_i p^{i+1}$, and every digit below a digit equal to $p$ is $0$.
+5. Let $n \ge 2$ and let $s$ be the least integer with $n \mid s!$. Every polynomial function on $\mathbb{Z}/n$ comes from a polynomial of degree less than $s$, and some polynomial function comes from no polynomial of degree less than $s - 1$.
+
+Lean statement. A polynomial function appears as `exists P : Polynomial (ZMod n), forall x, F x = P.eval x`, the counts in theorems 2 and 3 use `Set.ncard` of a set of functions `ZMod n -> ZMod n`, and divisibility uses `%` with `= 0`. In theorem 1 the representative of $F(i)$ is `(F i).val`, and in theorems 4 and 5 two hypotheses state that $s$ is the least integer with the divisibility property. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem exists_polynomial_iff (n : Nat) (hn : 0 < n) (F : ZMod n -> ZMod n) :
+    (exists P : Polynomial (ZMod n), forall x : ZMod n, F x = P.eval x) <->
+      forall j : Nat, j < n ->
+        (Finset.range (j + 1)).sum (fun i =>
+            (-1 : Int) ^ (j - i) * (j.choose i : Int) * ((F (i : ZMod n)).val : Int)) %
+          (Nat.gcd n j.factorial : Int) = 0 := by
+  sorry
+
+theorem ncard_polynomial_functions (n : Nat) (hn : 0 < n) :
+    Set.ncard {F : ZMod n -> ZMod n | exists P : Polynomial (ZMod n), forall x, F x = P.eval x} =
+      (Finset.range n).prod (fun j => n / Nat.gcd n j.factorial) := by
+  sorry
+
+theorem ncard_bijective_polynomial_functions (p k : Nat) (hp : p.Prime) (hk : 2 <= k) :
+    Set.ncard {F : ZMod (p ^ k) -> ZMod (p ^ k) |
+        Function.Bijective F /\
+          exists P : Polynomial (ZMod (p ^ k)), forall x, F x = P.eval x} * p ^ (2 * p) =
+      p.factorial * (p - 1) ^ p *
+        (Finset.range (p ^ k)).prod (fun j => p ^ k / Nat.gcd (p ^ k) j.factorial) := by
+  sorry
+
+theorem exists_digits_of_minimal (p k s : Nat) (hp : p.Prime) (hk : 1 <= k)
+    (hs : s.factorial % p ^ k = 0)
+    (hmin : forall m : Nat, m < s -> Not (m.factorial % p ^ k = 0)) :
+    exists (t : Nat) (c : Nat -> Nat), 1 <= c t /\ (forall i, i <= t -> c i <= p) /\
+      (forall i j, i < j -> j <= t -> c j = p -> c i = 0) /\
+      k = (Finset.range (t + 1)).sum (fun i => c i * ((p ^ (i + 1) - 1) / (p - 1))) /\
+      s = (Finset.range (t + 1)).sum (fun i => c i * p ^ (i + 1)) := by
+  sorry
+
+theorem natDegree_lt_of_minimal (n s : Nat) (hn : 2 <= n) (hs : s.factorial % n = 0)
+    (hmin : forall m : Nat, m < s -> Not (m.factorial % n = 0)) :
+    (forall P : Polynomial (ZMod n), exists Q : Polynomial (ZMod n),
+        Q.natDegree < s /\ forall x, P.eval x = Q.eval x) /\
+      exists P : Polynomial (ZMod n), forall Q : Polynomial (ZMod n),
+        (forall x, P.eval x = Q.eval x) -> s - 1 <= Q.natDegree := by
+  sorry
+
+end TuringTask
+```
+
+Rules. You may add helper definitions and lemmas, in this file or in other project files that it imports, and you may use any proof that the Lean kernel checks. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms or any other way to bypass the kernel. For each of the five theorems, `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Use Lean toolchain `leanprover/lean4:v4.33.0-rc1` and Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Check the project with `lake build`, which must finish without errors.
+
+Do not declare anything inside the namespace `TuringTask` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.
