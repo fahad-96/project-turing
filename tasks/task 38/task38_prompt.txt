@@ -5,10 +5,10 @@ Mathematical statement. For an integer $n \ge 0$ let $P(n)$ be the product of th
 1. (Gauss.) For $n \ne 1$, $P(n) \equiv \pm 1 \pmod n$, and $P(n) \equiv -1 \pmod n$ if and only if $n = 2$, $n = 4$, $n = p^a$ or $n = 2p^a$ for an odd prime $p$ and $a \ge 1$.
 2. If at least three distinct odd primes divide $n$, then $G(n) \equiv 1 \pmod n$.
 3. Let $p \ne q$ be odd primes, $a, b \ge 1$ and $n = p^a q^b$. Then $G(n)^2 \equiv 1 \pmod n$, and $G(n) \equiv \pm 1 \pmod n$ if and only if $p \equiv q \equiv 1 \pmod 4$.
-4. If $p \equiv 1 \pmod 4$ is prime and $n = p^a$ or $n = 2p^a$, then $G(n)^2 \equiv -1 \pmod n$.
+4. Let $p \ne q$ be odd primes. Then $G(pq) \equiv \pm 1 \pmod p$, and $G(pq) \equiv 1 \pmod p$ if and only if either $q$ is a quadratic residue modulo $p$ and $q \equiv 1 \pmod 4$, or $q$ is a quadratic nonresidue modulo $p$ and $q \equiv 3 \pmod 4$. In other words, $G(pq) \equiv \left(\frac{q}{p}\right) (-1)^{(q-1)/2} \pmod p$.
 5. For $k \ge 4$, $G(2^k) \equiv 2^{k-1} + 1 \pmod{2^k}$. If $8 \mid n$ and some odd prime divides $n$, then $G(n) \equiv 1 \pmod n$.
 
-Lean statement. The products are `Finset.prod id` over `Finset.filter (fun k => Nat.Coprime k n)` of `Finset.Icc 1 n` and of `Finset.Icc 1 (n / 2)`, and the congruences use `%` on `Nat`, so $-1$ modulo $n$ is `n - 1`. Theorem 2 counts the odd prime factors of $n$ through `n.primeFactors`. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
+Lean statement. The products are `Finset.prod id` over `Finset.filter (fun k => Nat.Coprime k n)` of `Finset.Icc 1 n` and of `Finset.Icc 1 (n / 2)`, and the congruences use `%` on `Nat`, so $-1$ modulo $n$ is `n - 1`. Theorem 2 counts the odd prime factors of $n$ through `n.primeFactors`, and in theorem 4 "$q$ is a quadratic residue modulo $p$" is `IsSquare (q : ZMod p)`. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
 
 ```lean
 import Mathlib
@@ -40,10 +40,15 @@ theorem prod_half_two_primes (p q a b : Nat) (hp : p.Prime) (hq : q.Prime) (hp2 
         p % 4 = 1 /\ q % 4 = 1) := by
   sorry
 
-theorem prod_half_sq_add_one (p a n : Nat) (hp : p.Prime) (hp4 : p % 4 = 1)
-    (hn : n = p ^ a \/ n = 2 * p ^ a) :
-    ((Finset.filter (fun k => Nat.Coprime k n) (Finset.Icc 1 (n / 2))).prod id ^ 2 + 1) %
-      n = 0 := by
+theorem prod_half_emod_of_mul (p q : Nat) (hp : p.Prime) (hq : q.Prime) (hp2 : p % 2 = 1)
+    (hq2 : q % 2 = 1) (hpq : Not (p = q)) :
+    ((Finset.filter (fun k => Nat.Coprime k (p * q))
+          (Finset.Icc 1 (p * q / 2))).prod id % p = 1 \/
+        (Finset.filter (fun k => Nat.Coprime k (p * q))
+          (Finset.Icc 1 (p * q / 2))).prod id % p = p - 1) /\
+      ((Finset.filter (fun k => Nat.Coprime k (p * q))
+          (Finset.Icc 1 (p * q / 2))).prod id % p = 1 <->
+        (IsSquare (q : ZMod p) <-> q % 4 = 1)) := by
   sorry
 
 theorem prod_half_two_pow_and_eight_dvd :

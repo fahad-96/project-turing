@@ -27,11 +27,16 @@ example (p q a b : Nat) (hp : p.Prime) (hq : q.Prime) (hp2 : p % 2 = 1)
         p % 4 = 1 /\ q % 4 = 1) :=
   TuringTask.prod_half_two_primes p q a b hp hq hp2 hq2 hpq ha hb
 
-example (p a n : Nat) (hp : p.Prime) (hp4 : p % 4 = 1)
-    (hn : n = p ^ a \/ n = 2 * p ^ a) :
-    ((Finset.filter (fun k => Nat.Coprime k n) (Finset.Icc 1 (n / 2))).prod id ^ 2 + 1) %
-      n = 0 :=
-  TuringTask.prod_half_sq_add_one p a n hp hp4 hn
+example (p q : Nat) (hp : p.Prime) (hq : q.Prime) (hp2 : p % 2 = 1)
+    (hq2 : q % 2 = 1) (hpq : Not (p = q)) :
+    ((Finset.filter (fun k => Nat.Coprime k (p * q))
+          (Finset.Icc 1 (p * q / 2))).prod id % p = 1 \/
+        (Finset.filter (fun k => Nat.Coprime k (p * q))
+          (Finset.Icc 1 (p * q / 2))).prod id % p = p - 1) /\
+      ((Finset.filter (fun k => Nat.Coprime k (p * q))
+          (Finset.Icc 1 (p * q / 2))).prod id % p = 1 <->
+        (IsSquare (q : ZMod p) <-> q % 4 = 1)) :=
+  TuringTask.prod_half_emod_of_mul p q hp hq hp2 hq2 hpq
 
 example :
     (forall k : Nat, 4 <= k ->
@@ -44,5 +49,5 @@ example :
 #print axioms TuringTask.prod_coprime_emod
 #print axioms TuringTask.prod_half_emod_of_three_le
 #print axioms TuringTask.prod_half_two_primes
-#print axioms TuringTask.prod_half_sq_add_one
+#print axioms TuringTask.prod_half_emod_of_mul
 #print axioms TuringTask.prod_half_two_pow_and_eight_dvd

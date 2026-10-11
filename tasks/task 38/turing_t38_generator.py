@@ -8,7 +8,7 @@ to n (floor division), both taken modulo n. Theorems:
   2. at least three distinct odd primes divide n: G(n) = 1 mod n
   3. n = p^a q^b, p != q odd primes, a, b >= 1: G(n)^2 = 1 mod n, and G(n) = +-1 mod n iff
      p = q = 1 mod 4
-  4. p = 1 mod 4 prime, n = p^a or 2 p^a: G(n)^2 = -1 mod n
+  4. p != q odd primes: G(pq) = +-1 mod p, and G(pq) = (q/p) (-1)^((q-1)/2) mod p
   5. G(2^k) = 2^(k-1) + 1 mod 2^k for k >= 4, and G(n) = 1 mod n when 8 | n and an odd prime
      divides n
 
@@ -21,7 +21,7 @@ Self-verifying with exact integer arithmetic:
   - theorem 1 for every 0 <= n <= 3000;
   - theorems 2 and 5 for every n <= 12,000 with the respective hypotheses, and k <= 20;
   - theorem 3 for every n = p^a q^b <= 12,000;
-  - theorem 4 for every n = p^a or 2 p^a <= 20,000 with p = 1 mod 4;
+  - theorem 4 for every ordered pair of distinct odd primes with p q <= 40,000;
   - the data of the planned golden route: P(n) = (-1)^(phi(n)/2) G(n)^2 mod n (pairing k with
     n - k) for n <= 4000, and the residues of G(n) modulo each prime power factor of n;
   - a numeric witness for every hypothesis: dropping it makes the statement false.
@@ -63,9 +63,16 @@ THEOREMS = [
      "        " + HPQ + " % " + PQ + " =\n"
      "          p ^ a * q ^ b - 1 <->\n"
      "        p % 4 = 1 /\\ q % 4 = 1)"),
-    ("prod_half_sq_add_one",
-     "(p a n : Nat) (hp : p.Prime) (hp4 : p % 4 = 1)\n    (hn : n = p ^ a \\/ n = 2 * p ^ a)",
-     "    (" + HALF + " ^ 2 + 1) %\n      n = 0"),
+    ("prod_half_emod_of_mul",
+     "(p q : Nat) (hp : p.Prime) (hq : q.Prime) (hp2 : p % 2 = 1)\n"
+     "    (hq2 : q % 2 = 1) (hpq : Not (p = q))",
+     "    ((Finset.filter (fun k => Nat.Coprime k (p * q))\n"
+     "          (Finset.Icc 1 (p * q / 2))).prod id % p = 1 \\/\n"
+     "        (Finset.filter (fun k => Nat.Coprime k (p * q))\n"
+     "          (Finset.Icc 1 (p * q / 2))).prod id % p = p - 1) /\\\n"
+     "      ((Finset.filter (fun k => Nat.Coprime k (p * q))\n"
+     "          (Finset.Icc 1 (p * q / 2))).prod id % p = 1 <->\n"
+     "        (IsSquare (q : ZMod p) <-> q % 4 = 1))"),
     ("prod_half_two_pow_and_eight_dvd",
      "",
      "    (forall k : Nat, 4 <= k ->\n"
@@ -84,10 +91,10 @@ Mathematical statement. For an integer $n \ge 0$ let $P(n)$ be the product of th
 1. (Gauss.) For $n \ne 1$, $P(n) \equiv \pm 1 \pmod n$, and $P(n) \equiv -1 \pmod n$ if and only if $n = 2$, $n = 4$, $n = p^a$ or $n = 2p^a$ for an odd prime $p$ and $a \ge 1$.
 2. If at least three distinct odd primes divide $n$, then $G(n) \equiv 1 \pmod n$.
 3. Let $p \ne q$ be odd primes, $a, b \ge 1$ and $n = p^a q^b$. Then $G(n)^2 \equiv 1 \pmod n$, and $G(n) \equiv \pm 1 \pmod n$ if and only if $p \equiv q \equiv 1 \pmod 4$.
-4. If $p \equiv 1 \pmod 4$ is prime and $n = p^a$ or $n = 2p^a$, then $G(n)^2 \equiv -1 \pmod n$.
+4. Let $p \ne q$ be odd primes. Then $G(pq) \equiv \pm 1 \pmod p$, and $G(pq) \equiv 1 \pmod p$ if and only if either $q$ is a quadratic residue modulo $p$ and $q \equiv 1 \pmod 4$, or $q$ is a quadratic nonresidue modulo $p$ and $q \equiv 3 \pmod 4$. In other words, $G(pq) \equiv \left(\frac{q}{p}\right) (-1)^{(q-1)/2} \pmod p$.
 5. For $k \ge 4$, $G(2^k) \equiv 2^{k-1} + 1 \pmod{2^k}$. If $8 \mid n$ and some odd prime divides $n$, then $G(n) \equiv 1 \pmod n$.
 
-Lean statement. The products are `Finset.prod id` over `Finset.filter (fun k => Nat.Coprime k n)` of `Finset.Icc 1 n` and of `Finset.Icc 1 (n / 2)`, and the congruences use `%` on `Nat`, so $-1$ modulo $n$ is `n - 1`. Theorem 2 counts the odd prime factors of $n$ through `n.primeFactors`. Copy the five theorems below into `@FILE@` exactly as they appear, and replace each `sorry` with a complete proof.
+Lean statement. The products are `Finset.prod id` over `Finset.filter (fun k => Nat.Coprime k n)` of `Finset.Icc 1 n` and of `Finset.Icc 1 (n / 2)`, and the congruences use `%` on `Nat`, so $-1$ modulo $n$ is `n - 1`. Theorem 2 counts the odd prime factors of $n$ through `n.primeFactors`, and in theorem 4 "$q$ is a quadratic residue modulo $p$" is `IsSquare (q : ZMod p)`. Copy the five theorems below into `@FILE@` exactly as they appear, and replace each `sorry` with a complete proof.
 """
 
 EXTRA_RULE = """Do not declare anything inside the namespace `@NS@` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.
@@ -181,17 +188,16 @@ def self_check() -> dict:
 
     # theorem 4
     t4 = 0
-    for p in range(5, 20001, 4):
-        if not is_prime(p):
-            continue
-        q = p
-        while 2 * q <= 20000:
-            for n in (q, 2 * q):
-                g = G(n)
-                assert (g * g + 1) % n == 0, n
-                t4 += 1
-            q *= p
-    counts["theorem 4 (p = 1 mod 4), n = p^a, 2 p^a <= 20,000"] = t4
+    primes = [p for p in range(3, 13334) if is_prime(p)]
+    for p in primes:
+        for q in primes:
+            if p == q or p * q > 40000:
+                continue
+            g = G(p * q) % p
+            qr = pow(q, (p - 1) // 2, p) == 1
+            assert g in (1, p - 1) and ((g == 1) == (qr == (q % 4 == 1))), (p, q)
+            t4 += 1
+    counts["theorem 4 (components of G(pq)), ordered pairs with p q <= 40,000"] = t4
     counts["golden-route data (P(n) = (-1)^(phi/2) G(n)^2, G(n)^2 = +-1 mod each p^e)"] = route
 
     # witnesses
@@ -206,13 +212,21 @@ def self_check() -> dict:
     assert G(25) ** 2 % 25 != 1                          # p = q = 5: n = 25
     assert G(5) ** 2 % 5 != 1                            # a = 0 or b = 0: n = 5
     w += 7
-    assert (G(9) ** 2 + 1) % 9 != 0                      # thm 4, p = 9 (not prime)
-    assert (G(3) ** 2 + 1) % 3 != 0                      # p = 3 (3 mod 4), or n = 3 for p = 5
-    w += 3
+    def isq(x, m):                                       # x is a square modulo m
+        return any((t * t - x) % m == 0 for t in range(m))
+
+    def thm4(pp, qq):                                    # the conclusion of theorem 4
+        g = G(pp * qq) % pp
+        return g in (1, pp - 1) and ((g == 1) == (isq(qq, pp) == (qq % 4 == 1)))
+    assert not thm4(21, 5) and not thm4(7, 15)           # p = 21 or q = 15 (not prime)
+    assert not thm4(2, 3) and not thm4(5, 2)             # p = 2 or q = 2
+    assert not thm4(5, 5)                                # p = q
+    assert all(thm4(pp, qq) for (pp, qq) in ((3, 5), (5, 3), (7, 11), (13, 17)))
+    w += 5
     assert G(8) != 2 ** 2 + 1                            # thm 5, k = 3
     assert G(12) != 1 and G(16) != 1                     # 8 does not divide 12; 16 has no odd prime
     w += 3
-    counts["witnesses for the 15 hypotheses (each one false when dropped)"] = w
+    counts["witnesses for the 17 hypotheses (each one false when dropped)"] = w
     return counts
 # ---- shared generator code (inlined into each task generator) ----
 import re
