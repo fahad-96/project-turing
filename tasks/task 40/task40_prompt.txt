@@ -1,0 +1,56 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. For integers $r \ge 0$ and $x \ge 0$ write $\langle x \rangle$ for the remainder of $x$ modulo $r$, so $0 \le \langle x \rangle < r$ for $r \ge 1$, and $\langle x \rangle = x$ for $r = 0$. All five theorems concern the multiples $ka$ modulo $r$.
+
+1. (Three gaps.) Let $r, a, N \ge 0$. The numbers $\langle ka \rangle$ for $0 \le k < N$, together with $r$, cut $[0, r]$ into intervals of at most three different lengths, and if three lengths occur, the largest is the sum of the other two.
+2. (Slater.) Let $r, a, b \ge 0$. The differences $d$ between consecutive elements of $\{k \ge 0 : \langle ka \rangle < b\}$ take at most three values, and if three values occur, the largest is the sum of the other two.
+3. (Terminal lemma.) Let $r \ge 1$ and let $a, b, c$ be prime to $r$. Then $\langle ka \rangle + \langle kb \rangle + \langle kc \rangle > r$ for every $1 \le k \le r - 1$ if and only if $r$ divides $a + b$, $a + c$ or $b + c$.
+4. (White.) Let $r \ge 1$ and $a, b \in \mathbb{Z}$. The tetrahedron with vertices $(0, 0, 0)$, $(1, 0, 0)$, $(0, 1, 0)$ and $(a, b, r)$ contains no lattice point other than its vertices if and only if $a \equiv 1$ and $\gcd(b, r) = 1$, or $b \equiv 1$ and $\gcd(a, r) = 1$, or $a + b \equiv 0$ and $\gcd(a, r) = 1$, with congruences modulo $r$.
+5. Let $r, a, b, c \ge 0$ with $\gcd(a + b + c, r) = 1$. If $\langle ka \rangle + \langle kb \rangle + \langle kc \rangle \ge r$ for every $1 \le k \le r - 1$, then $r$ divides $a + b$, $a + c$ or $b + c$. Without the hypothesis on $a + b + c$ the conclusion fails for $r = 9$ and $(a, b, c) = (1, 4, 7)$.
+
+Lean statement. Remainders use `%` on `Nat`, so `x % 0 = x` matches the case $r = 0$. In theorem 1, `T` is the set of points and `G` the set of gap lengths between consecutive elements of `T`, and in theorem 2, `D` is the set of differences. In theorem 4 a lattice point $(x, y, z)$ lies in the tetrahedron when $0 \le z \le r$, $za \le rx$, $zb \le ry$ and $(rx - za) + (ry - zb) + z \le r$. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem card_gaps_le_three (r a N : Nat) :
+    let T := insert r ((Finset.range N).image (fun k => k * a % r))
+    let G := ((Finset.product T T).filter (fun xy => xy.1 < xy.2 /\
+        T.filter (fun z => xy.1 < z /\ z < xy.2) = {})).image (fun xy => xy.2 - xy.1)
+    G.card <= 3 /\ (G.card = 3 -> exists u v : Nat, u < v /\ G = {u, v, u + v}) := by
+  sorry
+
+theorem ncard_return_times_le_three (r a b : Nat) :
+    let D := {d : Nat | 0 < d /\ exists k : Nat, k * a % r < b /\ (k + d) * a % r < b /\
+      forall e : Nat, 0 < e -> e < d -> b <= (k + e) * a % r}
+    D.ncard <= 3 /\ (D.ncard = 3 -> exists u v : Nat, u < v /\ D = {u, v, u + v}) := by
+  sorry
+
+theorem terminal_iff (r a b c : Nat) (hr : 0 < r) (ha : Nat.Coprime a r)
+    (hb : Nat.Coprime b r) (hc : Nat.Coprime c r) :
+    (forall k : Nat, 1 <= k -> k < r -> r < k * a % r + k * b % r + k * c % r) <->
+      (a + b) % r = 0 \/ (a + c) % r = 0 \/ (b + c) % r = 0 := by
+  sorry
+
+theorem empty_tetrahedron_iff (r : Nat) (a b : Int) (hr : 0 < r) :
+    (forall x y z : Int, 0 <= z -> z <= r -> z * a <= r * x -> z * b <= r * y ->
+        r * x - z * a + (r * y - z * b) + z <= r ->
+        (x = 0 /\ y = 0 /\ z = 0) \/ (x = 1 /\ y = 0 /\ z = 0) \/
+          (x = 0 /\ y = 1 /\ z = 0) \/ (x = a /\ y = b /\ z = r)) <->
+      ((a - 1) % r = 0 /\ Int.gcd b r = 1) \/ ((b - 1) % r = 0 /\ Int.gcd a r = 1) \/
+        ((a + b) % r = 0 /\ Int.gcd a r = 1) := by
+  sorry
+
+theorem pair_of_canonical (r a b c : Nat) (hs : Nat.Coprime (a + b + c) r)
+    (h : forall k : Nat, 1 <= k -> k < r -> r <= k * a % r + k * b % r + k * c % r) :
+    (a + b) % r = 0 \/ (a + c) % r = 0 \/ (b + c) % r = 0 := by
+  sorry
+
+end TuringTask
+```
+
+Rules. You may add helper definitions and lemmas, in this file or in other project files that it imports, and you may use any proof that the Lean kernel checks. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms or any other way to bypass the kernel. For each of the five theorems, `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Use Lean toolchain `leanprover/lean4:v4.33.0-rc1` and Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Check the project with `lake build`, which must finish without errors.
+
+Do not declare anything inside the namespace `TuringTask` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.

@@ -1,0 +1,18 @@
+Job t40_statements started Sun 10/11/2026  7:39:33.01 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (23s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:12:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:18:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:24:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:33:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (23s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.card_gaps_le_three' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.ncard_return_times_le_three' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.terminal_iff' depends on axioms: [sorryAx]
+'TuringTask.empty_tetrahedron_iff' depends on axioms: [sorryAx]
+'TuringTask.pair_of_canonical' depends on axioms: [sorryAx]
+CHECK EXIT CODE 0 
