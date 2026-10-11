@@ -244,6 +244,10 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   q^ceil(n/2) over monic polynomials): prompt compiled 11 Oct (job t35_statements: build 0, five sorry warnings,
   check 0 with sorryAx only), handed over about 5.40 IST by the overnight run. Golden plan in handoff section 51.
   Near match disclosed: TauCeti's Stickelberger mod 4 for number fields (left out of the task).
+- 36 (Stern's diatomic sequence: Calkin-Wilf bijection, Lucas's Fibonacci maxima with the two extremal positions,
+  phi(t) occurrences per row for t <= k + 1, hyperbinary representations, binary reversal): prompt compiled 11 Oct
+  (job t36_statements: build 0, five sorry warnings, check 0 with sorryAx only), handed over about 5.50 IST by the
+  overnight run. Golden plan in handoff section 52.
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
