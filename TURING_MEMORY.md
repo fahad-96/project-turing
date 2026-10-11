@@ -258,6 +258,11 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   t38_statements_v2: build 0, five sorry warnings, check 0 with sorryAx only; the first job t38_statements built
   an earlier draft and is superseded), handed over about 6.09 IST by the overnight run. Golden plan in handoff
   section 54.
+- 39 (polynomial functions modulo n: F on Z/n is polynomial iff gcd(n, j!) divides the j-th forward difference for
+  every j < n; Kempner's count prod_{j<n} n/gcd(n, j!); Keller and Olson's count of bijective polynomial functions
+  on Z/p^k for k >= 2; Kempner's digit formula for the least s with p^k | s!; degree < s always suffices and s - 1
+  is needed): prompt compiled 11 Oct (job t39_statements: build 0, five sorry warnings, check 0 with sorryAx
+  only), handed over about 7.28 IST by the overnight run. Golden plan in handoff section 55.
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
