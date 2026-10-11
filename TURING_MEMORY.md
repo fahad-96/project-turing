@@ -263,6 +263,13 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   on Z/p^k for k >= 2; Kempner's digit formula for the least s with p^k | s!; degree < s always suffices and s - 1
   is needed): prompt compiled 11 Oct (job t39_statements: build 0, five sorry warnings, check 0 with sorryAx
   only), handed over about 7.28 IST by the overnight run. Golden plan in handoff section 55.
+- 40 (multiples modulo r: the points <ka>, k < N, cut [0, r] into gaps of at most three lengths, the largest the
+  sum of the other two (three-gap theorem); the same for the return times to <ka> < b (Slater); for a, b, c prime
+  to r, <ka> + <kb> + <kc> > r for all 1 <= k < r iff r divides a + b, a + c or b + c (terminal lemma); White's
+  classification of empty lattice tetrahedra 0, e1, e2, (a, b, r); canonical triples with a + b + c prime to r
+  contain a pair, sharp at r = 9, (1, 4, 7)): prompt compiled 11 Oct (job t40_statements: build 0, five sorry
+  warnings, check 0 with sorryAx only), handed over about 7.41 IST by the overnight run, the last task of the run.
+  Golden plan in handoff section 56.
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
