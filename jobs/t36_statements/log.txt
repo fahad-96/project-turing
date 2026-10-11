@@ -1,0 +1,18 @@
+Job t36_statements started Sun 10/11/2026  5:38:13.90 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (23s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:12:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:20:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:27:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:37:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (22s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.coprime_and_existsUnique_eq' depends on axioms: [sorryAx]
+'TuringTask.le_fib_and_eq_fib_iff' depends on axioms: [propext, sorryAx]
+'TuringTask.card_filter_eq_totient' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.eq_card_hyperbinary' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.eq_of_reverse_digits' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

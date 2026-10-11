@@ -1,0 +1,61 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. Define Stern's diatomic sequence by $s(0) = 0$, $s(1) = 1$, $s(2n) = s(n)$ and $s(2n + 1) = s(n) + s(n + 1)$ for $n \ge 0$, so it begins $0, 1, 1, 2, 1, 3, 2, 3, 1, 4, \dots$. Let $F_j$ be the Fibonacci numbers ($F_0 = 0$, $F_1 = 1$) and $\varphi$ Euler's function.
+
+1. (Stern, Calkin and Wilf.) For $n \ge 1$ the numbers $s(n)$ and $s(n + 1)$ are coprime, and for every pair of coprime integers $a, b \ge 1$ there is exactly one $n \ge 1$ with $s(n) = a$ and $s(n + 1) = b$.
+2. (Lucas.) If $0 \le n \le 2^{k+1}$, then $s(n) \le F_{k+2}$, with equality if and only if $3n = 2^{k+2} - (-1)^k$ or $3n = 5 \cdot 2^k + (-1)^k$.
+3. If $0 \le t \le k + 1$, then exactly $\varphi(t)$ integers $n$ with $2^k \le n < 2^{k+1}$ satisfy $s(n) = t$.
+4. For $n \ge 0$, $s(n + 1)$ is the number of ways to write $n = \sum_{i \ge 0} c_i 2^i$ with all digits $c_i \in \{0, 1, 2\}$.
+5. If $n$ is odd and $n'$ is the number whose binary digits are those of $n$ in reverse order, then $s(n') = s(n)$.
+
+Lean statement. The sequence is a function `s : Nat -> Nat` with the hypotheses `h1`, `he` and `ho`, which determine it (they force $s(0) = 0$). Theorem 5 omits `h1`, since its conclusion holds for every multiple of $s$ as well. In theorem 1, `ExistsUnique` expresses "exactly one". In theorem 3, $\varphi$ is `Nat.totient`. In theorem 4 the digit strings are the functions `c : Fin (n + 1) -> Fin 3`, which suffices because $2^i > n$ for $i > n$. In theorem 5 the reversal of $n$ is `Nat.ofDigits 2 (Nat.digits 2 n).reverse`. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem coprime_and_existsUnique_eq (s : Nat -> Nat) (h1 : s 1 = 1)
+    (he : forall n, s (2 * n) = s n) (ho : forall n, s (2 * n + 1) = s n + s (n + 1)) :
+    (forall n, 0 < n -> Nat.Coprime (s n) (s (n + 1))) /\
+      forall a b, 0 < a -> 0 < b -> Nat.Coprime a b ->
+        ExistsUnique (fun n => 0 < n /\ s n = a /\ s (n + 1) = b) := by
+  sorry
+
+theorem le_fib_and_eq_fib_iff (s : Nat -> Nat) (h1 : s 1 = 1)
+    (he : forall n, s (2 * n) = s n) (ho : forall n, s (2 * n + 1) = s n + s (n + 1))
+    (k n : Nat) (hn : n <= 2 ^ (k + 1)) :
+    s n <= Nat.fib (k + 2) /\
+      (s n = Nat.fib (k + 2) <->
+        (3 * n : Int) = 4 * 2 ^ k - (-1) ^ k \/ (3 * n : Int) = 5 * 2 ^ k + (-1) ^ k) := by
+  sorry
+
+theorem card_filter_eq_totient (s : Nat -> Nat) (h1 : s 1 = 1)
+    (he : forall n, s (2 * n) = s n) (ho : forall n, s (2 * n + 1) = s n + s (n + 1))
+    (t k : Nat) (htk : t <= k + 1) :
+    (Finset.filter (fun n => s n = t) (Finset.Ico (2 ^ k) (2 ^ (k + 1)))).card =
+      Nat.totient t := by
+  sorry
+
+theorem eq_card_hyperbinary (s : Nat -> Nat) (h1 : s 1 = 1)
+    (he : forall n, s (2 * n) = s n) (ho : forall n, s (2 * n + 1) = s n + s (n + 1))
+    (n : Nat) :
+    s (n + 1) =
+      (Finset.filter
+        (fun c : Fin (n + 1) -> Fin 3 =>
+          Finset.sum Finset.univ (fun i => (c i : Nat) * 2 ^ (i : Nat)) = n)
+        Finset.univ).card := by
+  sorry
+
+theorem eq_of_reverse_digits (s : Nat -> Nat)
+    (he : forall n, s (2 * n) = s n) (ho : forall n, s (2 * n + 1) = s n + s (n + 1))
+    (n : Nat) (hn : n % 2 = 1) :
+    s (Nat.ofDigits 2 (Nat.digits 2 n).reverse) = s n := by
+  sorry
+
+end TuringTask
+```
+
+Rules. You may add helper definitions and lemmas, in this file or in other project files that it imports, and you may use any proof that the Lean kernel checks. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms or any other way to bypass the kernel. For each of the five theorems, `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Use Lean toolchain `leanprover/lean4:v4.33.0-rc1` and Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Check the project with `lake build`, which must finish without errors.
+
+Do not declare anything inside the namespace `TuringTask` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.
