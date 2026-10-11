@@ -248,6 +248,10 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   phi(t) occurrences per row for t <= k + 1, hyperbinary representations, binary reversal): prompt compiled 11 Oct
   (job t36_statements: build 0, five sorry warnings, check 0 with sorryAx only), handed over about 5.50 IST by the
   overnight run. Golden plan in handoff section 52.
+- 37 (numerical semigroups and the Frobenius problem: Sylvester's symmetry, Johnson's reduction g(da, db, c) = d g
+  + (d - 1) c, Roberts' Frobenius number and Selmer's gap count for arithmetic sequences, Herzog's criterion for
+  symmetric 3-generated semigroups): prompt compiled 11 Oct (job t37_statements: build 0, five sorry warnings,
+  check 0 with sorryAx only), handed over about 5.55 IST by the overnight run. Golden plan in handoff section 53.
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
