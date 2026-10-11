@@ -1,0 +1,21 @@
+Job t35_statements started Sun 10/11/2026  5:13:12.36 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (313s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:11:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:18:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:26:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:35:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (23s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.isSquare_discr_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.discr_emod_eight_eq_one_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.discr_trinomial' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.even_card_normalizedFactors_trinomial_iff' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'TuringTask.sum_neg_one_pow_card_normalizedFactors' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

@@ -1,0 +1,64 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. For a polynomial $f$ over a commutative ring, $\operatorname{disc}(f)$ denotes its discriminant, and for a polynomial $f$ over a field, $r(f)$ is the number of irreducible factors of $f$ counted with multiplicity. Below $\mathbb{F}_q$ is a finite field with $q$ elements.
+
+1. (Stickelberger.) Let $q$ be odd and let $f \in \mathbb{F}_q[X]$ be squarefree. Then $\operatorname{disc}(f)$ is a square in $\mathbb{F}_q$ if and only if $r(f) \equiv \deg f \pmod 2$.
+2. (Swan.) Let $F \in \mathbb{Z}[X]$ be monic with squarefree reduction $\bar F \in \mathbb{F}_2[X]$. Then $\operatorname{disc}(F) \equiv 1 \pmod 8$ if and only if $r(\bar F) \equiv \deg F \pmod 2$.
+3. (Swan.) Let $0 < k < n$, $d = \gcd(n, k)$, $N = n/d$, $K = k/d$ and $a, b \in \mathbb{Z}$. Then
+$$\operatorname{disc}(X^n + aX^k + b) = (-1)^{n(n-1)/2}\, b^{k-1} \big( n^N b^{N-K} - (-1)^N (n-k)^{N-K} k^K a^N \big)^d.$$
+4. (Swan.) Let $0 < k < n$ with $n + k$ odd. Then $X^n + X^k + 1 \in \mathbb{F}_2[X]$ has an even number of irreducible factors if and only if (a) $n$ is even, $n \ne 2k$ and $nk/2 \equiv 0$ or $1 \pmod 4$, or (b) $n$ is odd, $k \nmid 2n$ and $n \equiv \pm 3 \pmod 8$, or (c) $n$ is odd, $k \mid 2n$ and $n \equiv \pm 1 \pmod 8$.
+5. For every $n \ge 0$, the sum of $(-1)^{r(f)}$ over the $q^n$ monic polynomials $f \in \mathbb{F}_q[X]$ of degree $n$ equals $(-1)^n q^{\lceil n/2 \rceil}$.
+
+Lean statement. The discriminant is Mathlib's `Polynomial.discr`, $r(f)$ is `Multiset.card (UniqueFactorizationMonoid.normalizedFactors f)`, and the reduction modulo $2$ is `F.map (Int.castRingHom (ZMod 2))`. A finite field is a type `K` with `[Field K] [Fintype K] [DecidableEq K]`, so $q$ is `Fintype.card K`. In theorem 4 the condition "$nk/2 \equiv 0$ or $1 \pmod 4$" reads `n * k / 2 % 4 <= 1`. In theorem 5 the monic polynomials of degree $n$ are $X^n + \sum_{i < n} c_i X^i$ for the functions `c : Fin n -> K`, and $\lceil n/2 \rceil$ is `(n + 1) / 2`. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem isSquare_discr_iff (K : Type*) [Field K] [Fintype K] [DecidableEq K]
+    (hK : Fintype.card K % 2 = 1) (f : Polynomial K) (hf : Squarefree f) :
+    IsSquare f.discr <->
+      (Multiset.card (UniqueFactorizationMonoid.normalizedFactors f) + f.natDegree) % 2 = 0 := by
+  sorry
+
+theorem discr_emod_eight_eq_one_iff (F : Polynomial Int) (hF : F.Monic)
+    (hsq : Squarefree (F.map (Int.castRingHom (ZMod 2)))) :
+    F.discr % 8 = 1 <->
+      (Multiset.card (UniqueFactorizationMonoid.normalizedFactors
+          (F.map (Int.castRingHom (ZMod 2)))) + F.natDegree) % 2 = 0 := by
+  sorry
+
+theorem discr_trinomial (n k : Nat) (hk : 0 < k) (hkn : k < n) (a b : Int) :
+    (Polynomial.X ^ n + Polynomial.C a * Polynomial.X ^ k + Polynomial.C b).discr =
+      (-1) ^ (n * (n - 1) / 2) * b ^ (k - 1) *
+        ((n : Int) ^ (n / Nat.gcd n k) * b ^ (n / Nat.gcd n k - k / Nat.gcd n k) -
+          (-1) ^ (n / Nat.gcd n k) * ((n - k : Nat) : Int) ^ (n / Nat.gcd n k - k / Nat.gcd n k) *
+            (k : Int) ^ (k / Nat.gcd n k) * a ^ (n / Nat.gcd n k)) ^ Nat.gcd n k := by
+  sorry
+
+theorem even_card_normalizedFactors_trinomial_iff (n k : Nat) (hk : 0 < k) (hkn : k < n)
+    (hnk : (n + k) % 2 = 1) :
+    Multiset.card (UniqueFactorizationMonoid.normalizedFactors
+        (Polynomial.X ^ n + Polynomial.X ^ k + 1 : Polynomial (ZMod 2))) % 2 = 0 <->
+      (n % 2 = 0 /\ Not (n = 2 * k) /\ n * k / 2 % 4 <= 1) \/
+        (n % 2 = 1 /\ Not (2 * n % k = 0) /\ (n % 8 = 3 \/ n % 8 = 5)) \/
+          (n % 2 = 1 /\ 2 * n % k = 0 /\ (n % 8 = 1 \/ n % 8 = 7)) := by
+  sorry
+
+theorem sum_neg_one_pow_card_normalizedFactors (K : Type*) [Field K] [Fintype K] [DecidableEq K]
+    (n : Nat) :
+    Finset.sum Finset.univ (fun c : Fin n -> K =>
+        (-1 : Int) ^ Multiset.card (UniqueFactorizationMonoid.normalizedFactors
+          (Polynomial.X ^ n +
+            Finset.sum Finset.univ
+              (fun i : Fin n => Polynomial.C (c i) * Polynomial.X ^ (i : Nat))))) =
+      (-1) ^ n * (Fintype.card K : Int) ^ ((n + 1) / 2) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. You may add helper definitions and lemmas, in this file or in other project files that it imports, and you may use any proof that the Lean kernel checks. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms or any other way to bypass the kernel. For each of the five theorems, `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Use Lean toolchain `leanprover/lean4:v4.33.0-rc1` and Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Check the project with `lake build`, which must finish without errors.
+
+Do not declare anything inside the namespace `TuringTask` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.
