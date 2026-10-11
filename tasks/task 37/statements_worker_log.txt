@@ -1,0 +1,18 @@
+Job t37_statements started Sun 10/11/2026  5:45:20.10 
+===== lake build 
+⚠ [8664/8666] Built TuringTask.Basic (24s)
+warning: TuringTask/Basic.lean:5:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:11:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:19:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:27:8: declaration uses `sorry`
+warning: TuringTask/Basic.lean:33:8: declaration uses `sorry`
+✔ [8665/8666] Built TuringTask (23s)
+Build completed successfully (8666 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.exists_iff_not_exists_sub' depends on axioms: [sorryAx]
+'TuringTask.frobenius_mul_mul' depends on axioms: [sorryAx]
+'TuringTask.frobenius_arith_seq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.ncard_not_arith_seq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'TuringTask.symmetric_iff' depends on axioms: [sorryAx]
+CHECK EXIT CODE 0 
