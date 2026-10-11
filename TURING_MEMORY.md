@@ -239,6 +239,11 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   6 integer matrices): prompt compiled 11 Oct (job t34_statements: build 0, five sorry warnings, check 0 with
   sorryAx only), handed over about 5.10 IST by the overnight run. Golden plan in handoff section 50. Near match
   disclosed: formal-conjectures Erdos 947 (Mirsky-Newman).
+- 35 (discriminants and the parity of irreducible factors: Stickelberger over F_q, Swan's disc = 1 mod 8
+  criterion, Swan's trinomial discriminant and trinomials X^n + X^k + 1 over F_2, the Liouville sum (-1)^n
+  q^ceil(n/2) over monic polynomials): prompt compiled 11 Oct (job t35_statements: build 0, five sorry warnings,
+  check 0 with sorryAx only), handed over about 5.40 IST by the overnight run. Golden plan in handoff section 51.
+  Near match disclosed: TauCeti's Stickelberger mod 4 for number fields (left out of the task).
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
