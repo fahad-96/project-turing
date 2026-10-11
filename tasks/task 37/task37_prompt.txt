@@ -1,0 +1,68 @@
+Create a Lean 4 project and prove the five theorems below in `TuringTask/Basic.lean`. This is a proof-writing task.
+
+Mathematical statement. Below all numbers are nonnegative integers, and a combination of $a_1, \dots, a_k$ means a sum $a_1 x_1 + \dots + a_k x_k$ with integers $x_i \ge 0$. If all large integers are combinations of the $a_i$, the largest integer that is not one is the Frobenius number of $a_1, \dots, a_k$.
+
+1. (Sylvester.) Let $a, b \ge 2$ be coprime and $0 \le n \le ab - a - b$. Then exactly one of $n$ and $ab - a - b - n$ is a combination of $a$ and $b$.
+2. (Johnson.) Let $G$ be the Frobenius number of $a, b, c$, and let $d$ be coprime to $c$. Then the Frobenius number of $da, db, c$ is $dG + (d - 1)c$.
+3. (Roberts.) Let $a \ge 2$, $s \ge 1$ and $\gcd(a, d) = 1$. The Frobenius number of the arithmetic progression $a, a + d, \dots, a + sd$ is $\big(\lfloor (a - 2)/s \rfloor + 1\big) a + (d - 1)(a - 1) - 1$.
+4. (Selmer.) Let $s \ge 1$ and $\gcd(a, d) = 1$. Exactly $\sum_{m=0}^{a-1} \lceil m/s \rceil + (d - 1)(a - 1)/2$ integers $n \ge 0$ are not combinations of $a, a + d, \dots, a + sd$.
+5. (Herzog.) Let $a, b, c$ be such that none of them is a combination of the other two, and let $g$ be their Frobenius number. Then the semigroup they generate is symmetric, meaning that for every $0 \le n \le g$ exactly one of $n$ and $g - n$ is a combination of $a, b, c$, if and only if for some pair, say $a, b$, the number $e = \gcd(a, b)$ is greater than $1$ and $c$ is a combination of $a/e$ and $b/e$.
+
+Lean statement. In theorems 2 and 5 the Frobenius number appears through two hypotheses: it is not a combination, and every larger integer is one. In theorems 3 and 4 a function `x : Fin (s + 1) -> Nat` describes a combination of $a, a + d, \dots, a + sd$, and $\lceil m/s \rceil$ is `(m + s - 1) / s`. In theorem 4 the count is the `Set.ncard` of the set of non-combinations. In theorem 5 the statement lists the condition on a pair for each of the three pairs. Subtraction and division are those of `Nat`, so $(d - 1)(a - 1)/2$ is exact because $a$ and $d$ are not both even. Copy the five theorems below into `TuringTask/Basic.lean` exactly as they appear, and replace each `sorry` with a complete proof.
+
+```lean
+import Mathlib
+
+namespace TuringTask
+
+theorem exists_iff_not_exists_sub (a b n : Nat) (ha : 2 <= a) (hb : 2 <= b) (hab : Nat.Coprime a b)
+    (hn : n <= a * b - a - b) :
+    (exists x y : Nat, n = a * x + b * y) <->
+      Not (exists x y : Nat, a * b - a - b - n = a * x + b * y) := by
+  sorry
+
+theorem frobenius_mul_mul (a b c d G : Nat) (hdc : Nat.Coprime d c)
+    (hG : Not (exists x y z : Nat, G = a * x + b * y + c * z))
+    (hG' : forall n, G < n -> exists x y z : Nat, n = a * x + b * y + c * z) :
+    Not (exists x y z : Nat, d * G + (d - 1) * c = d * a * x + d * b * y + c * z) /\
+      forall n, d * G + (d - 1) * c < n ->
+        exists x y z : Nat, n = d * a * x + d * b * y + c * z := by
+  sorry
+
+theorem frobenius_arith_seq (a d s : Nat) (ha : 2 <= a) (hs : 1 <= s) (had : Nat.Coprime a d) :
+    Not (exists x : Fin (s + 1) -> Nat,
+        ((a - 2) / s + 1) * a + (d - 1) * (a - 1) - 1 =
+          Finset.sum Finset.univ (fun i => x i * (a + i * d))) /\
+      forall n, ((a - 2) / s + 1) * a + (d - 1) * (a - 1) - 1 < n ->
+        exists x : Fin (s + 1) -> Nat, n = Finset.sum Finset.univ (fun i => x i * (a + i * d)) := by
+  sorry
+
+theorem ncard_not_arith_seq (a d s : Nat) (hs : 1 <= s) (had : Nat.Coprime a d) :
+    Set.ncard {n : Nat | Not (exists x : Fin (s + 1) -> Nat,
+        n = Finset.sum Finset.univ (fun i => x i * (a + i * d)))} =
+      Finset.sum (Finset.range a) (fun m => (m + s - 1) / s) + (d - 1) * (a - 1) / 2 := by
+  sorry
+
+theorem symmetric_iff (a b c g : Nat)
+    (ha : Not (exists x y : Nat, a = b * x + c * y))
+    (hb : Not (exists x y : Nat, b = a * x + c * y))
+    (hc : Not (exists x y : Nat, c = a * x + b * y))
+    (hg : Not (exists x y z : Nat, g = a * x + b * y + c * z))
+    (hg' : forall n, g < n -> exists x y z : Nat, n = a * x + b * y + c * z) :
+    (forall n, n <= g ->
+      ((exists x y z : Nat, n = a * x + b * y + c * z) <->
+        Not (exists x y z : Nat, g - n = a * x + b * y + c * z))) <->
+      (1 < Nat.gcd a b /\
+          exists x y : Nat, c = a / Nat.gcd a b * x + b / Nat.gcd a b * y) \/
+        (1 < Nat.gcd a c /\
+          exists x y : Nat, b = a / Nat.gcd a c * x + c / Nat.gcd a c * y) \/
+        (1 < Nat.gcd b c /\
+          exists x y : Nat, a = b / Nat.gcd b c * x + c / Nat.gcd b c * y) := by
+  sorry
+
+end TuringTask
+```
+
+Rules. You may add helper definitions and lemmas, in this file or in other project files that it imports, and you may use any proof that the Lean kernel checks. Keep `import Mathlib`, the namespace `TuringTask`, and the names and statements of the five theorems unchanged. Do not use `sorry`, `admit`, `native_decide`, new axioms or any other way to bypass the kernel. For each of the five theorems, `#print axioms` must report only `propext`, `Classical.choice` and `Quot.sound`. Use Lean toolchain `leanprover/lean4:v4.33.0-rc1` and Mathlib commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`. Check the project with `lake build`, which must finish without errors.
+
+Do not declare anything inside the namespace `TuringTask` that shadows a Mathlib name. Every name in the five statements must keep its Mathlib meaning.
