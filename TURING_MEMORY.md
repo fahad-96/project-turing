@@ -252,6 +252,12 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   + (d - 1) c, Roberts' Frobenius number and Selmer's gap count for arithmetic sequences, Herzog's criterion for
   symmetric 3-generated semigroups): prompt compiled 11 Oct (job t37_statements: build 0, five sorry warnings,
   check 0 with sorryAx only), handed over about 5.55 IST by the overnight run. Golden plan in handoff section 53.
+- 38 (Gauss factorials: P(n) = -1 mod n iff n = 2, 4, p^a, 2 p^a (Gauss); the half product G(n) = 1 mod n with
+  three odd prime factors or with 8 | n and an odd prime factor; G(n)^2 = 1 mod p^a q^b, and G = +-1 iff p = q = 1
+  mod 4; G(pq) = (q/p)(-1)^((q-1)/2) mod p; G(2^k) = 2^(k-1) + 1 mod 2^k): prompt compiled 11 Oct (job
+  t38_statements_v2: build 0, five sorry warnings, check 0 with sorryAx only; the first job t38_statements built
+  an earlier draft and is superseded), handed over about 6.09 IST by the overnight run. Golden plan in handoff
+  section 54.
 - Tracker: next free task number 18. Worker job reservations: 019 task 12 outputs, 020 task 13 outputs
   (used), 021 task 8 v2, 022 task 14, 024 task 15, 025 task 16, 026 task 17, 027 task 13 golden (used);
   next free 028.
