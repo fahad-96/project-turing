@@ -1,0 +1,71 @@
+### Overview
+
+The zip is a complete Lake project. `lakefile.toml` and `lake-manifest.json` use the pinned Mathlib checkout at `/opt/mathlib4` (commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`), and `lean-toolchain` is `leanprover/lean4:v4.33.0-rc1`. The proof sits in seven files under `TuringTask/` that import each other in a chain: `Eisenstein`, `EulerCube`, `Descent`, `Curves`, `Apps`, `Main`, `Basic`. Every file starts with `import Mathlib`. The required file `TuringTask/Basic.lean` is the file of the prompt with one added line `import TuringTask.Main`. Its namespace and its five statements stay as in the prompt, and each `sorry` became a one-line `exact` of the matching theorem in `Main.lean`.
+
+In this text $\omega$ is a root of $\omega^2 + \omega + 1 = 0$, and $E = \mathbb{Z}[\omega]$ is the Lean type `Eis`, which is Mathlib's `QuadraticAlgebra Int (-1) (-1)`. The element $x + y\omega$ has norm $N(x + y\omega) = x^2 - xy + y^2$, and $\bar\alpha$ (Lean: `star`) is the conjugate, so $\alpha \bar\alpha = N(\alpha)$. Since $2\omega + 1 = \sqrt{-3}$, the number $u + v\sqrt{-3}$ is $(u + v) + 2v\omega$.
+
+The route:
+- (A) $E$ is a Euclidean domain for division with rounding, and its units are $\pm 1$, $\pm\omega$, $\pm\omega^2$.
+- (B) Euler's lemma: if $u^2 + 3v^2 = s^3$ and $\gcd(u, 3v) = 1$, then $u = a^3 - 9ab^2$ and $v = 3a^2 b - 3b^3$ for integers $a, b$, so $u + v\sqrt{-3} = (a + b\sqrt{-3})^3$.
+- (C) Theorem 1 by descent on $|z|$: a nontrivial solution of $x^3 + y^3 = 2z^3$ gives another one with a smaller $|z|$.
+- (D) Theorems 2 and 3 reduce to the rational form of theorem 1 through two explicit rational maps. Theorems 4 and 5 are short consequences of theorem 1.
+
+### 1. Eisenstein.lean: the ring $E$
+
+- `norm_eq`, `four_mul_norm` ($4N(z) = (2x - y)^2 + 3y^2$), `norm_nonneg'`, `eq_zero_of_norm_eq_zero`, `norm_pos`, and `mul_star_self` ($z\bar z = N(z)$, from Mathlib's `algebraMap_norm_eq_mul_star`).
+- `rnd p n` $= \lfloor (2p + n)/(2n) \rfloor$, and `rnd_spec` gives $-n \le 2(p - n \cdot \mathrm{rnd}) \le n$ for $n > 0$.
+- `quo x y` rounds both coordinates of $x\bar y / N(y)$, and `rem x y = x - y \cdot quo x y`. Lemma `norm_rem_lt` shows $N(\mathrm{rem}) < N(y)$ for $y \ne 0$. With $A, B$ the two doubled rounding errors, $4N(\mathrm{rem})N(y) = A^2 - AB + B^2 \le 3N(y)^2$.
+- `euclid` packs this as a `EuclideanDomain` structure on `Eis`, with the measure $|N|$. The project declares no instance. The lemma `exists_assoc_cube` switches the structure on with `letI` and applies Mathlib's `exists_associated_pow_of_mul_eq_pow'`: coprime factors of a cube are cubes up to a unit.
+- `norm_eq_one_of_isUnit` (Mathlib's `isUnit_iff_norm_isUnit` and $N \ge 0$) and `eq_of_isUnit`, which lists the six units through $(2x - y)^2 + 3y^2 = 4$.
+
+### 2. EulerCube.lean: Euler's lemma
+
+- `re_cube`, `im_cube`: the coordinates of $d^3$ for $d = c + e\omega$ are $c^3 - 3ce^2 + e^3$ and $3c^2e - 3ce^2$. `omega_cube`: $\omega^3 = 1$.
+- `exists_cube_eq_even_im`: among $g$, $\omega g$, $\omega^2 g$ (same cube) one has an even $\omega$-coordinate, by the parities of $c$ and $e$.
+- `odd_polys`: if $c^2 - ce + e^2$ is odd, then $c^3 - 3c^2e + e^3$ and $c^3 - 3ce^2 + e^3$ are odd (a check by `decide` in `ZMod 2`).
+- `not_dvd_of_sq_add_three_sq`: $s$ is odd. For even $s$ the check in `ZMod 8` makes $u$ and $v$ both even, against $\gcd(u, 3v) = 1$.
+- `euler_cube` (step B). Put $\alpha = (u + v) + 2v\omega$. Then $\alpha\bar\alpha = s^3$. The ideal $(\alpha, \bar\alpha)$ contains $\alpha + \bar\alpha = 2u$ and $(\alpha - \bar\alpha)(1 + 2\omega) = -6v$, hence $2$, and it contains the odd number $s^3$, hence $1$. The proof writes this Bezout identity out explicitly, so $\alpha$ and $\bar\alpha$ are coprime and $\alpha = w d^3$ with a unit $w$. As $N(d)^3 = s^3$, $N(d)$ is odd. For $w = \pm\omega, \pm\omega^2$ the $\omega$-coordinate of $w d^3$ is $\pm$ one of the odd polynomials of `odd_polys`, while that of $\alpha$ is $2v$. So $w = \pm 1$ and $\alpha$ is a cube. `exists_cube_eq_even_im` gives a cube root $(a + b) + 2b\omega = a + b\sqrt{-3}$, and comparing coordinates gives the formulas for $u$ and $v$.
+
+### 3. Descent.lean: theorem 1
+
+- Helper lemmas `cube_inj` (Mathlib's `Odd.pow_inj`), `not_isCoprime_of_two_dvd`, `isCoprime_of_not_three_dvd`, `isCoprime_add_sub` and `isCoprime_sub_add` (explicit Bezout identities for $a \pm c$, the second one for odd $a - c$).
+- `cubes_of_mul`: three pairwise coprime integers with a cube product are cubes (Mathlib's `Int.eq_pow_of_mul_eq_pow_odd_left` and `_right`).
+- `euler_pair`: if $a^3 - 9ab^2$ and $3a^2b - 3b^3$ are coprime, then $a, b$ are coprime and $a - b$ and $a - 3b$ are odd (both polynomials vanish in `ZMod 2` when $a \equiv b$).
+- `descent_step`: let $u, v$ be coprime and nonzero with $u(u^2 + 3v^2) = z^3$.
+  - If $3 \nmid u$, the factors $u$ and $u^2 + 3v^2$ are coprime cubes. `euler_cube` gives $u = a(a - 3b)(a + 3b)$, three pairwise coprime cubes $e^3$, $f^3$, $g^3$, and $f^3 + g^3 = 2a = 2e^3$.
+  - If $u = 3w$, then $9w(v^2 + 3w^2) = z^3$ with coprime factors. `euler_cube` on $v^2 + 3w^2$ gives $w = 3b(a - b)(a + b)$. From $9w = r^3$ the integer $r$ is $3r'$ and $b(a - b)(a + b) = r'^3$, so $b = e^3$, $a - b = f^3$, $a + b = g^3$ and $g^3 + (-f)^3 = 2e^3$.
+  - In both cases $f = g$ or $f + g = 0$ would force $u = 0$ or $v = 0$. The size bound $|e|^3 < |z|^3$ comes from $|z|^3 = |u|(u^2 + 3v^2)$ with $u^2 + 3v^2 \ge 3$ and the factor of $|u|$ or $|w|$ beside $|e|^3$ at least $1$.
+- `two_cubes_coprime`: strong induction on $|z|$ for coprime $x, y$. Both are odd, $u = (x + y)/2$ and $v = (x - y)/2$ are coprime and nonzero, and $x^3 + y^3 = 2u(u^2 + 3v^2)$, so `descent_step` gives a smaller counterexample.
+- `dvd_of_cube_dvd_two_mul`: if $G^3 \mid 2z^3$, then $G \mid z$ (split off $\gcd(G, z)$, then the cofactor cube divides $2$).
+- `two_cubes` (theorem 1): divide $x, y$ by $g = \gcd(x, y)$ (Mathlib's `Int.exists_gcd_one'`). Then $g \mid z$ by the previous lemma, and the coprime case applies.
+
+### 4. Curves.lean: theorems 2 and 3
+
+- `rat_two_cubes`: theorem 1 for rational $u, v, w$, after multiplying by the product of the three denominators (`Rat.mul_den_eq_num`).
+- `minus27_points` (theorem 3): $x = 0$ gives $y^2 = -27$. Otherwise $u = 3/x + y/(3x)$ and $v = 3/x - y/(3x)$ satisfy $u^3 + v^3 = (54 + 2y^2)/x^3 = 2$. Since $u + v = 6/x \ne 0$, `rat_two_cubes` gives $u = v$, so $y = 0$, $x^3 = 27$ and $x = 3$.
+- `plus1_points` (theorem 2): $x = 0$ gives $y = \pm 1$. For $x \ne 0$ the point $X = (x^3 + 4)/x^2$, $Y = y(x^3 - 8)/x^3$ lies on $Y^2 = X^3 - 27$ by the identity $(t + 4)^3 - 27t^2 = (t + 1)(t - 8)^2$ with $t = x^3$. Theorem 3 gives $X = 3$, so $(x + 1)(x - 2)^2 = 0$, and then $x = -1$, $y = 0$ or $x = 2$, $y = \pm 3$.
+
+### 5. Apps.lean: theorems 4 and 5
+
+- `cube_sub_two_cube` (theorem 4): $x^3 - 2y^3 = 1$ reads $x^3 + (-1)^3 = 2y^3$, and $x^3 - 2y^3 = -1$ reads $x^3 + 1^3 = 2y^3$. Theorem 1 gives $x = \pm 1$, and then $y^3 \in \{-1, 0, 1\}$.
+- `nat_cubes_of_mul`: coprime natural numbers with a cube product are cubes (Mathlib's `exists_eq_pow_of_mul_eq_pow`).
+- `triangular_cube` (theorem 5): for $n = 2k$, $k(2k + 1) = m^3$ with coprime factors gives $k = a^3$, $2k + 1 = b^3$ and $b^3 - 2a^3 = 1$, so theorem 4 with $a, b \ge 0$ gives $a = 0$ and $n = 0$. For $n = 2k + 1$, $(2k + 1)(k + 1) = m^3$ gives $b^3 - 2a^3 = -1$, so $a = b = 1$ and $n = 1$.
+
+### 6. Main.lean and Basic.lean
+
+`Main.lean` states the five theorems exactly as in the prompt under its own names (`thm_two_cubes`, `thm_plus1`, `thm_minus27`, `thm_cube_sub`, `thm_triangular`). It turns the disjunctions of `plus1_points` and `cube_sub_two_cube` into the `Finset` membership by `simp`. In `Basic.lean` each of the five theorems is one `exact` of the matching theorem.
+
+### Verification
+
+- I extracted the final zip into a fresh folder and checked it offline, without editing anything, in the setting of the review environment: Mathlib at `/opt/mathlib4` (the pinned checkout, commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`, with its dependencies linked into `.lake/packages` as `lean-offline-init` does), Lean `4.33.0-rc1`, network access blocked.
+- `lake build` ends with "Build completed successfully", exit code 0, with no errors and no warnings. Every file uses the full `import Mathlib`.
+- `lake env lean StatementAndAxiomsCheck.lean` (included in the zip) restates the five theorems of the prompt, so it fails if a statement changed. It reports exactly the axioms `propext`, `Classical.choice` and `Quot.sound` for each of the five theorems, with exit code 0.
+- The project contains no `sorry`, `admit`, `native_decide`, new axiom, `set_option` or instance declaration.
+
+### Sources and related work
+
+The equation $x^3 + y^3 = 2z^3$ and the descent through $u^2 + 3v^2 = s^3$ go back to L. Euler, Vollstaendige Anleitung zur Algebra, part II (1770), and A.-M. Legendre, Theorie des nombres, 3rd edition (Paris, 1830). L. E. Dickson, History of the Theory of Numbers, vol. II (Carnegie Institution, 1920), chapter XXI, and L. J. Mordell, Diophantine Equations (Academic Press, 1969), give the history and the rational points of the two curves, which have conductor 36 and rank 0. The write-up and the Lean code are my own.
+
+The proof uses these Mathlib results: `QuadraticAlgebra` with its norm and conjugation, `isUnit_iff_norm_isUnit`, `exists_associated_pow_of_mul_eq_pow'` for Bezout domains, `Int.eq_pow_of_mul_eq_pow_odd_left`, `exists_eq_pow_of_mul_eq_pow`, `Int.exists_gcd_one'` and `Odd.pow_inj`. Mathlib at the pinned commit contains Fermat's Last Theorem for exponent 3, proved in the ring of integers of the third cyclotomic field, but none of the five statements. I found no Lean formalization of them in Mathlib, `TauCetiProject/TauCeti`, `AllenGrahamHart/FormalConjectures-Bench`, formal-conjectures, compfiles, PutnamBench, miniF2F, ProofNet or by web search (checked 10 Oct 2026). The closest match is the integer case of theorem 2: the repository `cadamcat/catalan-lean4` (October 2026, a proof of Catalan's conjecture) proves that $x^2 = y^3 + 1$ has no integer solution with $x, y$ nonzero (`Catalan.euler_square_cube`). Theorem 2 here is the rational statement, and the proof above goes through theorem 1.
+
+The golden answer shows one valid route. Any complete proof of the five statements is acceptable.
