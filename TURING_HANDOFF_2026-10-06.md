@@ -1435,3 +1435,33 @@ GOLDEN PLAN (only after a failure, about 1,300 lines).
 - `Terminal.lean`, about 450 lines. Theorem 3. If $r \mid a + b$, then $\langle ka \rangle + \langle kb \rangle = r$ for every $k$ and $\langle kc \rangle \ge 1$. Conversely, $T(k) + T(r - k) = 3r$ gives $r < T(k) < 2r$, so $\langle k(a + b + c) \rangle = T(k) - r \ge 1$ and $s = a + b + c$ is a unit. Replacing $(a, b, c)$ by $s^{-1}(a, b, c)$ (multiplication by a unit permutes $1, \dots, r-1$) gives the normal form $T(k) = r + k$ for all $k$, with residues adding up to $r + 1$. Then exactly one of the three sequences wraps past $r$ at each step $k \to k + 1$ for $1 \le k \le r - 2$, so the three sets of wrap steps partition $\{1, \dots, r - 2\}$. The combinatorial core, that one residue then equals $1$ (and the other two add up to $r$), follows the argument of Morrison and Stevens.
 - `White.lean`, about 200 lines. Theorem 4. The slice of the tetrahedron at height $0 < z < r$ contains a lattice point exactly when $\langle -za \rangle + \langle -zb \rangle + z \le r$ (test the corner $(\lceil za/r \rceil, \lceil zb/r \rceil)$), and the slices $z = 0$ and $z = r$ contain only vertices. So emptiness is the condition of theorem 3 for the triple $(-a, -b, 1)$. If $g = \gcd(a, r) > 1$, the heights $r/g$ and $r - r/g$ already give a lattice point, and the same holds for $b$. Theorem 3 then yields $a + b \equiv 0$, $a \equiv 1$ or $b \equiv 1$.
 - `Canonical.lean`, about 150 lines. Theorem 5. If an entry, say $c$, shares a factor $g > 1$ with $r$, then $k = r/g$ and $r - k$ violate $T \ge r$, because $ks \not\equiv 0$. With all entries units put $d = -(a + b + c)$, also a unit. Then $T(k) + \langle kd \rangle$ is a multiple of $r$ larger than $r$, and $T(k) + \langle kd \rangle + T(r - k) + \langle (r-k)d \rangle = 4r$, so $T(k) = 2r - \langle kd \rangle > r$ for all $k$, and theorem 3 applies.
+
+## 57. Task 22 (three cubes, rational points of y^2 = x^3 + 1 and y^2 = x^3 - 27): golden written before the model outputs, 13 Oct 2026, about 17:05 IST (Honor laptop)
+
+Fahad decided on 13 Oct to write the goldens of tasks 22 to 40 before the model outputs (break from the platform). The outputs of task 22 are not run yet; a genuine failure must still be confirmed before the golden is used.
+
+### What the golden proves (own route, cloud Lean loop about 1.5 h)
+- Eisenstein.lean (157): `Eis = QuadraticAlgebra Int (-1) (-1)`, norm x^2 - xy + y^2, division with rounding (`rnd`, `quo`, `rem`, `norm_rem_lt`: 4 N(rem) N(y) = A^2 - AB + B^2 <= 3 N(y)^2), `euclid` = a `def` of `EuclideanDomain Eis` (an `abbrev`, used with `letI`, since `instance` is banned), `exists_assoc_cube` (Mathlib `exists_associated_pow_of_mul_eq_pow'`), the six units `eq_of_isUnit`.
+- EulerCube.lean (140): `euler_cube`: u^2 + 3v^2 = s^3, IsCoprime u (3v) -> u = a^3 - 9ab^2, v = 3a^2 b - 3b^3. s odd by a ZMod 8 check; alpha = (u + v) + 2v w and star alpha coprime by an explicit Bezout identity (2 and the odd s^3 in the ideal); units +-w, +-w^2 excluded by ZMod 2 parity of the w-coordinate; a power of w makes the cube root's w-coordinate even.
+- Descent.lean (311): `descent_step` (cases 3 does not divide u, u = 3w), `two_cubes_coprime` (strong induction on natAbs z), `dvd_of_cube_dvd_two_mul` (G^3 | 2 z^3 -> G | z), `two_cubes` = theorem 1.
+- Curves.lean (101): `rat_two_cubes` (clear denominators with `Rat.mul_den_eq_num`), `minus27_points` (u = 3/x + y/(3x), v = 3/x - y/(3x), u^3 + v^3 = 2), `plus1_points` (map to Y^2 = X^3 - 27, (x + 1)(x - 2)^2 = 0).
+- Apps.lean (98): `cube_sub_two_cube` (theorem 4), `triangular_cube` (theorem 5 via coprime n, n + 1 and theorem 4).
+- Main.lean (37): the five statements as `thm_two_cubes`, `thm_plus1`, `thm_minus27`, `thm_cube_sub`, `thm_triangular`; Basic.lean (29): the prompt file plus `import TuringTask.Main`, one `exact` per theorem.
+
+### Files and checks
+- Worker job `t22_golden_01` (13 Oct 15:38-16:10 IST): build exit 0 (Eisenstein 763 s cold, then 47-67 s per file), no warnings, check exit 0, five axiom lists [propext, Classical.choice, Quot.sound].
+- `tasks\task 22\golden\`: golden_solution.zip (16,440 bytes, sha256 b5317dd04306880b...), turing_t22_golden_generator.py (from the task 16 template; sha256 of every file; check() also runs humanize_scan.py from the repo root on the explanation and on every rubric criterion and requires 0 errors and 0 warnings), task22_golden_explanation.txt (10,364 chars), task22_rubric.csv / .txt (6 items, section 45 wording), golden_worker_log.txt (byte copy of the job log), golden_offline_check_log.txt, wip\ (cloud milestones).
+- Offline check: PASSED 13 Oct 16:46-17:02 IST (verify_golden_offline.bat 22, fresh folder D:\lean\golden_check_t22_13748, /opt/mathlib4 at 9944fe29..., build exit 0, no warnings, check exit 0, standard axioms; log tasks\task 22\golden\golden_offline_check_log.txt).
+- Expected scores: golden 6/6; a sorry-only or theorem-less output 1/6 = 17 percent.
+
+### Deviations from the plan of section 42
+- 873 lines in 7 files, against the estimate of 1,250 in 6.
+- No `instance`: the Euclidean structure is a definition switched on with `letI`.
+- Coprimality of alpha and its conjugate by an explicit Bezout identity, without prime elements.
+- Added the step g | z after dividing by g = gcd(x, y), and the parity of s by a mod 8 check.
+- The helper Lean files use Unicode notation as in earlier goldens; Basic.lean, the check file and all text fields are pure ASCII.
+
+### What remains for task 22
+1. Run the prompt on the platform; check the three outputs officially (repo jobs t22_r1_check, ...). Confirm a genuine failure; if all three pass, the task is rejected and the golden is not used.
+2. Overlap scan of the golden against every output (declaration names, normalised lines of 40+ characters); only the prompt's names and statement lines may coincide.
+3. Platform steps of playbook section 10 with golden_solution.zip, task22_golden_explanation.txt and task22_rubric.csv.

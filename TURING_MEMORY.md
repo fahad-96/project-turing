@@ -194,6 +194,7 @@ cyclotomic algebra, p-adic valuations, real estimates and exceptional cases.
   (arXiv 2604.09808); Catalan's conjecture incl. Euler's x^2 = y^3 + 1 and Ko Chao is formalized (cadamcat/catalan-lean4).
   Prompt conventions added: finite sets as `Membership.mem (S : Finset ...) a` (ASCII for a in S), divisibility as
   `N % p = 0`, and a paragraph after the Rules forbidding declarations in `TuringTask` that shadow Mathlib names.
+- 22 GOLDEN (13 Oct, written before the outputs by Fahad's decision): 7 files, 873 lines (Eisenstein integers as QuadraticAlgebra with a letI EuclideanDomain def, Euler's lemma, two-case descent, rational maps), job t22_golden_01 build 0, no warnings, check 0, standard axioms; offline check PASSED 13 Oct 16:46-17:02 IST (verify_golden_offline.bat 22, fresh folder D:\lean\golden_check_t22_13748, /opt/mathlib4 at 9944fe29..., build exit 0, no warnings, check exit 0, standard axioms; log tasks\task 22\golden\golden_offline_check_log.txt); zip sha256 b5317dd04306880b...; tasks\task 22\golden. Outputs not run yet. Handoff section 57.
 - 24 (Pisano period pi and entry point z of the Fibonacci numbers: pi(n) <= 6n, pi(n) = 6n iff n = 2*5^j (j >= 1),
   pi(n) = n iff n = 1 or 24*5^j, z(n) = 2n iff n = 6*5^j, z(n) = n iff n = 5^j or 12*5^j) and 25 (Cohn II: F_n + 1
   square only for n = 0, 4, 6; F_n = x^2 + 1 only 1, 2, 3, 5; F_n = 2x^2 + 1 only 1, 2, 4; L_n = x^2 + 1 only 0,
