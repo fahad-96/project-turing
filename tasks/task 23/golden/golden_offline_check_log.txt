@@ -24,3 +24,31 @@ Lean (version 4.33.0-rc1, x86_64-w64-windows-gnu, commit 62eed1db4d67327ec8120be
 Build completed successfully (8673 jobs).
 BUILD EXIT CODE 0 
 ===== lake env lean StatementAndAxiomsCheck.lean 
+'TuringTask.mul_succ_smooth_seven' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sq_sub_one_smooth_seven' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.three_consecutive_smooth_seven' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sq_add_one_smooth_thirteen' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sq_sub_two_mul_sq_smooth_thirteen' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
+===== source files in the fresh copy 
+ Volume in drive D is Data
+ Volume Serial Number is 92E5-A612
+
+ Directory of D:\lean\golden_check_t23_15726\golden_solution\TuringTask
+
+10/13/2026  07:43 PM    <DIR>          .
+10/13/2026  07:43 PM    <DIR>          ..
+10/13/2026  12:00 AM              1376 Basic.lean
+10/13/2026  12:00 AM             15401 Blocks210a.lean
+10/13/2026  12:00 AM             12894 Blocks210b.lean
+10/13/2026  12:00 AM             14340 Blocks65.lean
+10/13/2026  12:00 AM              1389 Main.lean
+10/13/2026  12:00 AM             15851 PellDescent.lean
+10/13/2026  12:00 AM              9062 PellSeq.lean
+10/13/2026  12:00 AM              9431 Stormer.lean
+               8 File(s)          79744 bytes
+
+     Total Files Listed:
+               8 File(s)          79744 bytes
+               2 Dir(s)    198024396800 bytes free
+Finished Tue 10/13/2026 19:58:00.80 
