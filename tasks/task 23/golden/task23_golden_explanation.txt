@@ -1,0 +1,68 @@
+### Overview
+
+The zip is a complete Lake project. `lakefile.toml` and `lake-manifest.json` use the pinned Mathlib checkout at `/opt/mathlib4` (commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`), and `lean-toolchain` is `leanprover/lean4:v4.33.0-rc1`. The proof sits in eight files under `TuringTask/` that import each other in a chain: `PellSeq`, `PellDescent`, `Blocks210a`, `Blocks210b`, `Blocks65`, `Stormer`, `Main`, `Basic`. Every file starts with `import Mathlib`. The required file `TuringTask/Basic.lean` is the file of the prompt with one added line `import TuringTask.Main`. Its namespace and its five statements stay as in the prompt, and each `sorry` became a one-line `exact` of the matching theorem in `Main.lean`.
+
+In this text a number $n$ is smooth for $P$ when every prime factor of $n$ divides $P$ (Lean: `Smooth P n`). The bound $7$ of theorems 1 to 3 means smooth for $210$, and the bound $13$ of theorems 4 and 5 means smooth for $30030$. For natural numbers $D, a, b$ the pair $(X_k, Y_k)$ (Lean: `pX D a b k`, `pY D a b k`) satisfies $X_k + Y_k\sqrt D = (a + b\sqrt D)^k$. The Lean code computes it by the recursion $X_{k+1} = aX_k + DbY_k$, $Y_{k+1} = bX_k + aY_k$.
+
+The route (C. Stormer's reduction to Pell equations, with a rank argument for the indices):
+- (A) Squarefree part. If $x^2 - 1$ is smooth for $210$, then $x^2 - 1 = Dy^2$ with $D$ squarefree, $D \mid 210$, $D \ne 1$ and $y$ smooth. If $x^2 + 1$ is smooth for $30030$, then $3$, $7$, $11$ and $4$ do not divide it, so $x^2 + 1 = Dy^2$ with $D \mid 130$ and $y$ odd and smooth for $65$.
+- (B) Descent. Every solution of $x^2 - Dy^2 = 1$ (or $-1$ for a unit of norm $-1$) in natural numbers is $(X_k, Y_k)$ for the smallest unit $a + b\sqrt D$.
+- (C) Indices. If $Y_k$ is smooth for $P$, every prime factor of $k$ is at most the largest rank, that is the largest index $r$ with $q \mid Y_r$ chosen for the primes $q \mid P$. Explicit values of $Y_j$ with a factor prime to $P$ then bound the exponents of $k$.
+- (D) For each of the $15 + 7 + 1$ units, (B) and (C) leave a short list of indices and hence of $x$ or $y$. Theorems 1 and 3 follow from theorem 2 with $x = 2n + 1$.
+
+### 1. PellSeq.lean: powers of a unit
+
+- `pellP`, `pX`, `pY` with `pX_succ`, `pY_succ`, `pX_one`, `pY_one`. `norm_pow`: if $a^2 - Db^2 = \sigma$, then $X_k^2 - DY_k^2 = \sigma^k$.
+- `pX_add`: $X_{m+n} = X_mX_n + DY_mY_n$ and $Y_{m+n} = X_mY_n + Y_mX_n$, by induction on $n$. `pX_pos`, `pY_strictMono`, `pY_pos`.
+- `pY_dvd_pY`: $Y_j \mid Y_k$ for $j \mid k$. `not_dvd_pX_of_dvd_pY`: no prime divides both $X_n$ and $Y_n$ when $\sigma = \pm 1$.
+- `prime_dvd_pY_sub` and `prime_dvd_pY_gcd`: a prime dividing $Y_m$ and $Y_n$ divides $Y_{\gcd(m, n)}$, by the addition formula and the Euclidean algorithm (`Nat.gcd.induction`).
+- `pY_eq`: $X_k = a^k + b^2S$ and $Y_k = b(ka^{k-1} + b^2R)$ for some $S, R$.
+- `eq_one_of_primes_dvd`: if $\gcd(k, b) = 1$ and every prime factor of $Y_k$ divides $b$, then $k = 1$. A prime $q$ of $Y_k / b = ka^{k-1} + b^2R$ divides $b$, hence $ka^{k-1}$, which contradicts $\gcd(k, b) = 1$ or $\gcd(a, b) = 1$. So $Y_k = b = Y_1$, and $k = 1$ by monotonicity.
+- `smooth_index` (step C): let $Y_k$ be smooth for $P$, and let each prime $q \mid P$ divide some $Y_r$ with $0 < r \le R$, and the prime factors of $b$ be at most $R$. For a prime $p \mid k$ with $p > R$, every prime factor $q$ of $Y_p$ divides $Y_{\gcd(p, r)} = Y_1 = b$, and `eq_one_of_primes_dvd` gives $p = 1$. So the prime factors of $k$ are at most $R$.
+- `not_dvd_of_split`: if $Y_j = s \cdot m$ with $m \ge 2$ prime to $P$, then $j \nmid k$.
+
+### 2. PellDescent.lean: every solution is a power, and helpers
+
+- `descent_step'` and `pell_descent` (step B): for a solution with $y \ge b$, the quotient $(x + y\sqrt D)/(a + b\sqrt D) = x' + y'\sqrt D$ with $x' = \sigma(ax - Dby)$ and $y' = \sigma(ay - bx)$ has $x' > 0$, $0 \le y' < y$ and norm $1$ or $\sigma$. Each inequality follows from an identity such as $(ay)^2 - (bx)^2 = \sigma y^2 - \tau b^2$, where $\tau$ is the norm of $x + y\sqrt D$. Strong induction on $y$ finishes, and the hypothesis that no solution has $0 < y < b$ starts it.
+- `sqrt_sq_of_sq` and `hmin_of_sqrt`: that hypothesis reduces to the evaluation of `Nat.sqrt` at $Dy^2 \pm 1$ for $y < b$.
+- `index_form` and `dvd_of_bounds`: a positive $k$ with prime factors at most $13$ is $2^a3^b5^c7^d11^e13^f$, and bounds $\neg\, p^{n+1} \mid k$ give $k \mid L$ (Mathlib's `Nat.exists_eq_pow_mul_and_not_dvd`).
+- `primes_210`, `primes_65`, `primes_30030`, `rank210`, `rank65`, `rank30030`, `bR_of_le`, `not_dvd_of_gt`, `le_13_of_le`: the hypotheses of `smooth_index` for the three values of $P$.
+- `not_two_dvd_of_norm`: for a unit of norm $-1$, a solution of norm $-1$ has an odd index.
+- `squarefree_dvd`: a squarefree $n$ smooth for $P$ divides $P$ (`Nat.prod_primeFactors_of_squarefree`, `Finset.prod_primes_dvd`).
+
+### 3. Blocks210a.lean and Blocks210b.lean: $x^2 - Dy^2 = 1$ for $D \mid 210$
+
+One lemma `blk210_D` for each $D \in \{2, 3, 5, 6, 7, 10, 14, 15, 21, 30, 35, 42, 70, 105, 210\}$, with the smallest unit $(a, b)$, for example $(3, 2)$ for $D = 2$, $(2, 1)$ for $D = 3$ and $(251, 30)$ for $D = 70$. Each lemma applies `pell_descent`, then `smooth_index` with one rank per prime $2, 3, 5, 7$ (all ranks are at most $7$), then `not_dvd_of_split` with explicit factors, for example $Y_8 = 112 \cdot 97$ and $Y_9 = 45 \cdot 901$ for $D = 3$. It finishes with `decide` over the divisors of $L$. The surviving indices are $k \le 4$: $\{1, 2, 3, 4\}$ for $D = 3$, $\{1, 2, 4\}$ for $D = 6$, $\{1, 3\}$ for $D = 42$, and $k = 1$ for the seven largest $D$. The resulting $x$ are the 29 values of theorem 2.
+
+### 4. Blocks65.lean: norm $-1$, and the Pell numbers
+
+- `blk65_D` for $D \in \{2, 5, 10, 13, 26, 65, 130\}$ with the units $1 + \sqrt 2$, $2 + \sqrt 5$, $3 + \sqrt{10}$, $18 + 5\sqrt{13}$, $5 + \sqrt{26}$, $8 + \sqrt{65}$ and $57 + 5\sqrt{130}$ of norm $-1$: the solutions of $x^2 - Dy^2 = -1$ with $y$ smooth for $65$. The index is odd, and only $k = 1$ survives, except $k \in \{1, 3, 7\}$ for $D = 2$, which gives $x \in \{1, 7, 239\}$.
+- `blk30030_2`: $x^2 - 2y^2 = \pm 1$ with $y$ smooth for $30030$. The ranks of $2, 3, 5, 7, 11, 13$ are $2, 4, 3, 6, 12, 7$, the exclusions are $8, 9, 5, 49, 11, 14, 21$, and the indices $1, 2, 3, 4, 6, 7, 12$ give $y \in \{1, 2, 5, 12, 70, 169, 13860\}$.
+
+### 5. Stormer.lean: the five statements
+
+- `smooth_210_of`, `smooth_30030_of`: the prompt's hypotheses `N % p = 0 -> p <= B` as smoothness.
+- `sq_sub_one_smooth` (theorem 2): $x^2 - 1 \ne 0$ because $11$ divides $0$. Mathlib's `Nat.sq_mul_squarefree` gives $x^2 - 1 = y^2D$ with $D$ squarefree, so $D \mid 210$ by `squarefree_dvd`. The case $D = 1$ is impossible ($y < x < y + 1$), and each other divisor goes to its lemma `blk210_D`.
+- `mul_succ_smooth` (theorem 1): $x = 2n + 1$ has $x^2 - 1 = 4n(n + 1)$, so theorem 2 applies and $n = (x - 1)/2$.
+- `three_smooth` (theorem 3): $n(n + 1)$ and $(n + 1)(n + 2)$ are smooth, so $n$ and $n + 1$ both lie in the list of theorem 1.
+- `sq_add_one_mod` and `sq_add_one_smooth` (theorem 4): $x^2 + 1$ is never divisible by $3$, $4$, $7$ or $11$, so it is smooth for $130$ and $x^2 + 1 = y^2D$ with $D \mid 130$ and $y$ odd. Then $D = 1$ gives $x = 0$, and each other $D$ goes to `blk65_D`.
+- `pell_smooth` (theorem 5): $y \ne 0$ because $17$ divides $0$, then `blk30030_2`.
+
+### 6. Main.lean and Basic.lean
+
+`Main.lean` states the five theorems exactly as in the prompt under its own names (`main_mul_succ`, `main_sq_sub_one`, `main_three`, `main_sq_add_one`, `main_pell`). In `Basic.lean` each of the five theorems is one `exact` of the matching theorem.
+
+### Verification
+
+- I extracted the final zip into a fresh folder and checked it offline, without editing anything, in the setting of the review environment: Mathlib at `/opt/mathlib4` (the pinned checkout, commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`, with its dependencies linked into `.lake/packages` as `lean-offline-init` does), Lean `4.33.0-rc1`, network access blocked.
+- `lake build` ends with "Build completed successfully", exit code 0, with no errors and no warnings. Every file uses the full `import Mathlib`.
+- `lake env lean StatementAndAxiomsCheck.lean` (included in the zip) restates the five theorems of the prompt, so it fails if a statement changed. It reports exactly the axioms `propext`, `Classical.choice` and `Quot.sound` for each of the five theorems, with exit code 0.
+- The project contains no `sorry`, `admit`, `native_decide`, new axiom, `set_option` or instance declaration. The finite checks use `decide`, which the kernel evaluates.
+
+### Sources and related work
+
+The method goes back to C. Stormer, Quelques theoremes sur l'equation de Pell $x^2 - Dy^2 = \pm 1$ et leurs applications, Skrifter Videnskabs-selskabet (Christiania), Mat.-Naturv. Kl. (1897), no. 2, who reduced these problems to Pell equations. The lists of consecutive smooth numbers and of smooth values of $x^2 \pm 1$ are in D. H. Lehmer, On a problem of Stormer, Illinois Journal of Mathematics 8 (1964), 57-79. The index bound here uses ranks of apparition and the congruence $Y_k \equiv kba^{k-1} \pmod{b^3}$ in place of Lehmer's arguments. The write-up and the Lean code are my own.
+
+The proof uses these Mathlib results: `Nat.sq_mul_squarefree`, `Nat.prod_primeFactors_of_squarefree`, `Finset.prod_primes_dvd`, `Nat.exists_eq_pow_mul_and_not_dvd`, `Nat.gcd.induction`, `Nat.sqrt_eq'` and the `norm_num` extension for `Nat.sqrt`. It does not use Mathlib's `Pell` API. Mathlib at the pinned commit has `Nat.smoothNumbers` and the Pell equation, but none of the five statements. I found no Lean formalization of the results of Stormer or Lehmer in Mathlib, `TauCetiProject/TauCeti`, `AllenGrahamHart/FormalConjectures-Bench`, formal-conjectures, compfiles, PutnamBench, miniF2F, ProofNet or by web search (checked 10 Oct 2026).
+
+The golden answer shows one valid route. Any complete proof of the five statements is acceptable.
