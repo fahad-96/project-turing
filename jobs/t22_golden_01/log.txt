@@ -1,0 +1,19 @@
+Job t22_golden_01 started Tue 10/13/2026 15:38:35.65 
+===== lake build 
+✔ [8664/8672] Built TuringTask.Eisenstein (763s)
+✔ [8665/8672] Built TuringTask.EulerCube (47s)
+✔ [8666/8672] Built TuringTask.Descent (64s)
+✔ [8667/8672] Built TuringTask.Curves (58s)
+✔ [8668/8672] Built TuringTask.Apps (67s)
+✔ [8669/8672] Built TuringTask.Main (50s)
+✔ [8670/8672] Built TuringTask.Basic (50s)
+✔ [8671/8672] Built TuringTask (51s)
+Build completed successfully (8672 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.cube_add_cube_eq_two_mul_cube' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.rat_sq_eq_cube_add_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.rat_sq_eq_cube_sub_27' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.cube_sub_two_mul_cube' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.mul_succ_eq_two_mul_cube' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
