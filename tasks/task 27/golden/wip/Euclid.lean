@@ -58,14 +58,14 @@ abbrev euclidOf (hD : b ^ 2 + 4 * a < 0) (quo : QuadraticAlgebra ℤ a b → Qua
     r_wellFounded := (measure fun z : QuadraticAlgebra ℤ a b => (Nm z).natAbs).wf
     remainder_lt := fun x y hy => by
       have h := hlt x y hy
-      have h0 := norm_nonneg' hD (x - y * quo x y)
+      have h0 := nm_nonneg hD (x - y * quo x y)
       omega
     mul_left_not_lt := fun u v hv => by
       have hb1 : 1 ≤ Nm v := by
-        rcases (norm_nonneg' hD v).lt_or_eq with h | h
+        rcases (nm_nonneg hD v).lt_or_eq with h | h
         · exact h
         · exact absurd (eq_zero_of_norm_eq_zero hD h.symm) hv
-      have hu := norm_nonneg' hD u
+      have hu := nm_nonneg hD u
       simp only [map_mul, not_lt]
       rw [Int.natAbs_mul]
       exact Nat.le_mul_of_pos_right _ (by omega) }
@@ -84,7 +84,7 @@ lemma norm_one_of_isUnit (hD : b ^ 2 + 4 * a < 0) {z : QuadraticAlgebra ℤ a b}
     Nm z = 1 := by
   rcases Int.isUnit_iff.mp (QuadraticAlgebra.isUnit_iff_norm_isUnit.mp h) with h | h
   · exact h
-  · have := norm_nonneg' hD z; omega
+  · have := nm_nonneg hD z; omega
 
 lemma irreducible_of_norm_prime (hD : b ^ 2 + 4 * a < 0) {π : QuadraticAlgebra ℤ a b} {p : ℕ}
     (hp : p.Prime) (h : Nm π = p) : Irreducible π := by
@@ -94,8 +94,8 @@ lemma irreducible_of_norm_prime (hD : b ^ 2 + 4 * a < 0) {π : QuadraticAlgebra 
     exact hp.one_lt.ne' (by exact_mod_cast this)
   · have hn := congrArg QuadraticAlgebra.norm hxy
     rw [h, map_mul] at hn
-    have hx := norm_nonneg' hD x
-    have hy := norm_nonneg' hD y
+    have hx := nm_nonneg hD x
+    have hy := nm_nonneg hD y
     have hnat : (Nm x).toNat * (Nm y).toNat = p := by
       have : (((Nm x).toNat * (Nm y).toNat : ℕ) : ℤ) = p := by
         push_cast; rw [Int.toNat_of_nonneg hx, Int.toNat_of_nonneg hy]; exact hn.symm
@@ -124,8 +124,8 @@ lemma prime_or_norm (hD : b ^ 2 + 4 * a < 0)
     obtain ⟨x, y, hxy, hx, hy⟩ := hirr hnu
     have hn := congrArg QuadraticAlgebra.norm hxy
     rw [QuadraticAlgebra.norm_intCast, map_mul] at hn
-    have hx0 := norm_nonneg' hD x
-    have hy0 := norm_nonneg' hD y
+    have hx0 := nm_nonneg hD x
+    have hy0 := nm_nonneg hD y
     have hx1 : Nm x ≠ 1 := fun h => hx (isUnit_of_norm_one h)
     have hy1 : Nm y ≠ 1 := fun h => hy (isUnit_of_norm_one h)
     have hdvd : (Nm x).toNat ∣ p ^ 2 := by

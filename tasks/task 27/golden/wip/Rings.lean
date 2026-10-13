@@ -43,7 +43,7 @@ lemma quo2_lt (hD : b ^ 2 + 4 * a < 0)
     (hb : ∀ A B n : ℤ, 0 < n → -n ≤ 2 * A → 2 * A ≤ n → -n ≤ 2 * B → 2 * B ≤ n →
       A ^ 2 + b * A * B - a * B ^ 2 < n ^ 2)
     (x y : QuadraticAlgebra ℤ a b) (hy : y ≠ 0) : Nm (x - y * quo2 x y) < Nm y := by
-  have hn : 0 < Nm y := lt_of_le_of_ne (norm_nonneg' hD y)
+  have hn : 0 < Nm y := lt_of_le_of_ne (nm_nonneg hD y)
     (fun h => hy (eq_zero_of_norm_eq_zero hD h.symm))
   have key := rem_norm x y (quo2 x y)
   obtain ⟨h1, h2⟩ := rnd_spec (x * star y).re hn
@@ -55,7 +55,7 @@ lemma quo2_lt (hD : b ^ 2 + 4 * a < 0)
   rw [← key] at hlt
   by_contra hc
   push Not at hc
-  nlinarith [norm_nonneg' hD (x - y * quo2 x y)]
+  nlinarith [nm_nonneg hD (x - y * quo2 x y)]
 
 /-! ### `R1`: `a = b = -1` -/
 
@@ -91,7 +91,7 @@ lemma quo4_zero (x : QuadraticAlgebra ℤ (-2) 1) : quo4 x 0 = 0 := by
 
 lemma quo4_lt (x y : QuadraticAlgebra ℤ (-2) 1) (hy : y ≠ 0) : Nm (x - y * quo4 x y) < Nm y := by
   have hD : (1 : ℤ) ^ 2 + 4 * (-2) < 0 := by norm_num
-  have hn : 0 < Nm y := lt_of_le_of_ne (norm_nonneg' hD y)
+  have hn : 0 < Nm y := lt_of_le_of_ne (nm_nonneg hD y)
     (fun h => hy (eq_zero_of_norm_eq_zero hD h.symm))
   have key := rem_norm x y (quo4 x y)
   have e1 : (quo4 x y).re = rnd (2 * (x * star y).re + ((x * star y).im -
@@ -106,7 +106,7 @@ lemma quo4_lt (x y : QuadraticAlgebra ℤ (-2) 1) (hy : y ≠ 0) : Nm (x - y * q
   set A := P.re - n * rnd (2 * P.re + B) (2 * n) with hA
   have hAB1 : -n ≤ 2 * A + B := by rw [hA]; nlinarith
   have hAB2 : 2 * A + B ≤ n := by rw [hA]; nlinarith
-  have h0 := norm_nonneg' hD (x - y * quo4 x y)
+  have h0 := nm_nonneg hD (x - y * quo4 x y)
   have : 4 * (A ^ 2 + 1 * A * B - (-2) * B ^ 2) < 4 * n ^ 2 := by
     nlinarith [mul_nonneg (by linarith : 0 ≤ n - (2 * A + B)) (by linarith : 0 ≤ n + (2 * A + B)),
       mul_nonneg (by linarith : 0 ≤ n - 2 * B) (by linarith : 0 ≤ n + 2 * B)]

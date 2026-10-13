@@ -6,7 +6,7 @@ import Mathlib
 We work in Mathlib's `QuadraticAlgebra ℤ a b` with `-2 ≤ a` and `b^2 + 4 a ≤ -3`, so the norm
 `N(x + y ω) = x^2 + b x y - a y^2` is positive definite.
 
-* `norm_mk`, `four_norm`, `norm_nonneg'`, `eq_zero_of_norm_eq_zero`, `mul_left_cancel'`: the
+* `norm_mk`, `four_norm`, `nm_nonneg`, `eq_zero_of_norm_eq_zero`, `mul_left_cancel'`: the
   norm and cancellation.
 * `in_box`: a solution of `N(x + y ω) = n ≥ 1` has `|x|, |y| ≤ n`.
 * `cnt a b n`: the number of pairs `(x, y)` in the box `[-n, n]^2` with `N(x + y ω) = n`.
@@ -33,7 +33,7 @@ lemma four_a_norm (z : QuadraticAlgebra ℤ a b) :
     -4 * a * Nm z = (2 * a * z.im - b * z.re) ^ 2 - (b ^ 2 + 4 * a) * z.re ^ 2 := by
   rw [QuadraticAlgebra.norm_def]; ring
 
-lemma norm_nonneg' (hD : b ^ 2 + 4 * a < 0) (z : QuadraticAlgebra ℤ a b) : 0 ≤ Nm z := by
+lemma nm_nonneg (hD : b ^ 2 + 4 * a < 0) (z : QuadraticAlgebra ℤ a b) : 0 ≤ Nm z := by
   have := four_norm z
   nlinarith [sq_nonneg (2 * z.re + b * z.im), sq_nonneg z.im]
 
