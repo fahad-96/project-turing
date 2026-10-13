@@ -1,0 +1,14 @@
+Offline check of golden_solution.zip started Tue 10/13/2026 19:07:45.76 
+===== /opt/mathlib4 commit 
+9944fe2973b8dc0b86949101ed98232c07cd54a0
+===== fresh folder D:\lean\golden_check_t25_8712 
+lake-manifest.json
+lakefile.toml
+lean-toolchain
+README.md
+StatementAndAxiomsCheck.lean
+TuringTask
+TuringTask.lean
+===== lean --version 
+Lean (version 4.33.0-rc1, x86_64-w64-windows-gnu, commit 62eed1db4d67327ec8120be05f1a1b0847d74561, Release)
+===== lake build 
