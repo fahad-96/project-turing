@@ -1,0 +1,64 @@
+### Overview
+
+The zip is a complete Lake project. `lakefile.toml` and `lake-manifest.json` use the pinned Mathlib checkout at `/opt/mathlib4` (commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`), and `lean-toolchain` is `leanprover/lean4:v4.33.0-rc1`. The proof sits in eight files under `TuringTask/` that import each other in a chain: `Lucas`, `Residues`, `Equations`, `Factor`, `FibEq`, `LucEq`, `Main`, `Basic`. Every file starts with `import Mathlib`. The required file `TuringTask/Basic.lean` is the file of the prompt with one added line `import TuringTask.Main`. Its namespace and its five statements stay as in the prompt, and each `sorry` became a one-line `exact` of the matching theorem in `Main.lean`.
+
+In this text $F_n$ is `Nat.fib n` and $L_n = 2F_{n+1} - F_n$ is the Lucas number (Lean: `lnat n`). The prompt's equation `Nat.fib n + c = 2 * Nat.fib (n + 1)` says exactly $L_n = c$ (`lnat_add`). The first three files also use $L_n = F_{n-1} + F_{n+1}$ with an integer index (`lucZ`) and with a natural index $n \ge 1$ (`lucNat`).
+
+The route:
+- (A) Cohn's classifications: $F_n$ is a square only for $n \in \{0, 1, 2, 12\}$, $F_n$ is twice a square only for $n \in \{0, 3, 6\}$, $L_n$ is a square only for $n \in \{1, 3\}$, and $L_n$ is twice a square only for $n \in \{0, 6\}$. The first three files prove them with Cohn's congruences modulo $L_k$. I wrote these three files for an earlier task on Cohn's results and reuse them here.
+- (B) Factorizations. For $n = 4k + r$ each of $F_n \pm 1$ and $L_n \pm 1$ is a product of two Fibonacci or Lucas numbers with indices near $2k$, for example $F_{4k+1} + 1 = F_{2k+1}L_{2k}$ and $L_{4k+1} - 1 = 5F_{2k+1}F_{2k}$.
+- (C) The two factors have gcd $1$ or $3$. So a square (or twice a square) product makes one factor a square, twice a square or three times a square, and (A) leaves a few indices.
+- (D) Two more results by Cohn's method: $L_n = 3y^2$ only for $n = 2$, and $F_n = 2x^2 + 1$ with $n \equiv 2 \pmod 4$ only for $n = 2$.
+- (E) For even $n$ in theorems 4 and 5, $L_{4k} = L_{2k}^2 - 2$ and $L_{4k+2} = L_{2k+1}^2 + 2$ turn the equations into small Diophantine equations in $L_{2k}$ or $L_{2k+1}$.
+
+### 1. Lucas.lean, Residues.lean, Equations.lean: Cohn's method
+
+- `fib_add_add_fib_sub`, `lucZ_dvd_fib_shift`, `lucZ_dvd_lucZ_shift`: for even $k$ and odd $t$, $F_{m+2kt} \equiv -F_m$ and $L_{m+2kt} \equiv -L_m \pmod{L_k}$ for every integer $m$ (Mathlib's `Int.fib_add`, `Int.fib_neg`).
+- `fib_mod_eq_of_period` and the residues of $L_n$ modulo $3$, $4$ and $8$. For even $k$ with $3 \nmid k$ we get $L_k \equiv 3 \pmod 4$, so $L_k$ has a prime factor $p \equiv 3 \pmod 4$ and never divides $x^2 + c^2$ with $\gcd(c, L_k) = 1$ (`not_dvd_sq_add_sq`, `ZMod.exists_sq_eq_neg_one_iff`). Also $3 \nmid L_k$ when $4 \mid k$.
+- `exists_split_three`: every $N > 0$ with $4 \mid N$ is $N = 2kt$ with $k$ even, $3 \nmid k$ and $t$ an odd power of $3$, and $4 \mid k$ when $8 \mid N$.
+- `fib_eq_sq_cases`, `fib_eq_two_mul_sq_cases`, `lucNat_eq_sq_cases`, `lucNat_eq_two_mul_sq_cases`: the four classifications of (A). Odd indices use a base $m \in \{\pm 1, \pm 3\}$ and $x^2 \equiv -1$ or $-4$, and even indices use $F_{2m} = F_mL_m$.
+
+### 2. Factor.lean: factorizations, coprimality and splitting
+
+- `lnat`, `lnat_add`, `lnat_cast`, `lnat_eq_lucNat` ($L_n$ agrees with `lucNat n` for $n \ge 1$), `lnat_succ_succ`, `lnat_pos`, `lnat_ge_two`. `lnat_sq` and `lnat_two_sq` restate (A) for `lnat`, with $L_0 = 2$.
+- `cassini`: $F_{j+1}^2 - F_{j+1}F_j - F_j^2 = (-1)^j$, by induction.
+- `quad`: with $x = F_{2k}$ and $y = F_{2k+1}$ the numbers $F_{2k+2}, \dots, F_{2k+4}$ and $F_{4k}, \dots, F_{4k+4}$ are explicit polynomials in $x, y$ (`Nat.fib_add`), and $y^2 - xy - x^2 = 1$.
+- `fib_factor`: $F_{4k+1} + 1 = F_{2k+1}L_{2k}$, $F_{4k+3} + 1 = F_{2k+1}L_{2k+2}$, $F_{4k+4} + 1 = F_{2k+1}L_{2k+3}$, $F_{4k+2} + 1 = F_{2k+2}L_{2k}$, and $F_{4k+1} - 1 = F_{2k}L_{2k+1}$, $F_{4k+3} - 1 = F_{2k+2}L_{2k+1}$, $F_{4k+4} - 1 = F_{2k+3}L_{2k+1}$, $F_{4k+2} - 1 = F_{2k}L_{2k+2}$. `lucas_factor`: $L_{4k+1} - 1 = 5F_{2k+1}F_{2k}$, $L_{4k+3} - 1 = L_{2k+2}L_{2k+1}$, $L_{4k+1} + 1 = L_{2k+1}L_{2k}$, $L_{4k+3} + 1 = 5F_{2k+2}F_{2k+1}$, $L_{4k} + 2 = L_{2k}^2$ and $L_{4k+2} = L_{2k+1}^2 + 2$. In each case the difference of the two sides is a constant times $y^2 - xy - x^2 - 1$, so `linear_combination` closes it.
+- Coprimality: `cop_fib_lnat_succ` ($\gcd(F_m, L_{m+1}) = 1$, since $L_{m+1} = F_{m+1} + 2F_m$), `cop_fib_succ_lnat` ($\gcd(F_{m+1}, L_m) = 1$), `cop_lnat_succ` ($\gcd(L_m, L_{m+1}) = 1$, by induction). `gcd_fib_lnat_two` and `gcd_fib_two_lnat` show that $\gcd(F_m, L_{m+2})$ and $\gcd(F_{m+2}, L_m)$ divide $3$, because $L_{m+2} = 3F_{m+1} + F_m$ and $L_m + F_{m+2} = 3F_{m+1}$. `three_dvd_lnat`: $3 \mid L_m$ forces $m \equiv 2 \pmod 4$, from the period $8$ of $F$ modulo $3$.
+- Splitting: `prime_split` ($AB = pM$ with $p$ prime gives $A = pA'$ with $A'B = M$, or the same for $B$), `sq_left`, `sq_prime` ($x^2 = pM$ gives $M = pz^2$), and `gcd_three_sq` ($\gcd(A, B) = 3$ and $AB = x^2$ give $B = 3v^2$).
+
+### 3. FibEq.lean: theorems 1, 2 and 3
+
+- `lnat_three_sq`: $L_n = 3y^2$ forces $n = 2$. By `three_dvd_lnat`, $n \equiv 2 \pmod 4$. For $n \equiv 2 \pmod 8$ write $n = 2 + 2kt$, and for $n \equiv 6 \pmod 8$ write $n = -2 + 2kt$, both with $4 \mid k$. Since $L_{\pm 2} = 3$, we get $L_k \mid 3(y^2 + 1)$, and $3 \nmid L_k$ (`lucZ_dvd_of_dvd_three_mul`) leaves $L_k \mid y^2 + 1$, which (A) excludes.
+- `fib_two_mod_four`: for $n \equiv 2 \pmod 4$, $n \ne 2$, write $n = 2 + 2kt$. Then $L_k \mid F_n + F_2 = 2(x^2 + 1)$, a contradiction because $L_k$ is odd.
+- `fib_add_one_sq` (theorem 1). For $n = 4k + 1$ and $n = 4k + 3$ the coprime factor $L_{2k}$ or $L_{2k+2}$ would be a square of even index. For $n = 4k + 4$ the gcd is $1$, because $3 \nmid L_{2k+3}$, so $F_{2k+1}$ is a square and $n = 4$. For $n = 4k + 2$, gcd $1$ makes $L_{2k}$ a square, which is impossible, and gcd $3$ makes $L_{2k} = 3v^2$, so $k = 1$ and $n = 6$.
+- `fib_sq_add_one` (theorem 2). $n = 4k + 1$: $L_{2k+1}$ is a square, so $k \in \{0, 1\}$ and $n \in \{1, 5\}$. $n = 4k + 3$: both $L_{2k+1}$ and $F_{2k+2}$ are squares, so $k = 0$ and $n = 3$. $n = 4k + 4$: $F_{2k+3}$ is a square, which is impossible. $n = 4k + 2$: $L_{2k+2}$ is a square, which is impossible, or three times a square, which gives $n = 2$.
+- `split_two`: if $AL_{2m+1} = 2x^2$ with coprime factors, then $A$ is even and $L_{2m+1}$ is a square, so $m \in \{0, 1\}$, because $L_{2m+1}$ is never twice a square.
+- `fib_two_sq_add_one` (theorem 3): `split_two` for $n = 4k + 1$, $4k + 3$, $4k + 4$, where $F_2 = 1$, $F_4 = 3$ and $F_5 = 5$ are odd. That leaves $n = 1$ and $n = 4$, and `fib_two_mod_four` handles $n \equiv 2 \pmod 4$.
+
+### 4. LucEq.lean: theorems 4 and 5
+
+- `sq_succ`, `sq_add_three`, `no_sq_add_three` (modulo $8$ by `decide` in `ZMod 8`), `not_sq_between`, `lnat_ge_three`, `lnat_eq_one`, `lnat_eq_two`: small facts on squares and on $L_m \in \{1, 2\}$.
+- `lnat_sq_add_one` (theorem 4). $n = 4k$: $L_{2k}^2 = x^2 + 3$ gives $L_{2k} = 2$, so $n = 0$. $n = 4k + 2$: $x^2 = L_{2k+1}^2 + 1$ is impossible. $n = 4k + 3$: $L_{2k+2}$ would be a square. $n = 4k + 1$: $x^2 = 5F_{2k+1}F_{2k}$ gives $F_{2k+1}F_{2k} = 5z^2$, so $F_{2k}$ or $F_{2k+1}$ is a square. This leaves $k \in \{0, 1, 6\}$, and $L_5 - 1 = 10$ and $L_{25} - 1 = 167760$ are not squares.
+- `pell_split`: $X^2 = 2x^2 + 1$ makes $X + 1$ or $X - 1$ a square. Write $X = 2p + 1$ and $x = 2w$, which gives $p(p + 1) = 2w^2$ with coprime factors.
+- `lnat_even_add_one_sq`: $L_m + 1 = z^2$ with $m$ even forces $m = 2$, through `sq_succ` and `sq_add_three`.
+- `lnat_add_one_two_sq` (theorem 5). $n = 4k$: $L_{2k}^2 = 2x^2 + 1$, and `pell_split` gives $L_{2k} + 1 = z^2$ (then $k = 1$, $n = 4$) or $L_{2k} = z^2 + 1$ (then theorem 4 gives $k = 0$, and $L_0 + 1 = 3$ fails). $n = 4k + 2$: $L_{2k+1}^2 + 3 = 2x^2$ is impossible modulo $8$. $n = 4k + 1$: $L_{2k+1}L_{2k} = 2x^2$ makes $L_{2k+1}$ a square, so $n \in \{1, 5\}$, and $L_5 + 1 = 12$ fails. $n = 4k + 3$: $x = 5y$ and $F_{2k+2}F_{2k+1} = 10y^2$. Splitting off $2$ and $5$ makes one factor a square or twice a square, which leaves $n \in \{3, 7, 11, 23\}$. Here $n = 11$ works ($L_{11} + 1 = 200$), and $L_3 + 1 = 5$, $L_7 + 1 = 30$ and $L_{23} + 1 = 64080$ fail.
+
+### 5. Main.lean and Basic.lean
+
+`Main.lean` states the five theorems exactly as in the prompt under its own names (`main_fib_add_one`, `main_fib_sq_add_one`, `main_fib_two_sq_add_one`, `main_lucas_sq_add_one`, `main_lucas_add_one`). It turns the prompt's Lucas equations into `lnat` with `lnat_add`, and it gives witnesses for the members of each set, for example $F_6 + 1 = 3^2$ and $L_{11} + 1 = 2 \cdot 10^2$. In `Basic.lean` each of the five theorems is one `exact` of the matching theorem.
+
+### Verification
+
+- I extracted the final zip into a fresh folder and checked it offline, without editing anything, in the setting of the review environment: Mathlib at `/opt/mathlib4` (the pinned checkout, commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`, with its dependencies linked into `.lake/packages` as `lean-offline-init` does), Lean `4.33.0-rc1`, network access blocked.
+- `lake build` ends with "Build completed successfully", exit code 0, with no errors and no warnings. Every file uses the full `import Mathlib`.
+- `lake env lean StatementAndAxiomsCheck.lean` (included in the zip) restates the five theorems of the prompt, so it fails if a statement changed. It reports exactly the axioms `propext`, `Classical.choice` and `Quot.sound` for each of the five theorems, with exit code 0.
+- The project contains no `sorry`, `admit`, `native_decide`, new axiom, `set_option` or instance declaration. The small values use `decide`, which the kernel evaluates.
+
+### Sources and related work
+
+The four classifications of (A) are due to J. H. E. Cohn, On square Fibonacci numbers, Journal of the London Mathematical Society 39 (1964), 537-540. The five statements are in R. Finkelstein, On Fibonacci numbers which are one more than a square, Journal fur die reine und angewandte Mathematik 262/263 (1973), 171-182, R. Finkelstein, On Lucas numbers which are one more than a square, The Fibonacci Quarterly 13 (1975), 340-342, N. Robbins, Fibonacci and Lucas numbers of the forms $w^2 - 1$, $w^3 \pm 1$, The Fibonacci Quarterly 19 (1981), 369-373, and N. Robbins, Fibonacci numbers of the forms $pX^2 \pm 1$, $pX^3 \pm 1$, where $p$ is prime, in Applications of Fibonacci Numbers (Kluwer, 1988), 77-88. The factorizations of $F_n \pm 1$ and $L_n \pm 1$ are the classical ones from these papers. The proof of $L_n = 3y^2$, the treatment of even $n$ in theorems 4 and 5, and the case analysis are my own arrangement. The write-up and the Lean code are my own.
+
+The proof uses these Mathlib results: `Nat.fib_add`, `Nat.fib_add_two`, `Nat.fib_coprime_fib_succ`, `Int.fib_add`, `Int.fib_neg`, `exists_eq_pow_of_mul_eq_pow`, `Nat.coprime_div_gcd_div_gcd`, `Nat.exists_eq_pow_mul_and_not_dvd` and `ZMod.exists_sq_eq_neg_one_iff`. Mathlib at the pinned commit has no Lucas numbers and none of the five statements. I found no Lean formalization of these results in Mathlib, `TauCetiProject/TauCeti`, `AllenGrahamHart/FormalConjectures-Bench`, formal-conjectures, compfiles, PutnamBench, miniF2F, ProofNet or `provables/sequencelib`, or by web search (checked 10 Oct 2026).
+
+The golden answer shows one valid route. Any complete proof of the five statements is acceptable.

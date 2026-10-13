@@ -1,0 +1,18 @@
+Job t25_golden_01 started Tue 10/13/2026 18:41:01.54 
+===== lake build 
+✔ [8666/8673] Built TuringTask.Equations (33s)
+✔ [8667/8673] Built TuringTask.Factor (26s)
+✔ [8668/8673] Built TuringTask.FibEq (25s)
+✔ [8669/8673] Built TuringTask.LucEq (26s)
+✔ [8670/8673] Built TuringTask.Main (23s)
+✔ [8671/8673] Built TuringTask.Basic (23s)
+✔ [8672/8673] Built TuringTask (22s)
+Build completed successfully (8673 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.fib_add_one_eq_sq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.fib_eq_sq_add_one_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.fib_eq_two_mul_sq_add_one_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.lucas_eq_sq_add_one_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.lucas_add_one_eq_two_mul_sq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
