@@ -19,3 +19,8 @@ Lean (version 4.33.0-rc1, x86_64-w64-windows-gnu, commit 62eed1db4d67327ec8120be
 ✔ [8668/8673] Built TuringTask.Blocks65 (46s)
 ✔ [8669/8673] Built TuringTask.Stormer (88s)
 ✔ [8670/8673] Built TuringTask.Main (55s)
+✔ [8671/8673] Built TuringTask.Basic (50s)
+✔ [8672/8673] Built TuringTask (49s)
+Build completed successfully (8673 jobs).
+BUILD EXIT CODE 0 
+===== lake env lean StatementAndAxiomsCheck.lean 
