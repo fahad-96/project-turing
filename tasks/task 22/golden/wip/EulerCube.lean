@@ -78,12 +78,13 @@ theorem euler_cube {u v s : ℤ} (hc : IsCoprime u (3 * v)) (h : u ^ 2 + 3 * v ^
   obtain ⟨p, q, hpq⟩ := hc
   have hprod : (⟨u + v, 2 * v⟩ : Eis) * star ⟨u + v, 2 * v⟩ = (s : Eis) ^ 3 := by
     rw [← Int.cast_pow, ← h]
-    ext <;> simp only [re_mul, im_mul, re_star, im_star, re_intCast, im_intCast, Int.cast_id] <;> ring
+    ext <;> simp only [re_mul, im_mul, re_star, im_star, re_intCast, im_intCast, Int.cast_id] <;>
+      ring
   have hcop : IsCoprime (⟨u + v, 2 * v⟩ : Eis) (star ⟨u + v, 2 * v⟩) := by
     refine ⟨star ⟨u + v, 2 * v⟩ - ((k * p : ℤ) : Eis) + ((k * q : ℤ) : Eis) * ⟨1, 2⟩,
       -((k * p : ℤ) : Eis) - ((k * q : ℤ) : Eis) * ⟨1, 2⟩, ?_⟩
-    ext <;> simp only [re_mul, im_mul, re_star, im_star, re_intCast, im_intCast, Int.cast_id, re_add,
-      im_add, re_sub, im_sub, re_neg, im_neg, re_one, im_one]
+    ext <;> simp only [re_mul, im_mul, re_star, im_star, re_intCast, im_intCast, Int.cast_id,
+      re_add, im_add, re_sub, im_sub, re_neg, im_neg, re_one, im_one]
     · linear_combination h + hk - 2 * k * hpq
     · ring
   obtain ⟨d, w, hdw⟩ := exists_assoc_cube hcop hprod
