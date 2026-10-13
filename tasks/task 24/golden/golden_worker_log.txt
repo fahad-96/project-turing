@@ -1,0 +1,20 @@
+Job t24_golden_01 started Tue 10/13/2026 18:07:48.42 
+===== lake build 
+✔ [8664/8673] Built TuringTask.FibPer (87s)
+✔ [8665/8673] Built TuringTask.FibRing (55s)
+✔ [8666/8673] Built TuringTask.Bounds (50s)
+✔ [8667/8673] Built TuringTask.Large (47s)
+✔ [8668/8673] Built TuringTask.Pisano (59s)
+✔ [8669/8673] Built TuringTask.Entry (63s)
+✔ [8670/8673] Built TuringTask.Main (48s)
+✔ [8671/8673] Built TuringTask.Basic (49s)
+✔ [8672/8673] Built TuringTask (48s)
+Build completed successfully (8673 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.pisano_le_six_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.pisano_eq_six_mul_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.pisano_eq_self_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.entry_eq_two_mul_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.entry_eq_self_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

@@ -1,0 +1,71 @@
+### Overview
+
+The zip is a complete Lake project. `lakefile.toml` and `lake-manifest.json` use the pinned Mathlib checkout at `/opt/mathlib4` (commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`), and `lean-toolchain` is `leanprover/lean4:v4.33.0-rc1`. The proof sits in eight files under `TuringTask/` that import each other in a chain: `FibPer`, `FibRing`, `Bounds`, `Large`, `Pisano`, `Entry`, `Main`, `Basic`. Every file starts with `import Mathlib`. The required file `TuringTask/Basic.lean` is the file of the prompt with one added line `import TuringTask.Main`. Its namespace and its five statements stay as in the prompt, and each `sorry` became a one-line `exact` of the matching theorem in `Main.lean`.
+
+In this text $F_k$ is `Nat.fib k`. A period modulo $m$ is a $k$ with $F_k \equiv 0$ and $F_{k+1} \equiv 1 \pmod m$, and a zero modulo $m$ is a $k$ with $m \mid F_k$. The Lean code calls them `Per m k` and `Zer m k`. The Pisano period $\pi(n)$ is the least positive period, and the entry point $z(n)$ is the least positive zero. The prompt's remainders `Nat.fib k % n = 0` and `Nat.fib (k + 1) % n = 1 % n` say exactly `Per n k`, and `0 < Nat.fib k % n` says exactly that $k$ is not a zero.
+
+The route:
+- (A) Periods and zeros modulo $m$ form the multiples of $\pi(m)$ and of $z(m)$. For coprime moduli a period (zero) of the product is a common period (zero) of the factors.
+- (B) Prime powers. Lifting in $\mathbb Z[\omega]$ with $\omega^2 = \omega + 1$ turns a period (zero) $k$ modulo $p$ into the period (zero) $p^{e-1}k$ modulo $p^e$. Exact values for $p = 5$ come from the quintuplication formula, and the case $p \ge 7$ comes from the Frobenius map in characteristic $p$.
+- (C) Odd moduli. Induction over coprime prime powers gives every odd $m$ a period $2^s t$ with $2^s t \le 4m$ and $t \le m$, and a zero $2^s t$ with $3 \cdot 2^s t \le 4m$ and $t \le m$, together with the cases of equality.
+- (D) For $n = 2^a m$ with $m$ odd, (C) and the period $3 \cdot 2^{a-1}$ modulo $2^a$ give theorems 1, 2 and 4. If $n$ divides all its periods (zeros), a largest prime factor $p \ge 7$ is impossible, so $n = 2^a3^b5^c$, and a short case analysis gives theorems 3 and 5.
+
+### 1. FibPer.lean: periods and zeros modulo $m$
+
+- `Per`, `Zer`, `per_zero`, `per_shift` ($F_{a+c} \equiv F_c$ for a period $a$, by `Nat.fib_add`), `per_add`, `per_mul`, `per_sub`.
+- `per_dvd_of_min`: the least positive period divides every period, because the remainder of $k$ modulo that period is again a period. `zer_dvd_of_min` does the same for zeros with `Nat.fib_gcd`, which makes $\gcd(a, b)$ a zero when $a$ and $b$ are zeros.
+- `per_mul_iff`, `zer_mul_iff`: for coprime $m_1, m_2$, a period (zero) modulo $m_1m_2$ is a period (zero) modulo both. `Per.of_dvd`, `Zer.of_dvd`, `Per.zer`.
+- Small moduli by `decide`: the least periods modulo $2, 3, 4, 5, 8$ are $3, 8, 6, 20, 12$ and the least zeros modulo $2, 3, 4, 5$ are $3, 4, 6, 5$ (`per_2_dvd`, ..., `zer_5_dvd`).
+
+### 2. FibRing.lean: lifting, the prime $5$ and the primes $p \ge 7$
+
+- `Phi` is Mathlib's `QuadraticAlgebra Int 1 1` and `om` is $\omega = \langle 0, 1\rangle$. Then $\omega^{k+1} = F_k + F_{k+1}\omega$ (`om_pow_succ`), so `per_iff` and `zer_iff` read a period as $m \mid \omega^k - 1$ and a zero as $m \mid \operatorname{im}(\omega^k)$.
+- `pow_of_eq_add`: if $x = c + mu$ and $p \mid m$, then $x^p = c^p + pmv$, by the binomial theorem. With $c = 1$ this gives `per_lift` (a period $k$ modulo $m$ makes $pk$ a period modulo $pm$), and with $c$ an integer it gives `zer_lift`. `per_pow` and `zer_pow` iterate: a period (zero) $M$ modulo a prime $p$ gives the period (zero) $p^eM$ modulo $p^{e+1}$.
+- `fib_five_mul`: $F_{5k} = 25F_k^5 + 25(-1)^kF_k^3 + 5F_k$, from $(\omega^k)^5$ and the norm $(-1)^k$ of $\omega^k$. So $F_{5k} = 5F_kW$ with $W \equiv 1 \pmod 5$, and induction gives `five_pow_dvd_of_zer`: $5^j \mid F_k$ forces $5^j \mid k$. With `zer_five_pow` the least zero modulo $5^j$ is $5^j$, and `per_five_pow_dvd`, `per_five_pow` give the least period $4 \cdot 5^j$ for $j \ge 1$.
+- `apparition`: for a prime $p \ge 7$, either $p - 1$ is a period modulo $p$, or $2(p + 1)$ is a period and $p + 1$ is a zero. In $S = $ `QuadraticAlgebra (ZMod p) 1 1` the element $s = 2w - 1$ has $s^2 = 5$, so $s^p = es$ with $e = 5^{(p-1)/2}$ and $e^2 = 1$ (`ZMod.pow_card_sub_one_eq_one`). The Frobenius map (`add_pow_char`, `ZMod.pow_card`) gives $s^p = 2w^p - 1$. Comparing coordinates gives $F_p = e$ and $2F_{p-1} = 1 - e$. For $e = 1$ this means $w^p = w$. For $e = -1$ it means $w^{p+1} = -1$, so $p \mid F_{p+1}$ and $w^{2(p+1)} = 1$.
+
+### 3. Bounds.lean: prime powers and odd moduli
+
+- `per_two_pow`, `per_three_pow`, `zer_three_pow`: the periods $3 \cdot 2^{a-1}$ modulo $2^a$ and $8 \cdot 3^{b-1}$ modulo $3^b$, and the zero $4 \cdot 3^{b-1}$ modulo $3^b$, by `per_pow` and `zer_pow`. `big_pow` lifts `apparition` to $p^e$.
+- `InvP m` says: some $s$ and $t > 0$ make $2^st$ a period modulo $m$ with $2^st \le 4m$ and $t \le m$, where $2^st = 4m$ forces $m = 5^c$ with $c \ge 1$ and $t = m$ forces $m = 5^c$. `InvZ m` says the same for a zero, with the bound $3 \cdot 2^st \le 4m$, where equality forces $m = 3^e5^c$ with $e \ge 1$, and $e = 1$ when $3 \nmid t$.
+- `invP_prime_pow`, `invZ_prime_pow`: the witnesses for odd prime powers. For $3^n$ they are $(s, t) = (3, 3^{n-1})$ and $(2, 3^{n-1})$, for $5^n$ they are $(2, 5^n)$ and $(0, 5^n)$, and for $p \ge 7$ they come from $p - 1$ or $2(p + 1)$, with $t = p^{n-1}(p \pm 1)/2$ for zeros.
+- `invP_mul`, `invZ_mul`: for coprime $a, b$ take $s = \max(s_1, s_2)$ and $t = t_1t_2$. Then $2^st$ is a common multiple, and $2^{s_1}t_1t_2 \le 4a \cdot b$ when $s_1 \ge s_2$. Equality needs equality in both factors (`eq_of_le_of_mul_eq`).
+- `invP_odd`, `invZ_odd`: induction with Mathlib's `Nat.recOnPosPrimePosCoprime`.
+
+### 4. Large.lean: the largest prime factor
+
+- `small_periods`: if every prime factor of $m$ lies below a prime $p \ge 7$, then $m$ has a period and a zero that $p$ does not divide. The prime powers below $p$ contribute $3 \cdot 2^{a-1}$, $8 \cdot 3^{b-1}$, $4 \cdot 5^c$ and $q^{e-1}(q - 1)$ or $q^{e-1} \cdot 2(q + 1)$, and $p$ divides none of them (`not_dvd_small`).
+- `large_prime_step`: for the largest prime factor $p \ge 7$ of $n = p^em$, the period $p^{e-1}MK$, with $M$ from `big_pow` and $K$ from `small_periods`, is not a multiple of $p^e$, so $n$ does not divide it. The same holds for zeros.
+- `primes_le_five_of_per`, `primes_le_five_of_zer`, `eq_two_three_five`: if $n$ divides all its periods (zeros), then $n = 2^a3^b5^c$ (`Nat.exists_eq_pow_mul_and_not_dvd`).
+
+### 5. Pisano.lean: theorems 1, 2 and 3
+
+- `per_parts`, `zer_parts` and their converses split $2^a3^b5^c$ into its three parts, and `per_two_of`, ..., `zer_five_of` give periods and zeros from the multiples of $3 \cdot 2^{a-1}$, $8 \cdot 3^{b-1}$, $4 \cdot 5^c$, $4 \cdot 3^{b-1}$ and $5^c$.
+- `pisano_bound` (theorem 1): write $n = 2^am$ with $m$ odd (`Nat.exists_eq_two_pow_mul_odd`) and take $(s, t)$ from `invP_odd`. For $a = 0$ the period $2^st \le 4m$ works. For $a \ge 1$ the period is $3 \cdot 2^{a-1}t$ when $s \le a - 1$, and $3 \cdot 2^st$ otherwise. Both are at most $6n$, and equality needs $a = 1$ and $2^st = 4m$, so $n = 2 \cdot 5^j$ with $j \ge 1$.
+- `pisano_eq_six_mul` (theorem 2): one direction is `pisano_bound`. For $n = 2 \cdot 5^j$ the number $6n$ is a period, and a period $k$ has $3 \mid k$ and $4 \cdot 5^j \mid k$, so $k \ge 12 \cdot 5^j = 6n$.
+- `pisano_eq_self` (theorem 3): if $\pi(n) = n$, then $n$ divides every period, so $n = 2^a3^b5^c$. For $a \ge 4$ the period $2^{a-1}3^{b+1}5^c$ has too few factors $2$ (`not_dvd_v2`), and for $b \ge 2$ the period $2^{a+3}3^{b-1}5^c$ has too few factors $3$ (`not_dvd_v3`). In the eight cases $a \le 3$, $b \le 1$ the least periods modulo $2, 3, 4, 8$ and $5^c$ rule out all but $n = 1$ and $n = 24 \cdot 5^c$. For example $a = 2$, $b = 0$ needs $6 \mid 4 \cdot 5^c$. Conversely $24 \cdot 5^j$ is a period modulo $24 \cdot 5^j$, and every period is a multiple of $\operatorname{lcm}(12, 8) = 24$ and of $5^j$.
+
+### 6. Entry.lean: theorems 4 and 5
+
+- `entry_bound`: the same split $n = 2^am$ with $(s, t)$ from `invZ_odd` gives a zero at most $2n$. For $a \ge 1$ the zero is $3 \cdot 2^{a-1}t$ when $s \le a - 1$, $2^st$ when $s \ge a$ and $3 \mid t$, and $3 \cdot 2^st$ otherwise. Equality with $2n$ needs $a = 1$, $3 \nmid t$ and $3 \cdot 2^st = 4m$, so $m = 3 \cdot 5^c$ and $n = 6 \cdot 5^c$.
+- `entry_eq_two_mul` (theorem 4): for $n = 6 \cdot 5^j$ a zero $k$ has $3 \mid k$, $4 \mid k$ and $5^j \mid k$, so $k \ge 12 \cdot 5^j = 2n$.
+- `entry_eq_self` (theorem 5): as in theorem 3, $n = 2^a3^b5^c$. The zero $2^{a-1}3^{b+1}5^c$ excludes $a \ge 3$, and the zero $2^{a+2}3^{b-1}5^c$ excludes $b \ge 2$. The six cases with $a \le 2$, $b \le 1$ leave $n = 5^c$ and $n = 12 \cdot 5^c$. Conversely the least zero modulo $5^j$ is $5^j$, and a zero modulo $12 \cdot 5^j$ is a multiple of $\operatorname{lcm}(6, 4) = 12$ and of $5^j$.
+
+### 7. Main.lean and Basic.lean
+
+`Main.lean` states the five theorems exactly as in the prompt under its own names (`main_pisano_le`, `main_pisano_six`, `main_pisano_self`, `main_entry_two`, `main_entry_self`). It turns the remainders into `Per` and `Zer` with `prompt_per`, `prompt_zer0` and `prompt_zer`. In `Basic.lean` each of the five theorems is one `exact` of the matching theorem.
+
+### Verification
+
+- I extracted the final zip into a fresh folder and checked it offline, without editing anything, in the setting of the review environment: Mathlib at `/opt/mathlib4` (the pinned checkout, commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`, with its dependencies linked into `.lake/packages` as `lean-offline-init` does), Lean `4.33.0-rc1`, network access blocked.
+- `lake build` ends with "Build completed successfully", exit code 0, with no errors and no warnings. Every file uses the full `import Mathlib`.
+- `lake env lean StatementAndAxiomsCheck.lean` (included in the zip) restates the five theorems of the prompt, so it fails if a statement changed. It reports exactly the axioms `propext`, `Classical.choice` and `Quot.sound` for each of the five theorems, with exit code 0.
+- The project contains no `sorry`, `admit`, `native_decide`, new axiom, `set_option` or instance declaration. The small moduli use `decide`, which the kernel evaluates.
+
+### Sources and related work
+
+The periods modulo prime powers go back to D. D. Wall, Fibonacci series modulo m, American Mathematical Monthly 67 (1960), 525-532. The bound $\pi(n) \le 6n$ with its equality case is the solution of Problem E3410 by P. Freyd and K. S. Brown, American Mathematical Monthly 99 (1992), 278-279. The fixed points $\pi(n) = n$ are in J. D. Fulton and W. L. Morris, On arithmetical functions related to the Fibonacci numbers, Acta Arithmetica 16 (1969), 105-110. The bound $z(n) \le 2n$ is in H. J. A. Salle, A maximum value for the rank of apparition of integers in recursive sequences, Fibonacci Quarterly 13 (1975), 159-161, and the fixed points $z(n) = n$ are in D. Marques, Fixed points of the order of appearance in the Fibonacci sequence, Fibonacci Quarterly 50 (2012), 346-352. The two invariants for odd moduli and the largest-prime argument here replace the lcm estimates of these papers. The write-up and the Lean code are my own.
+
+The proof uses these Mathlib results: `Nat.fib_add`, `Nat.fib_gcd`, `Nat.fib_add_two`, `QuadraticAlgebra` with its norm, `add_pow_char`, `ZMod.pow_card`, `ZMod.pow_card_sub_one_eq_one`, `charP_of_injective_algebraMap`, `Nat.recOnPosPrimePosCoprime`, `Nat.exists_eq_two_pow_mul_odd` and `Nat.exists_eq_pow_mul_and_not_dvd`. Mathlib at the pinned commit has no Pisano period, entry point or law of apparition. I found no Lean formalization of these results in Mathlib, `TauCetiProject/TauCeti`, `AllenGrahamHart/FormalConjectures-Bench`, formal-conjectures, compfiles, PutnamBench, miniF2F, ProofNet or `provables/sequencelib`, or by web search (checked 10 Oct 2026).
+
+The golden answer shows one valid route. Any complete proof of the five statements is acceptable.
