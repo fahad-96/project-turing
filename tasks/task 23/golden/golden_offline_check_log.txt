@@ -13,3 +13,4 @@ TuringTask.lean
 Lean (version 4.33.0-rc1, x86_64-w64-windows-gnu, commit 62eed1db4d67327ec8120be05f1a1b0847d74561, Release)
 ===== lake build 
 ✔ [8664/8673] Built TuringTask.PellSeq (317s)
+✔ [8665/8673] Built TuringTask.PellDescent (98s)
