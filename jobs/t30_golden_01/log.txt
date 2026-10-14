@@ -1,0 +1,20 @@
+Job t30_golden_01 started Wed 10/14/2026 11:54:23.33 
+===== lake build 
+✔ [8664/8673] Built TuringTask.Dedekind (702s)
+✔ [8665/8673] Built TuringTask.Formulas (30s)
+✔ [8666/8673] Built TuringTask.Reciprocity (29s)
+✔ [8667/8673] Built TuringTask.ModEight (28s)
+✔ [8668/8673] Built TuringTask.Criteria (30s)
+✔ [8669/8673] Built TuringTask.Knopp (29s)
+✔ [8670/8673] Built TuringTask.Main (27s)
+✔ [8671/8673] Built TuringTask.Basic (27s)
+✔ [8672/8673] Built TuringTask (26s)
+Build completed successfully (8673 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.sum_divisors_sum_dedekind_eq_sigma_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.exists_int_eq_two_mul_gcd_mul_dedekind' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.dedekind_modEq_eight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.dedekind_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.dedekind_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
