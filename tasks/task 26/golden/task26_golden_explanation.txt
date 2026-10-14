@@ -1,0 +1,53 @@
+### Overview
+
+The zip is a complete Lake project. `lakefile.toml` and `lake-manifest.json` use the pinned Mathlib checkout at `/opt/mathlib4` (commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`), and `lean-toolchain` is `leanprover/lean4:v4.33.0-rc1`. The proof sits in five files under `TuringTask/` that import each other in a chain: `Forms`, `Values`, `Classes`, `Main`, `Basic`. Every file starts with `import Mathlib`. The required file `TuringTask/Basic.lean` is the file of the prompt with one added line `import TuringTask.Main`. Its namespace and its five statements stay as in the prompt, and each `sorry` became a one-line `exact` of the matching theorem in `Main.lean`.
+
+In this text a form $(a, b, c)$ is $f(x, y) = ax^2 + bxy + cy^2$ with integer coefficients and discriminant $b^2 - 4ac$. The form represents $m$ when $f(x, y) = m$ for some integers $x, y$ (Lean: `FormRep a b c m`). We call a form with $|b| \le a \le c$ reduced. For $n \in \{5, 6, 13, 21\}$ we write $M = 4n$, and $(1, 0, n)$ is the principal form.
+
+The route (Lagrange's reduction with Gauss's genus characters, one class per genus):
+- (A) If $-n$ is a square modulo an odd prime $p \nmid n$, then a form of discriminant $-4n$ represents $p$, and so does a reduced form of the same discriminant.
+- (B) The reduced forms of discriminant $-4n$ satisfy $3a^2 \le 4n$, so a finite list contains all of them: 3, 2, 3 and 6 forms for $n = 5, 6, 13, 21$, counting $\pm b$.
+- (C) Genus tables: the values modulo $M$ of each reduced form depend only on $x, y$ modulo $2n$. The prime values of the principal form lie in the classes of the prompt, and the other reduced forms never take a value in these classes.
+- (D) For $p$ in the classes of the prompt, $-n$ is a square modulo $p$ by the Jacobi symbol, and (A) to (C) leave the principal form. For theorem 2 the same argument gives $p = 2a^2 + 2ab + 3b^2$, and Euler's composition identity multiplies two such numbers.
+
+### 1. Forms.lean: forms and Lagrange reduction
+
+- `FormRep`, `rep_swap` (the move $(a, b, c) \mapsto (c, -b, a)$ with $(x, y) \mapsto (-y, x)$), `rep_shift` (the move $(a, b, c) \mapsto (a, b + 2ka, ak^2 + bk + c)$ with $(x, y) \mapsto (x - ky, y)$) and `rep_neg` ($(a, -b, c)$ and $(a, b, c)$ represent the same numbers). Each move keeps the discriminant.
+- `reduce`: for a discriminant $D < 0$ and $a > 0$, every form $(a, b, c)$ with discriminant $D$ represents the same numbers as a reduced form. The proof uses strong induction on $a$. The shift with $k = -\lfloor (b + a)/(2a) \rfloor$ gives $-a \le b' < a$. If then $c' < a$, the swap gives a form with first coefficient $c'$, and $c' > 0$ because $4ac' = b'^2 - D > 0$.
+- `reduced_bound`: a reduced form has $3a^2 \le 4ac - b^2$.
+- `lagrange`: if $p \mid t^2 + n$, then $(p, 2t, (t^2 + n)/p)$ has discriminant $-4n$ and represents $p$ at $(1, 0)$.
+
+### 2. Values.lean: square roots of $-n$ and values modulo $4K$
+
+- `sq_neg_of`: if $p$ is an odd prime and the Jacobi symbol $\left(\frac{-n}{p \bmod 4n}\right)$ equals $1$, then $p \mid t^2 + n$ for some integer $t$. Mathlib's `jacobiSym.mod_right` turns $\left(\frac{-n}{p}\right)$ into this symbol, and `ZMod.isSquare_of_jacobiSym_eq_one` gives the square root.
+- `rep_mod_nat`: if $(a, 2b, c)$ represents $p$, then $p \bmod 4K$ equals $(ax^2 + 2bxy + cy^2) \bmod 4K$ for some natural numbers $x, y < 2K$. The proof writes the integer solution as $x + 2Ku$, $y + 2Kv$, and every extra term is a multiple of $4K$.
+- `prime_eq_of_mod` and `natAbs_rep`: small helpers for primes and for passing from integer to natural solutions.
+
+### 3. Classes.lean: the four discriminants
+
+For each $n$:
+- `reduced_n`: the list of reduced forms. Here $3a^2 \le 4n$ bounds $a$, then $-a \le b \le a$, and `omega` solves $4ac = b^2 + 4n$ for $c$. The lists are $(1, 0, 5), (2, \pm 2, 3)$ for $n = 5$, $(1, 0, 6), (2, 0, 3)$ for $n = 6$, $(1, 0, 13), (2, \pm 2, 7)$ for $n = 13$ and $(1, 0, 21), (2, \pm 2, 11), (3, 0, 7), (5, \pm 4, 5)$ for $n = 21$.
+- `vals_n_prin` and `vals_n_a_b`: `decide` over all $x, y < 2n$. The principal form only takes values in the classes of the prompt or values that share a prime factor with $M$. For example $(2, 2, 3)$ takes only the values $3$ and $7$ among the units modulo $20$, and $(5, 4, 5)$ takes only $5$, $17$ and $41$ among the units modulo $84$, so these forms never hit the classes $\{1, 9\}$ and $\{1, 25, 37\}$.
+- `fwd_n`: a prime $p = x^2 + ny^2$ lies in the classes of the prompt, or it divides $M$. In the second case $p$ is $5$ or $13$ (which the prompt allows), or $p \in \{2, 3, 7\}$, which `no_small` excludes because then $y = 0$ and $p$ would be a square.
+- `bwd_n`: for $p$ in the classes of the prompt, `sq_neg_of` gives $t$, `lagrange` and `reduce` give a reduced form that represents $p$, and the tables exclude every reduced form except the principal one.
+
+### 4. Main.lean and Basic.lean
+
+- `rep_two_two_three`: a prime $p \equiv 3, 7 \pmod{20}$ has the form $2a^2 + 2ab + 3b^2$. The Jacobi symbol gives $-5$ as a square, and the principal form takes no value $3$ or $7$ modulo $20$.
+- `mul_rep_five` (theorem 2): $(2a^2 + 2ab + 3b^2)(2c^2 + 2cd + 3d^2) = X^2 + 5Y^2$ with $X = 2ac + ad + bc - 2bd$ and $Y = ad + bc + bd$, checked by `ring`.
+- `main_five`, `main_product`, `main_six`, `main_thirteen`, `main_twenty_one` state the five theorems exactly as in the prompt. The residue conditions `Membership.mem` become disjunctions with `simp`, and $5 = 0^2 + 5 \cdot 1^2$ and $13 = 0^2 + 13 \cdot 1^2$ cover the extra primes. In `Basic.lean` each of the five theorems is one `exact` of the matching theorem.
+
+### Verification
+
+- I extracted the final zip into a fresh folder and checked it offline, without editing anything, in the setting of the review environment: Mathlib at `/opt/mathlib4` (the pinned checkout, commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`, with its dependencies linked into `.lake/packages` as `lean-offline-init` does), Lean `4.33.0-rc1`, network access blocked.
+- `lake build` ends with "Build completed successfully", exit code 0, with no errors and no warnings. Every file uses the full `import Mathlib`.
+- `lake env lean StatementAndAxiomsCheck.lean` (included in the zip) restates the five theorems of the prompt, so it fails if a statement changed. It reports exactly the axioms `propext`, `Classical.choice` and `Quot.sound` for each of the five theorems, with exit code 0.
+- The project contains no `sorry`, `admit`, `native_decide`, new axiom, `set_option` or instance declaration. The tables and the values of the Jacobi symbols use `decide` and `norm_num`, which the kernel checks.
+
+### Sources and related work
+
+Euler stated theorems 1 and 2 in letters to Goldbach (1744 to 1753). Lagrange proved them with the reduction of forms in Recherches d'arithmetique (1773 to 1775), and Gauss treated genera in Disquisitiones Arithmeticae (1801), articles 182 and 229 to 233. A modern account is D. A. Cox, Primes of the Form $x^2 + ny^2$, 2nd edition (Wiley 2013), chapters 1 to 3, with Theorems 2.25, 2.26 and 3.22. P. L. Clark and coauthors give a different elementary route for theorems 1 and 2 in Representing primes as $x^2 + 5y^2$: an inductive proof that Euler missed (arXiv math/0606547). The write-up and the Lean code are my own.
+
+The proof uses these Mathlib results: `jacobiSym.mod_right`, `ZMod.isSquare_of_jacobiSym_eq_one`, `ZMod.intCast_zmod_eq_zero_iff_dvd`, `Int.emod_add_mul_ediv` and the `norm_num` extension for Jacobi symbols. Mathlib at the pinned commit has quadratic reciprocity and the two-squares theorem `Nat.Prime.sq_add_sq`, but no binary quadratic forms, reduction or genera. I found no Lean formalization of the five statements in Mathlib, `TauCetiProject/TauCeti`, `AllenGrahamHart/FormalConjectures-Bench`, formal-conjectures, compfiles, PutnamBench, miniF2F, ProofNet, `provables/sequencelib` or `int-y1/proofs`, or by web search (checked 10 Oct 2026). Two files in formal-conjectures touch the topic: `OEIS/179524.lean` assumes $p = x^2 + 5y^2$ with $p \equiv 1, 9 \pmod{20}$ as a hypothesis of open congruences of Z.-W. Sun, and `Wikipedia/IdonealCompleteness.lean` states the open completeness of Euler's idoneal numbers. Neither proves a statement of this task.
+
+The golden answer shows one valid route. Any complete proof of the five statements is acceptable.
