@@ -1,0 +1,20 @@
+Job t29_golden_01 started Wed 10/14/2026 11:34:02.48 
+===== lake build 
+✔ [8664/8673] Built TuringTask.Regular (25s)
+✔ [8665/8673] Built TuringTask.Units (25s)
+✔ [8666/8673] Built TuringTask.Layers (24s)
+✔ [8667/8673] Built TuringTask.Zolotarev (24s)
+✔ [8668/8673] Built TuringTask.Power (24s)
+✔ [8669/8673] Built TuringTask.Transpose (24s)
+✔ [8670/8673] Built TuringTask.Main (22s)
+✔ [8671/8673] Built TuringTask.Basic (22s)
+✔ [8672/8673] Built TuringTask (21s)
+Build completed successfully (8673 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.sign_mulLeft_eq_jacobiSym' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sign_mulLeft_of_even' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sign_mulLeft_units_eq_neg_one_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sign_ofBijective_pow' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.sign_transpose' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 

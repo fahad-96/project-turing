@@ -1,0 +1,74 @@
+### Overview
+
+The zip is a complete Lake project. `lakefile.toml` and `lake-manifest.json` use the pinned Mathlib checkout at `/opt/mathlib4` (commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`), and `lean-toolchain` is `leanprover/lean4:v4.33.0-rc1`. The proof sits in eight files under `TuringTask/` that import each other in a chain: `Regular`, `Units`, `Layers`, `Zolotarev`, `Power`, `Transpose`, `Main`, `Basic`. Every file starts with `import Mathlib`. The required file `TuringTask/Basic.lean` is the file of the prompt with one added line `import TuringTask.Main`. Its namespace and its five statements stay as in the prompt, and each `sorry` became a one-line `exact` of the matching theorem in `Main.lean`.
+
+In this text $\mu_a$ is $x \mapsto ax$ on $\mathbb{Z}/n$, $\nu_a$ is $u \mapsto au$ on the unit group $(\mathbb{Z}/n)^\times$, and $J(a \mid n)$ is `jacobiSym a n`. For a finite group $G$ we write $N = |G|$.
+
+The route:
+- (A) In a finite commutative group, left multiplication by $g$ of order $d$ consists of $N/d$ cycles of length $d$. So its sign is $-1$ exactly when $N$ is even and $g^{N/2} \ne 1$.
+- (B) If $(\mathbb{Z}/n)^\times$ is cyclic, $g^{N/2} \ne 1$ means that $g$ is not a square. If it is not cyclic, it has two different elements of order $2$, and then every sign is $1$. This gives theorem 3.
+- (C) On $\mathbb{Z}/p^{k+1}$ the units and the multiples of $p$ are invariant sets, and the multiples of $p$ form a copy of $\mathbb{Z}/p^k$. So $\mathrm{sgn}\,\mu_a$ on $\mathbb{Z}/p^k$ is the product of the signs of $\nu_a$ on $(\mathbb{Z}/p^j)^\times$ for $1 \le j \le k$. The Chinese remainder theorem splits coprime moduli.
+- (D) For odd $p$ the sign of $\nu_a$ on $(\mathbb{Z}/p^j)^\times$ is $J(a \mid p)$, which gives theorem 1. For $p = 2$ only $(\mathbb{Z}/4)^\times$ contributes, which gives theorem 2. A generator of $(\mathbb{Z}/p)^\times$ turns $x \mapsto x^k$ into $\mu_k$ on $\mathbb{Z}/(p-1)$, which gives theorem 4. Theorem 5 counts inversions.
+
+### 1. Regular.lean: signs of regular permutations
+
+- `cosetProd`: $G \simeq (G/H) \times H$, $x \mapsto (xH, \mathrm{out}(xH)^{-1} x)$.
+- `sign_mulLeft_zpowers`: on $H = \langle g \rangle$, left multiplication by $g$ is conjugate to `finRotate d` through `finEquivZPowers`, so its sign is $(-1)^{d-1}$ (`sign_finRotate`).
+- `sign_mulLeft`: for commutative $G$, `cosetProd` turns left multiplication by $g$ into `Equiv.prodCongrRight` of the map on $H$. With `Perm.sign_prodCongrRight` and $|G/H| = N/d$ the sign is $(-1)^{(d-1)N/d}$.
+- `sign_mulLeft_eq_neg_one_iff`: $(d - 1)N/d$ is odd iff $d$ is even and $N/d$ is odd, iff $N$ is even and $d \nmid N/2$, that is $g^{N/2} \ne 1$ (`odd_iff_aux`).
+- `isSquare_iff_pow_half`: in a cyclic group of even order, $g = \gamma^r$ is a square iff $r$ is even iff $g^{N/2} = 1$.
+- `sign_mulLeft_of_two_involutions`: if the sign of $g$ is $-1$, then the index $N/d$ of $\langle g \rangle$ is odd. Every $x$ with $x^2 = 1$ then lies in $\langle g \rangle$, because $x = x^{N/d}$ (`Subgroup.pow_index_mem`). A cyclic group has at most one element of order $2$ (`IsCyclic.card_pow_eq_one_le`), so two different ones force the sign $1$.
+
+### 2. Units.lean: theorem 3
+
+- `list_iff` restates `ZMod.isCyclic_units_iff` for $n \ne 0, 1, 2$: the group is cyclic iff $n$ is $4$, $p^k$ or $2p^k$.
+- `split_of_not_cyclic`: otherwise $n = 2^{e+3}$, or $n = ab$ with coprime $a, b \ge 3$. Write $n = 2^e m$ with $m$ odd and $m = p^k r$ with $p \nmid r$. Then $(a, b)$ is $(2^e, p^k)$ for $r = 1$ and $(2^e p^k, r)$ otherwise.
+- `exists_sqrt_one`: then some $x \ne \pm 1$ has $x^2 = 1$, namely $x = 1 + 2^{e+2}$, or $x \equiv 1 \pmod a$ and $x \equiv -1 \pmod b$ (`ZMod.chineseRemainder`).
+- `sign_units_iff`: for $n = 1, 2$ the group has one element. In the cyclic case $N = \varphi(n)$ is even (`Nat.totient_even`), and (A) with `isSquare_iff_pow_half` gives the statement. In the other case $x$ and $-1$ are two different elements of order $2$, so the sign is $1$, and the right side fails because the group is not cyclic.
+
+### 3. Layers.lean: invariant pieces
+
+- `sign_split`: a permutation that keeps a set $P$ has sign $\mathrm{sgn}(\text{on } P) \cdot \mathrm{sgn}(\text{off } P)$ (`Perm.sign_subtypeCongr`).
+- `sign_units_part`: on the units of $\mathbb{Z}/n$, $\mu_a$ is $\nu_a$ (`unitsSubtypeEquiv`).
+- `not_isUnit_iff_dvd`, `layerEquiv`: the non-units of $\mathbb{Z}/p^{k+1}$ are the elements $py$ with $y \in \mathbb{Z}/p^k$. `sign_layer`: since $p \cdot (ay \bmod p^k) \equiv a p y \pmod{p^{k+1}}$, this gives $\mathrm{sgn}\,\mu_a(p^{k+1}) = \mathrm{sgn}\,\nu_a(p^{k+1}) \cdot \mathrm{sgn}\,\mu_a(p^k)$.
+- `sign_prodCongr`: $\mathrm{sgn}(\sigma \times \tau) = \mathrm{sgn}(\sigma)^{|B|} \mathrm{sgn}(\tau)^{|A|}$. `sign_crt`: for coprime $m, n$, $\mathrm{sgn}\,\mu_a(mn) = \mathrm{sgn}\,\mu_a(m)^n \, \mathrm{sgn}\,\mu_a(n)^m$.
+
+### 4. Zolotarev.lean: theorems 1 and 2
+
+- `sign_units_odd_prime_pow`: for an odd prime $p$ the group $(\mathbb{Z}/p^j)^\times$ is cyclic (`ZMod.isCyclic_units_of_prime_pow`) of order $N = p^{j-1}(p - 1)$. The element $g^{N/2}$ is $\pm 1$, since a cyclic group has one element of order $2$. Modulo $p$ it equals $a^{p^{j-1}(p-1)/2} = a^{(p-1)/2} = J(a \mid p)$ (`ZMod.pow_card_pow`, `legendreSym.eq_pow`). So $\mathrm{sgn}\,\nu_a = J(a \mid p)$.
+- `sign_odd_prime_pow`: by `sign_layer` and induction, $\mathrm{sgn}\,\mu_a(p^k) = J(a \mid p)^k = J(a \mid p^k)$ (`jacobiSym.pow_right`).
+- `sign_odd` (theorem 1): induction over coprime prime powers (`Nat.recOnPosPrimePosCoprime`) with `sign_crt`. For odd $m, n$ a sign to an odd power is the sign itself, and `jacobiSym.mul_right` finishes.
+- `sign_units_two`, `sign_units_four`, `sign_units_two_pow`: on $(\mathbb{Z}/2)^\times$ the sign is $1$, on $(\mathbb{Z}/4)^\times$ it is $1$ iff $a \equiv 1 \pmod 4$, and on $(\mathbb{Z}/2^j)^\times$ with $j \ge 3$ it is $1$, because that group is not cyclic (`ZMod.isCyclic_units_two_pow_iff` and theorem 3).
+- `sign_two_pow`: so $\mathrm{sgn}\,\mu_a(2^{k+1})$ is $1$ for $k = 0$ and the sign on $(\mathbb{Z}/4)^\times$ for $k \ge 1$.
+- `sign_even` (theorem 2): for $n = 2^e m$ with $m$ odd and $e \ge 1$, `sign_crt` gives $\mathrm{sgn}\,\mu_a(2^e)^m \, \mathrm{sgn}\,\mu_a(m)^{2^e} = \mathrm{sgn}\,\mu_a(2^e)$, and $n \equiv 2 \pmod 4$ iff $e = 1$.
+
+### 5. Power.lean: theorem 4
+
+- `sign_powMap`: a bijective $x \mapsto x^k$ has $k \ne 0$, keeps the units and fixes $0$, so only the units count. Let $m = p - 1$ and $e$ be an isomorphism from `Multiplicative (ZMod m)` onto $(\mathbb{Z}/p)^\times$ (`zmodCyclicMulEquiv`). Through $e$ the map becomes $y \mapsto ky$ on $\mathbb{Z}/m$ (`toAdd_pow`). Surjectivity gives $ky = 1$ for some $y$, so $k$ is prime to $m$, and the sign is $\mathrm{sgn}\,\mu_k(p - 1)$. For $p = 2$ this is $1$. For odd $p$ theorem 2 gives $1$ when $p \equiv 3 \pmod 4$ and $(-1)^{(k-1)/2}$ when $p \equiv 1 \pmod 4$.
+
+### 6. Transpose.lean: theorem 5
+
+- `sign_eq_neg_one_pow_card`: from `Perm.sign_eq_prod_prod_Iio`, the sign of a permutation $\sigma$ of `Fin N` is $(-1)^I$, where $I$ counts the pairs $x < y$ with $\sigma(y) < \sigma(x)$.
+- `transposePerm` is the permutation of the statement. Position $j + ni$ holds the entry $(i, j)$ and goes to $i + mj$ (`transpose_val`).
+- `lex_lt`: for $j, j' < n$, $j + ni < j' + ni'$ iff $i < i'$, or $i = i'$ and $j < j'$. `inversion_iff`: the entries $(i, j)$ and $(i', j')$ form an inversion iff $i < i'$ and $j' < j$.
+- `card_lt_pairs`: `Fin m` has $\sum_{j < m} j = \binom{m}{2}$ pairs $i < i'$ (`Finset.sum_range_id`). `card_inversions`: the inversions match the pairs $(i < i', j' < j)$, so $I = \binom{m}{2}\binom{n}{2}$ (`Finset.card_nbij'`).
+
+### 7. Main.lean and Basic.lean
+
+- `main_odd`, `main_even`, `main_units`, `main_pow`, `main_transpose`: the five results in the form of the prompt.
+- In `Basic.lean` each of the five theorems is one `exact` of the matching theorem.
+
+### Verification
+
+- I extracted the final zip into a fresh folder and checked it offline, without editing anything, in the setting of the review environment: Mathlib at `/opt/mathlib4` (the pinned checkout, commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`, with its dependencies linked into `.lake/packages` as `lean-offline-init` does), Lean `4.33.0-rc1`, network access blocked.
+- `lake build` ends with "Build completed successfully", exit code 0, with no errors and no warnings. Every file uses the full `import Mathlib`.
+- `lake env lean StatementAndAxiomsCheck.lean` (included in the zip) restates the five theorems of the prompt, so it fails if a statement changed. It reports exactly the axioms `propext`, `Classical.choice` and `Quot.sound` for each of the five theorems, with exit code 0.
+- The project contains no `sorry`, `admit`, `native_decide`, new axiom, `set_option` or instance declaration, and no declaration in `TuringTask` has the name of a Mathlib declaration.
+
+### Sources and related work
+
+Theorem 1 for a prime $n$ is G. Zolotarev, Nouvelle demonstration de la loi de reciprocite de Legendre, Nouv. Ann. Math. (2) 11 (1872), 354-362. The odd composite case is due to G. Frobenius, Uber das quadratische Reziprozitatsgesetz I, Sitzungsber. Preuss. Akad. Wiss. Berlin (1914), 335-349, and the even case to M. Lerch, Sur un theoreme de Zolotarev, Bull. Intern. Acad. Francois Joseph 3 (1896), 34-37. F. Lemmermeyer, Reciprocity Laws (Springer 2000), chapter 1, treats these results. The write-up and the Lean code are my own.
+
+The proof uses these Mathlib results: `Perm.sign_eq_sign_of_equiv`, `Perm.sign_prodCongrRight`, `Perm.sign_prodCongrLeft`, `Perm.sign_subtypeCongr`, `sign_finRotate`, `Perm.sign_eq_prod_prod_Iio`, `finEquivZPowers`, `Subgroup.pow_index_mem`, `IsCyclic.card_pow_eq_one_le`, `ZMod.isCyclic_units_iff`, `ZMod.isCyclic_units_of_prime_pow`, `ZMod.isCyclic_units_two_pow_iff`, `zmodCyclicMulEquiv`, `ZMod.chineseRemainder`, `ZMod.card_units_eq_totient`, `legendreSym.eq_pow` and `jacobiSym.pow_right`. Mathlib at the pinned commit has `Equiv.Perm.sign` and the cyclic-units criterion, but nothing that links signs of permutations with Jacobi symbols. I found no Lean formalization of the five statements in Mathlib, `TauCetiProject/TauCeti`, `AllenGrahamHart/FormalConjectures-Bench`, formal-conjectures, compfiles, PutnamBench, miniF2F or ProofNet, or by web search (checked 14 Oct 2026).
+
+The golden answer shows one valid route. Any complete proof of the five statements is acceptable.
