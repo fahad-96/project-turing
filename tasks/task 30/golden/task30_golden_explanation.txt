@@ -1,0 +1,73 @@
+### Overview
+
+The zip is a complete Lake project. `lakefile.toml` and `lake-manifest.json` use the pinned Mathlib checkout at `/opt/mathlib4` (commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`), and `lean-toolchain` is `leanprover/lean4:v4.33.0-rc1`. The proof sits in eight files under `TuringTask/` that import each other in a chain: `Dedekind`, `Formulas`, `Reciprocity`, `ModEight`, `Criteria`, `Knopp`, `Main`, `Basic`. Every file starts with `import Mathlib`. The required file `TuringTask/Basic.lean` is the file of the prompt with one added line `import TuringTask.Main`. Its namespace and its five statements stay as in the prompt, and each `sorry` became a one-line `exact` of the matching theorem in `Main.lean`.
+
+In this text $((x))$ is the sawtooth function, $x - \lfloor x \rfloor - 1/2$ for $x \notin \mathbb{Z}$ and $0$ for $x \in \mathbb{Z}$ (Lean: `saw`). The hypothesis `hs` says that $s(h, k) = \sum_{r < k} ((r/k))((hr/k))$ (`dsum_eq`), and the Lean code calls this sum `dsum h k`. For coprime $h, k$ we write $\rho(r) = hr \bmod k$, $q(r) = \lfloor hr/k \rfloor$, $S_2 = \sum_{r<k} r\,q(r)$, $Q = \sum_{r<k} q(r)^2$ and $\Sigma q = \sum_{r<k} q(r)$.
+
+The route:
+- (A) Basic rules: period $1$ and oddness of $((x))$, the multiplication formula $\sum_{j<d} ((x + j/d)) = ((dx))$, and from them $s(h, k) = s(h \bmod k, k)$, $s(k - h, k) = -s(h, k)$, $s(h', k) = s(h, k)$ for $hh' \equiv 1 \pmod k$, and $s(dh, dk) = s(h, k)$.
+- (B) For coprime $h, k$ the map $\rho$ permutes $\{0, \dots, k-1\}$. Comparing $\sum \rho$ and $\sum \rho^2$ with $\sum r$ and $\sum r^2$ gives integer formulas for $12 k s(h, k)$ and the congruence $12hk\,s(h, k) \equiv h^2 + 1 \pmod k$. These give theorems 2, 4 and 5.
+- (C) Counting lattice points gives the reciprocity law, and induction on the odd modulus with Jacobi reciprocity gives theorem 3.
+- (D) For theorem 1 the sum over $b$ collapses by the multiplication formula, Moebius inversion removes a coprimality condition, and the divisor sums telescope to $\sigma(n) s(h, k)$.
+
+### 1. Dedekind.lean: the sawtooth function and the basic rules
+
+- `saw_add_int`, `saw_neg`, `saw_natCast_div`: $((x + z)) = ((x))$ for $z \in \mathbb{Z}$, $((-x)) = -((x))$, and $((m/y)) = (m \bmod y)/y - 1/2$ unless $y \mid m$ (`Int.fract_div_natCast_eq_div_natCast_mod`).
+- `saw_mul_sum`: the multiplication formula. The difference $D(x)$ of its two sides satisfies $D(x + 1/d) = D(x)$ (shift $j$ by one and use period $1$), and $D = 0$ on $[0, 1/d)$, where every term is explicit. Every $x$ is $x_0 + n/d$ with $x_0 \in [0, 1/d)$ and $n = \lfloor dx \rfloor$.
+- `sum_range_mul` splits $r < kd$ as $t + kc$, and `sum_range_mul_mod` shows that $j \mapsto jc \bmod e$ permutes $\{0, \dots, e - 1\}$ for $c$ prime to $e$ (`Nat.ModEq.cancel_right_of_coprime`, `Finset.surjOn_of_injOn_of_card_le`).
+- `dsum_mod`, `dsum_sub`, `dsum_inv` and `dsum_scale` prove the rules of (A). For the last one, $r = t + kc$ gives $\sum_{c<d} ((t/(dk) + c/d)) = ((t/k))$, while the second factor depends only on $t$.
+
+### 2. Formulas.lean: integer formulas for coprime $h, k$
+
+- `dsum_eq_sum_mul`: since $\rho(r) \ne 0$ for $0 < r < k$, $s(h, k) = \sum_r (r/k - 1/2)(\rho(r)/k - 1/2) - 1/4$. With $\sum \rho = \sum r$ this is $s(h, k) = \sum_r r\rho(r)/k^2 - (k - 1)/4$.
+- `twelve_k_dsum`: with $\rho(r) = hr - kq(r)$ (`rho_eq`) and $\sum r^2 = k(k-1)(2k-1)/6$, $12 k s(h, k) = 2h(k-1)(2k-1) - 12 S_2 - 3k(k-1)$.
+- `twelve_h_S2`: $\sum \rho^2 = \sum r^2$ expands to $12 h S_2 = (h^2 - 1)(k-1)(2k-1) + 6kQ$. `two_Sq`: $\sum \rho = \sum r$ gives $2\Sigma q = (h-1)(k-1)$.
+- `h_twelve_k_dsum`: hence $12hk\,s(h, k) = h^2 + 1 + kM$ with the integer $M = (h^2+1)(2k-3) - 6Q - 3h(k-1)$, since $(k-1)(2k-1) = 1 + k(2k-3)$.
+
+### 3. Reciprocity.lean
+
+- `floor_eq_card`: for $t < h$, $\lfloor kt/h \rfloor$ counts the $r$ with $1 \le r < k$ and $hr < kt$, because $hr = kt$ is impossible for coprime $h, k$.
+- `two_S2_swap`: summing $t$ over these pairs in the other order gives $2 S_2(k, h) = (k-1)h(h-1) - (Q + \Sigma q)$, because for fixed $r \ge 1$ the admissible $t$ run from $q(r) + 1$ to $h - 1$.
+- `reciprocity`: a linear combination of the identities of section 2 for $(h, k)$ and $(k, h)$ with `two_S2_swap` gives $12hk(s(h, k) + s(k, h)) = h^2 + k^2 + 1 - 3hk$.
+
+### 4. ModEight.lean: theorem 3
+
+- `mod_eight`: strong induction on the odd modulus $k$, with $k = 1$ as base. Replace $h$ by $x = h \bmod k$, so $0 < x < k$ (`jacobiSym.mod_left`).
+- For odd $x$, `mod_eight_odd_step` combines reciprocity, the induction hypothesis $12x\,s(k, x) \equiv x + 1 - 2J(k \mid x) \pmod 8$ and Jacobi reciprocity (`jacobiSym.quadratic_reciprocity_one_mod_four`, `jacobiSym.quadratic_reciprocity_three_mod_four`). In `ZMod 8` the integer $N = 12k\,s(x, k)$ satisfies $xN = x^2 + k^2 + 1 - 3xk - k(x + 1 - 2J(k \mid x))$. Since $x^2 = 1$ in `ZMod 8`, the finite table `table8` gives $N = k + 1 - 2J(x \mid k)$ there.
+- For even $x$, $k - x$ is odd, $s(x, k) = -s(k - x, k)$ and $J(x \mid k) = \chi_4(k) J(k - x \mid k)$ (`jacobiSym.neg`), so the odd case and a check modulo $8$ for $k \equiv 1, 3 \pmod 4$ finish.
+
+### 5. Criteria.lean: theorems 2, 4 and 5
+
+- `integral` (theorem 2): for $d = \gcd(h, k)$, `dsum_scale` reduces to the coprime pair $(h/d, k/d) = (h', k')$. In `twelve_k_dsum` for this pair, $k'(k'-1)$ is even and $(k'-1)(2k'-1)$ is divisible by $3$ when $3 \nmid k'$. This gives explicit integers for $6k\,s(h, k)$ when $3 \mid k$ and for $2k\,s(h, k)$ otherwise.
+- `dsum_eq_zero_iff` (theorem 4): if $s(h, k) = 0$, then $h^2 + 1 = -kM$. Conversely, if $k \mid h^2 + 1$, then $k - (h \bmod k)$ is an inverse of $h$ modulo $k$, so `dsum_inv` and `dsum_sub` give $s(h, k) = -s(h, k)$.
+- `dsum_eq_iff` (theorem 5): if $s(a, k) = s(b, k)$, the two identities of `h_twelve_k_dsum` combine to $(a - b)(ab - 1) = k(aM_b - bM_a)$ (`dsum_mul_eq`), and `Int.Prime.dvd_mul'` finishes for a prime $k$. The converse is `dsum_mod` or `dsum_inv`.
+
+### 6. Knopp.lean: theorem 1
+
+- `sum_saw_mul`: with $g = \gcd(r, d)$, $d = ge$ and $r = gr'$, the values $br/d = br'/e$ for $b < d$ run $g$ times through the residues modulo $e$, so $\sum_{b<d} ((y + br/d)) = g\,((ey))$.
+- `sum_dsum_shift`: hence $\sum_{b<d} s(x + bk, dk) = \sum_{r<dk} ((r/(dk)))\, g(r)\, ((e\, xr/(dk)))$.
+- `sum_by_gcd`: grouping $r$ by $g = \gcd(r, d)$ and writing $r = gr'$ gives $\sum_{g \mid d} g\, C(d/g, x)$, where $C(e, x)$ is the sum of $((r/(ek)))((xr/k))$ over $r < ek$ prime to $e$.
+- `coprimeSum_eq`: the indicator of $\gcd(r, e) = 1$ is $\sum_{f \mid \gcd(r, e)} \mu(f)$ (`ArithmeticFunction.moebius_mul_coe_zeta`). Swapping the sums and `dsum_lift` (a form of `dsum_scale`) give $C(e, x) = \sum_{f \mid e} \mu(f) s(xf, k)$.
+- `sum_pairSet`, `sum_pairSet_left`, `sum_pairSet_right`: double divisor sums are sums over the pairs $(a, b)$ with $ab \mid N$, in either order.
+- `collapse`: $\sum_{e \mid N} \sum_{f \mid e} \mu(f) A((N/e)f) = A(1)$, because the pair $(f, e/f)$ turns the sum into $\sum_{j \mid N} A(N/j) \sum_{f \mid N/j} \mu(f)$.
+- `knopp`: with $A(m) = s(mh, k)$ the left side becomes $\sum_{g \mid n} g \sum_{e \mid n/g} \sum_{f \mid e} \mu(f) A((n/(ge)) f) = \sum_{g \mid n} g\, s(h, k) = \sigma(n) s(h, k)$ (`ArithmeticFunction.sigma_one_apply`).
+
+### 7. Main.lean and Basic.lean
+
+- `main_knopp`, `main_integral`, `main_mod_eight`, `main_eq_zero`, `main_eq`: the five results for the function `s` of the prompt, through `dsum_eq`.
+- In `Basic.lean` each of the five theorems is one `exact` of the matching theorem.
+
+### Verification
+
+- I extracted the final zip into a fresh folder and checked it offline, without editing anything, in the setting of the review environment: Mathlib at `/opt/mathlib4` (the pinned checkout, commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`, with its dependencies linked into `.lake/packages` as `lean-offline-init` does), Lean `4.33.0-rc1`, network access blocked.
+- `lake build` ends with "Build completed successfully", exit code 0, with no errors and no warnings. Every file uses the full `import Mathlib`.
+- `lake env lean StatementAndAxiomsCheck.lean` (included in the zip) restates the five theorems of the prompt, so it fails if a statement changed. It reports exactly the axioms `propext`, `Classical.choice` and `Quot.sound` for each of the five theorems, with exit code 0.
+- The project contains no `sorry`, `admit`, `native_decide`, new axiom, `set_option` or instance declaration, and no declaration in `TuringTask` has the name of a Mathlib declaration. The table modulo $8$ uses `decide`, which the kernel checks.
+
+### Sources and related work
+
+Dedekind sums and the reciprocity law go back to R. Dedekind, Erlauterungen zu zwei Fragmenten von Riemann (1892). Theorems 2 to 4 are in H. Rademacher and E. Grosswald, Dedekind Sums (MAA Carus Monographs 16, 1972), and in T. M. Apostol, Modular Functions and Dirichlet Series in Number Theory, 2nd ed. (Springer 1990), chapter 3. Theorem 1 is M. I. Knopp, Hecke operators and an identity for the Dedekind sums, J. Number Theory 12 (1980), 2-9. S. Jabuka, S. Robins and X. Wang, When are two Dedekind sums equal?, arXiv:1103.0370 (2011), discuss theorem 5. The write-up and the Lean code are my own.
+
+The proof uses these Mathlib results: `Int.fract_div_natCast_eq_div_natCast_mod`, `Int.fract_neg`, `Finset.sum_nbij`, `Finset.sum_nbij'`, `Finset.sum_comm'`, `Finset.sum_finset_product'`, `Finset.sum_fiberwise_of_maps_to`, `Nat.sum_divisorsAntidiagonal`, `ArithmeticFunction.moebius_mul_coe_zeta`, `ArithmeticFunction.sigma_one_apply`, `jacobiSym.mod_left`, `jacobiSym.neg`, `jacobiSym.quadratic_reciprocity_one_mod_four` and `jacobiSym.quadratic_reciprocity_three_mod_four`. Mathlib at the pinned commit has no Dedekind sums. The Isabelle AFP entry Dedekind_Sums (M. Eberl, A. Bordg, L. C. Paulson and W. Li, 2025) covers the reciprocity law and theorems 2 and 3 in Isabelle, but not theorems 1, 4 and 5. I found no Lean formalization in Mathlib, `TauCetiProject/TauCeti`, `AllenGrahamHart/FormalConjectures-Bench`, formal-conjectures, compfiles, PutnamBench, miniF2F or ProofNet, or by web search (checked 14 Oct 2026).
+
+The golden answer shows one valid route. Any complete proof of the five statements is acceptable.
