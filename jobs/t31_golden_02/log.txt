@@ -1,0 +1,19 @@
+Job t31_golden_02 started Wed 10/14/2026 13:07:28.66 
+===== lake build 
+✔ [8665/8673] Built TuringTask.Partial (30s)
+✔ [8666/8673] Built TuringTask.Kaplan (27s)
+✔ [8667/8673] Built TuringTask.Bang (30s)
+✔ [8668/8673] Built TuringTask.Jump (31s)
+✔ [8669/8673] Built TuringTask.Flat (36s)
+✔ [8670/8673] Built TuringTask.Main (28s)
+✔ [8671/8673] Built TuringTask.Basic (26s)
+✔ [8672/8673] Built TuringTask (25s)
+Build completed successfully (8673 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.sum_range_coeff_cyclotomic_mul_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_coeff_cyclotomic_mul_eq_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.abs_coeff_cyclotomic_mul_mul_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.coeff_cyclotomic_mul_mul_mem_of_mod' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.abs_coeff_succ_sub_coeff_cyclotomic_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
