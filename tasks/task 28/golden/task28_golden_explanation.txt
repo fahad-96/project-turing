@@ -1,0 +1,73 @@
+### Overview
+
+The zip is a complete Lake project. `lakefile.toml` and `lake-manifest.json` use the pinned Mathlib checkout at `/opt/mathlib4` (commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`), and `lean-toolchain` is `leanprover/lean4:v4.33.0-rc1`. The proof sits in eight files under `TuringTask/` that import each other in a chain: `Criterion`, `Thue`, `Core`, `Quartic`, `Jacobi`, `Octic`, `Main`, `Basic`. Every file starts with `import Mathlib`. The required file `TuringTask/Basic.lean` is the file of the prompt with one added line `import TuringTask.Main`. Its namespace and its five statements stay as in the prompt, and each `sorry` became a one-line `exact` of the matching theorem in `Main.lean`.
+
+In this text $p$ is prime, $J(a \mid b)$ is `jacobiSym a b`, and all congruences mod $p$ are equations in `ZMod p`. For $p \equiv 1 \pmod 4$ we write $k = (p - 1)/4$.
+
+The route (Dirichlet's method with Jacobi symbols):
+- (A) For $a \ne 0$, $a$ is a fourth power iff $a^k = 1$, and for $p \equiv 1 \pmod 8$ it is an eighth power iff $a^{(p-1)/8} = 1$. Euler's criterion gives $J(a \mid p) = a^{(p-1)/2}$.
+- (B) Thue's lemma gives the representations $p = c^2 + 2d^2$ (when $-2$ is a square) and $e^2 = p + 2f^2$ (when $2$ is a square). Mathlib gives $p = A^2 + B^2$.
+- (C) The core: if $c^2 = u d^2$ mod $p$, then $u^k J(d \mid p) = J(c \mid p)$. For $p = c^2 + q d^2$ with $c$ odd, reciprocity turns $J(c \mid p)$ into $J(q \mid c)$, and $J(d \mid p) = J(2 \mid p)^v$ for $d = 2^v d_0$ with $d_0$ odd.
+- (D) Each theorem is (C) for a suitable $u$ followed by a table modulo $8$ or $16$.
+
+### 1. Criterion.lean: fourth and eighth powers
+
+- `pow4_iff`: for $p \equiv 1 \pmod 4$ and $a \ne 0$, $a$ is a fourth power iff $a^k = 1$. If $a^k = 1$, then $a^{(p-1)/2} = 1$, so $a = z^2$ by `ZMod.euler_criterion`. Then $z^{(p-1)/2} = a^k = 1$, so $z$ is a square too. The other direction is Fermat's little theorem.
+- `pow8_iff`: the same three steps for eighth powers and $p \equiv 1 \pmod 8$.
+- `euler_J`: $J(a \mid p) = a^{(p-1)/2}$ (`legendreSym.eq_pow`). `J_pm_one`, `one_ne_neg_one` and `cast_pm_one`: a symbol of a number prime to $p$ is $\pm 1$, and $1 \ne -1$ for odd $p$, so `ZMod p` decides whether $J = 1$.
+
+### 2. Thue.lean: the forms $x^2 + 2y^2$ and $x^2 - 2y^2$
+
+- `thue`: for $t$ in `ZMod p` there are integers $x, y$, not both $0$, with $x^2 < p$, $y^2 < p$ and $x = ty$. The $(m + 1)^2 > p$ pairs $0 \le u, v \le m = \lfloor \sqrt p \rfloor$ give two equal values $u - tv$ (`Finset.exists_ne_map_eq_of_card_lt_of_maps_to`).
+- `rep_plus_two`: if $t^2 = -2$, then $p \mid x^2 + 2y^2 < 3p$, so the sum is $p$ or $2p$. In the second case $x$ is even, and $x = 2x'$ gives $p = y^2 + 2x'^2$.
+- `rep_minus_two`: if $t^2 = 2$, then $x^2 - 2y^2 = \pm p$. `sq_eq_two_mul_sq` rules out $x^2 = 2y^2$. The identity $(x + 2y)^2 - 2(x + y)^2 = 2y^2 - x^2$ swaps the sign, so $e^2 = p + 2f^2$ for some $e, f$.
+
+### 3. Core.lean: the Jacobi-symbol core
+
+- `core_u`: if $c^2 = u d^2$ in `ZMod p` and $p \equiv 1 \pmod 4$, then $u^k J(d \mid p) = J(c \mid p)$. Both symbols are powers $(p-1)/2 = 2k$ by `euler_J`.
+- `coprime_of_rep`: $p = c^2 + q d^2$ forces $\gcd(c, d) = 1$, because $\gcd(c, d)^2 \mid p$.
+- `J_c`: for $c$ odd, $J(c \mid p) = J(p \mid c) = J(q d^2 \mid c) = J(q \mid c)$, by `jacobiSym.quadratic_reciprocity_one_mod_four`, `jacobiSym.mod_left'` and `jacobiSym.sq_one'`.
+- `J_d`: for $d = 2^v d_0$ with $d_0$ odd, $J(d_0 \mid p) = J(p \mid d_0) = J(c^2 \mid d_0) = 1$, so $J(d \mid p) = J(2 \mid p)^v$.
+
+### 4. Quartic.lean: theorems 1 and 3
+
+- `J_two_eq`, `J_neg_two_eq` (from `jacobiSym.at_two` and `jacobiSym.at_neg_two`): for odd $m$, $J(2 \mid m) = 1$ iff $m \equiv \pm 1 \pmod 8$, and $J(-2 \mid m) = 1$ iff $m \equiv 1, 3 \pmod 8$. `neg_one_pow_eighth`: $(-1)^{(p-1)/8}$ is $1$ iff $p \equiv 1 \pmod{16}$.
+- `key1` (Dirichlet): let $p \equiv 1 \pmod 8$ and $p = A^2 + B^2$ with $A$ odd. Put $i = A/B$, so $i^2 = -1$ and $(A + B)^2 = 2i B^2$. The core gives $(2i)^k J(B \mid p) = J(A + B \mid p)$. Here $J(B \mid p) = 1$, $i^k = (-1)^{(p-1)/8}$, and $J(A + B \mid p) = J(2 \mid A + B)$ because $2p = (A + B)^2 + (A - B)^2$ (`gcd_sub_add` gives the coprimality). So $2^k = (-1)^{(p-1)/8} J(2 \mid A + B)$, and `table1` (a `decide` over $A, B < 16$) shows that this is $1$ iff $8 \mid B$.
+- `two_quartic_iff` (theorem 1): for $p \equiv 5 \pmod 8$ both sides fail, because $2$ is not a square (`ZMod.exists_sq_eq_two_iff`) and $a^2 + 64b^2 \equiv 5 \pmod 8$ is impossible. For $p \equiv 1 \pmod 8$ take Fermat's $p = A^2 + B^2$ (`Nat.Prime.sq_add_sq`) with $A$ odd and apply `key1`. Conversely $p = a^2 + 64b^2$ is such a representation with $B = 8b$.
+- `key3`: for $p \equiv 1 \pmod 8$ and $e^2 = p + 2f^2$, the core with $2 = (e/f)^2$ gives $2^k = J(e \mid p) = J(-2 \mid e)$, since $J(f \mid p) = J(2 \mid p)^v = 1$. So $2^k = 1$ iff $e \equiv 1, 3 \pmod 8$.
+- `two_quartic_iff'` (theorem 3), by $p \bmod 8$. For $p \equiv 3, 5$ the number $2$ is not a square, and $e^2 = p + 2f^2$ is impossible mod $8$. For $p \equiv 1$ it is `rep_minus_two` with `key3`. For $p \equiv 7$ both sides hold: if $s^2 = 2$, then $x = s^{(p+1)/4}$ has $x^4 = s^{p-1} s^2 = 2$. On the other side $f$ is odd, and if $e \equiv 5, 7 \pmod 8$, then `unit_step` replaces $(e, f)$ by $(3e + 4f, 2e + 3f)$. This keeps $e^2 - 2f^2$ and moves $e$ to $3$ or $1$ mod $8$.
+
+### 5. Jacobi.lean: theorem 4
+
+- `parity_of_rep`: from $p = c^2 + q d^2$ mod $4$ with $q \equiv 2, 3$, the number $c$ is odd and $d$ is even.
+- `quartic_sign`: $(-1)^k J(2 \mid p)^v = 1$. For $p \equiv 1 \pmod 8$ both factors are $1$. For $p \equiv 5 \pmod 8$ the representation forces $d \equiv 2 \pmod 4$ (if $4 \mid d$, then $p \equiv c^2 \equiv 1 \pmod 8$), so $v = 1$ and both factors are $-1$.
+- `quartic_q` (theorem 4): $d > 0$ because $p$ is not a square, so $q < p$ and $q \ne 0$ mod $p$. Also $\gcd(q, c) = 1$, because a common factor divides $p$ and $c < p$. From $c^2 = (-q) d^2$ the core gives $(-q)^k J(2 \mid p)^v = J(q \mid c)$, and `quartic_sign` turns this into $q^k = J(q \mid c)$. Since $J(q \mid c) = \pm 1$, `pow4_iff` finishes.
+
+### 6. Octic.lean: theorems 2 and 5
+
+- `key2`: for $p \equiv 1 \pmod 8$ and $p = c^2 + 2d^2$, the core with $-2 = (c/d)^2$ gives $2^k = (-2)^k = J(2 \mid c)$. With $(-4)^{(p-1)/8} = (-1)^{(p-1)/8} 2^k$, `table2` (a `decide` over $c, d < 16$) shows that $(-4)^{(p-1)/8} = 1$ iff $4 \mid d$.
+- `octic_neg_four` (theorem 2): `pow8_iff`, then `key2` for the representation from `rep_plus_two` (since $-2$ is a square, `ZMod.exists_sq_eq_neg_two_iff`). Conversely $p = a^2 + 32b^2$ is a representation with $d = 4b$.
+- Fix $z$ with $z^4 = -1$ (`exists_zeta`, by `pow4_iff`). Then $i = z^2$ has $i^2 = -1$, and $s_0 = z - z^3$ has $s_0^2 = 2$. Each identity below is a `linear_combination` of $z^4 = -1$.
+- `sqrt_two_side`: $(1 + z)^2 = (1 + i)(1 + s_0)$ and $(1 + z^3)^2 = z^6 (1 + i)(1 - s_0)$. The square roots of $2$ are $\pm s_0$ (`sq_eq_sq_iff_eq_or_eq_neg`), and $1 \pm s_0 \ne 0$. So some $1 + s$ with $s^2 = 2$ is a square iff $1 + i$ is a square.
+- `octic_side`: $(1 + i)^4 = -4$. If $x^8 = -4$, then $u = x^2/(1 + i)$ has $u^4 = 1$, so $u$ is one of $1, -1, i, -i$ (`sq_of_fourth_root`), and these are the squares of $1, z^2, z, z^3$. Hence $1 + i$ is a square. If $1 + i = y^2$, then $y^8 = -4$.
+- `sqrt_two_octic` (theorem 5): `sqrt_two_side`, `octic_side` and theorem 2.
+
+### 7. Main.lean and Basic.lean
+
+- `main_two_quartic`, `main_neg_four_octic`, `main_two_quartic_odd`, `main_quartic_jacobi`, `main_sqrt_two`: the five results with the membership conditions of the prompt, unfolded by `Finset.mem_insert` and `Finset.mem_singleton`.
+- In `Basic.lean` each of the five theorems is one `exact` of the matching theorem.
+
+### Verification
+
+- I extracted the final zip into a fresh folder and checked it offline, without editing anything, in the setting of the review environment: Mathlib at `/opt/mathlib4` (the pinned checkout, commit `9944fe2973b8dc0b86949101ed98232c07cd54a0`, with its dependencies linked into `.lake/packages` as `lean-offline-init` does), Lean `4.33.0-rc1`, network access blocked.
+- `lake build` ends with "Build completed successfully", exit code 0, with no errors and no warnings. Every file uses the full `import Mathlib`.
+- `lake env lean StatementAndAxiomsCheck.lean` (included in the zip) restates the five theorems of the prompt, so it fails if a statement changed. It reports exactly the axioms `propext`, `Classical.choice` and `Quot.sound` for each of the five theorems, with exit code 0.
+- The project contains no `sorry`, `admit`, `native_decide`, new axiom, `set_option` or instance declaration, and no declaration in `TuringTask` has the name of a Mathlib declaration. The tables modulo $16$ use `decide`, which the kernel checks.
+
+### Sources and related work
+
+Theorem 1 is due to C. F. Gauss, Theoria residuorum biquadraticorum, Commentatio prima (1828), and the Jacobi-symbol proof used here follows P. G. L. Dirichlet, J. Reine Angew. Math. 57 (1860), 187-188. Theorems 2 and 5 are in P. Barrucand and H. Cohn, Note on primes of type $x^2 + 32y^2$, class number, and residuacity, J. Reine Angew. Math. 238 (1969), 67-70. For rational quartic laws of the type of theorems 3 and 4 see the survey of E. Lehmer, Rational reciprocity laws, Amer. Math. Monthly 85 (1978), 467-472, and in F. Lemmermeyer, Reciprocity Laws (Springer 2000), chapter 5. D. A. Cox, Primes of the Form $x^2 + ny^2$, 2nd ed. (Wiley 2013), treats theorem 1. The write-up and the Lean code are my own.
+
+The proof uses these Mathlib results: `ZMod.euler_criterion`, `ZMod.pow_card_sub_one_eq_one`, `legendreSym.eq_pow`, `jacobiSym.quadratic_reciprocity_one_mod_four`, `jacobiSym.at_two`, `jacobiSym.at_neg_two`, `jacobiSym.mod_left'`, `jacobiSym.sq_one'`, `jacobiSym.eq_one_or_neg_one`, `ZMod.exists_sq_eq_two_iff`, `ZMod.exists_sq_eq_neg_two_iff`, `Nat.Prime.sq_add_sq`, `Nat.exists_eq_two_pow_mul_odd` and `Finset.exists_ne_map_eq_of_card_lt_of_maps_to`. Mathlib at the pinned commit has quadratic and Jacobi reciprocity, but no quartic or octic residue criteria and no representation by $x^2 + 2y^2$ or $x^2 - 2y^2$. I found no Lean formalization of the five statements in Mathlib, `TauCetiProject/TauCeti`, `AllenGrahamHart/FormalConjectures-Bench`, formal-conjectures, compfiles, PutnamBench, miniF2F or ProofNet, or by web search (checked 13 Oct 2026).
+
+The golden answer shows one valid route. Any complete proof of the five statements is acceptable.
