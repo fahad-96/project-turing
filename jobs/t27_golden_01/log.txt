@@ -1,0 +1,20 @@
+Job t27_golden_01 started Wed 10/14/2026 11:09:46.73 
+===== lake build 
+✔ [8664/8673] Built TuringTask.Quad (27s)
+✔ [8665/8673] Built TuringTask.Count (24s)
+✔ [8666/8673] Built TuringTask.Euclid (25s)
+✔ [8667/8673] Built TuringTask.Rings (28s)
+✔ [8668/8673] Built TuringTask.Types (24s)
+✔ [8669/8673] Built TuringTask.Orders (28s)
+✔ [8670/8673] Built TuringTask.Main (25s)
+✔ [8671/8673] Built TuringTask.Basic (24s)
+✔ [8672/8673] Built TuringTask (24s)
+Build completed successfully (8673 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.card_sq_add_mul_add_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_sq_add_three_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_sq_add_two_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_sq_add_mul_add_two_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.card_sq_add_seven_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
