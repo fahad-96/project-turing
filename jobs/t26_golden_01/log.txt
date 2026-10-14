@@ -1,0 +1,17 @@
+Job t26_golden_01 started Wed 10/14/2026 10:51:38.90 
+===== lake build 
+✔ [8664/8670] Built TuringTask.Forms (575s)
+✔ [8665/8670] Built TuringTask.Values (39s)
+✔ [8666/8670] Built TuringTask.Classes (54s)
+✔ [8667/8670] Built TuringTask.Main (35s)
+✔ [8668/8670] Built TuringTask.Basic (32s)
+✔ [8669/8670] Built TuringTask (32s)
+Build completed successfully (8670 jobs).
+BUILD EXIT CODE 0 
+===== check file 
+'TuringTask.prime_eq_sq_add_five_mul_sq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.mul_eq_sq_add_five_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.prime_eq_sq_add_six_mul_sq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.prime_eq_sq_add_thirteen_mul_sq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TuringTask.prime_eq_sq_add_twenty_one_mul_sq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+CHECK EXIT CODE 0 
