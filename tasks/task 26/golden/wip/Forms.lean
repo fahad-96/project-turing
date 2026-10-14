@@ -3,7 +3,7 @@ import Mathlib
 /-!
 # Binary quadratic forms and Lagrange reduction
 
-* `Rep a b c m`: the form `a x^2 + b x y + c y^2` takes the value `m` at some integers `x, y`.
+* `FormRep a b c m`: the form `a x^2 + b x y + c y^2` takes the value `m` at some integers `x, y`.
 * `rep_swap`, `rep_shift`: the moves `(a, b, c) ↦ (c, -b, a)` and
   `(a, b, c) ↦ (a, b + 2 k a, a k^2 + b k + c)` keep the discriminant and the represented values.
 * `reduce`: a positive definite form represents the same values as a form with
@@ -15,26 +15,26 @@ import Mathlib
 namespace TuringTask
 
 /-- The form `a x^2 + b x y + c y^2` represents `m`. -/
-def Rep (a b c m : ℤ) : Prop := ∃ x y : ℤ, a * x ^ 2 + b * x * y + c * y ^ 2 = m
+def FormRep (a b c m : ℤ) : Prop := ∃ x y : ℤ, a * x ^ 2 + b * x * y + c * y ^ 2 = m
 
-lemma rep_swap {a b c m : ℤ} (h : Rep a b c m) : Rep c (-b) a m := by
+lemma rep_swap {a b c m : ℤ} (h : FormRep a b c m) : FormRep c (-b) a m := by
   obtain ⟨x, y, h⟩ := h
   exact ⟨-y, x, by linear_combination h⟩
 
-lemma rep_shift {a b c m : ℤ} (k : ℤ) (h : Rep a b c m) :
-    Rep a (b + 2 * k * a) (a * k ^ 2 + b * k + c) m := by
+lemma rep_shift {a b c m : ℤ} (k : ℤ) (h : FormRep a b c m) :
+    FormRep a (b + 2 * k * a) (a * k ^ 2 + b * k + c) m := by
   obtain ⟨x, y, h⟩ := h
   exact ⟨x - k * y, y, by linear_combination h⟩
 
-lemma rep_neg {a b c m : ℤ} (h : Rep a (-b) c m) : Rep a b c m := by
+lemma rep_neg {a b c m : ℤ} (h : FormRep a (-b) c m) : FormRep a b c m := by
   obtain ⟨x, y, h⟩ := h
   exact ⟨x, -y, by linear_combination h⟩
 
 /-- Lagrange reduction: every positive definite form of discriminant `D` represents the same
 values as a form with `|b| ≤ a ≤ c`. -/
 theorem reduce (D : ℤ) (hD : D < 0) :
-    ∀ (N : ℕ) (a b c m : ℤ), a.toNat = N → 0 < a → b ^ 2 - 4 * a * c = D → Rep a b c m →
-      ∃ a' b' c', |b'| ≤ a' ∧ a' ≤ c' ∧ b' ^ 2 - 4 * a' * c' = D ∧ Rep a' b' c' m := by
+    ∀ (N : ℕ) (a b c m : ℤ), a.toNat = N → 0 < a → b ^ 2 - 4 * a * c = D → FormRep a b c m →
+      ∃ a' b' c', |b'| ≤ a' ∧ a' ≤ c' ∧ b' ^ 2 - 4 * a' * c' = D ∧ FormRep a' b' c' m := by
   intro N
   induction N using Nat.strong_induction_on with
   | _ N ih =>
@@ -66,7 +66,7 @@ lemma reduced_bound {a b c : ℤ} (h1 : |b| ≤ a) (h2 : a ≤ c) : 3 * a ^ 2 �
   nlinarith
 
 lemma lagrange {p : ℕ} (n t : ℤ) (h : (p : ℤ) ∣ t ^ 2 + n) :
-    ∃ c, (2 * t) ^ 2 - 4 * (p : ℤ) * c = -4 * n ∧ Rep p (2 * t) c p := by
+    ∃ c, (2 * t) ^ 2 - 4 * (p : ℤ) * c = -4 * n ∧ FormRep p (2 * t) c p := by
   obtain ⟨c, hc⟩ := h
   exact ⟨c, by linear_combination 4 * hc, 1, 0, by ring⟩
 

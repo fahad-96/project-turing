@@ -48,7 +48,7 @@ lemma vals_5_2_1 : ∀ x, x < 2 * 5 → ∀ y, y < 2 * 5 →
 /-- A prime `x^2 + 5 y^2` lies in the stated classes modulo `20`. -/
 theorem fwd_5 {p x y : ℕ} (hp : p.Prime) (h : p = x ^ 2 + 5 * y ^ 2) :
     p = 5 ∨ (p % 20 = 1 ∨ p % 20 = 9) := by
-  have hr : Rep (1 : ℕ) (2 * (0 : ℕ)) (5 : ℕ) p := ⟨x, y, by rw [h]; push_cast; ring⟩
+  have hr : FormRep (1 : ℕ) (2 * (0 : ℕ)) (5 : ℕ) p := ⟨x, y, by rw [h]; push_cast; ring⟩
   obtain ⟨u, v, hu, hv, hm⟩ := rep_mod_nat rfl rfl rfl (by norm_num : 0 < 5) hr
   have hval := vals_5_prin u hu v hv
   simp only at hval
@@ -112,7 +112,7 @@ lemma vals_6_2_0 : ∀ x, x < 2 * 6 → ∀ y, y < 2 * 6 →
 /-- A prime `x^2 + 6 y^2` lies in the stated classes modulo `24`. -/
 theorem fwd_6 {p x y : ℕ} (hp : p.Prime) (h : p = x ^ 2 + 6 * y ^ 2) :
     p % 24 = 1 ∨ p % 24 = 7 := by
-  have hr : Rep (1 : ℕ) (2 * (0 : ℕ)) (6 : ℕ) p := ⟨x, y, by rw [h]; push_cast; ring⟩
+  have hr : FormRep (1 : ℕ) (2 * (0 : ℕ)) (6 : ℕ) p := ⟨x, y, by rw [h]; push_cast; ring⟩
   obtain ⟨u, v, hu, hv, hm⟩ := rep_mod_nat rfl rfl rfl (by norm_num : 0 < 6) hr
   have hval := vals_6_prin u hu v hv
   simp only at hval
@@ -169,7 +169,7 @@ lemma vals_13_2_1 : ∀ x, x < 2 * 13 → ∀ y, y < 2 * 13 →
 /-- A prime `x^2 + 13 y^2` lies in the stated classes modulo `52`. -/
 theorem fwd_13 {p x y : ℕ} (hp : p.Prime) (h : p = x ^ 2 + 13 * y ^ 2) :
     p = 13 ∨ (p % 52 = 1 ∨ p % 52 = 9 ∨ p % 52 = 17 ∨ p % 52 = 25 ∨ p % 52 = 29 ∨ p % 52 = 49) := by
-  have hr : Rep (1 : ℕ) (2 * (0 : ℕ)) (13 : ℕ) p := ⟨x, y, by rw [h]; push_cast; ring⟩
+  have hr : FormRep (1 : ℕ) (2 * (0 : ℕ)) (13 : ℕ) p := ⟨x, y, by rw [h]; push_cast; ring⟩
   obtain ⟨u, v, hu, hv, hm⟩ := rep_mod_nat rfl rfl rfl (by norm_num : 0 < 13) hr
   have hval := vals_13_prin u hu v hv
   simp only at hval
@@ -249,7 +249,7 @@ lemma vals_21_5_2 : ∀ x, x < 2 * 21 → ∀ y, y < 2 * 21 →
 /-- A prime `x^2 + 21 y^2` lies in the stated classes modulo `84`. -/
 theorem fwd_21 {p x y : ℕ} (hp : p.Prime) (h : p = x ^ 2 + 21 * y ^ 2) :
     p % 84 = 1 ∨ p % 84 = 25 ∨ p % 84 = 37 := by
-  have hr : Rep (1 : ℕ) (2 * (0 : ℕ)) (21 : ℕ) p := ⟨x, y, by rw [h]; push_cast; ring⟩
+  have hr : FormRep (1 : ℕ) (2 * (0 : ℕ)) (21 : ℕ) p := ⟨x, y, by rw [h]; push_cast; ring⟩
   obtain ⟨u, v, hu, hv, hm⟩ := rep_mod_nat rfl rfl rfl (by norm_num : 0 < 21) hr
   have hval := vals_21_prin u hu v hv
   simp only at hval

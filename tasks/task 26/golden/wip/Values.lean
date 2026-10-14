@@ -29,7 +29,7 @@ lemma sq_neg_of {p : ℕ} (hp : p.Prime) (n M : ℕ) (hM : M = 4 * n) (hodd : p 
   ring
 
 lemma rep_mod_nat {A B C : ℤ} {a b c p K : ℕ} (hA : A = a) (hB : B = 2 * b) (hC : C = c)
-    (hK : 0 < K) (h : Rep A B C p) :
+    (hK : 0 < K) (h : FormRep A B C p) :
     ∃ x y : ℕ, x < 2 * K ∧ y < 2 * K ∧
       p % (4 * K) = (a * x ^ 2 + 2 * b * x * y + c * y ^ 2) % (4 * K) := by
   subst hA hB hC
